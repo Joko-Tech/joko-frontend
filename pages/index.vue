@@ -2,12 +2,19 @@
   <div>
     <h1>Hello Tezos</h1>
     <ConnectButton />
+    <button @click="addArtist">Add Artist</button>
   </div>
 </template>
 
 <script>
 export default {
   name: "IndexPage",
+
+  methods: {
+    addArtist() {
+      this.$store.dispatch("addNewArtist");
+    },
+  },
 };
 </script>
 
@@ -23,5 +30,6 @@ button {
   padding: 0 24px;
   border: 1px solid #101010;
   border-radius: 4px;
+  margin-bottom: 16px;
 }
 </style>
