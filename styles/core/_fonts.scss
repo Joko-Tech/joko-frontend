@@ -1,17 +1,7 @@
 @font-face {
-  font-family: "Nimbus Sans L";
-  src: url(~/assets/fonts/NimbusSanL-Reg.woff2) format("woff2"),
-    url(~/assets/fonts/NimbusSanL-Reg.woff) format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-  text-rendering: optimizeLegibility;
-}
-
-@font-face {
-  font-family: "Nimbus Sans L";
-  src: url(~/assets/fonts/NimbusSanL-Bol.woff2) format("woff2"),
-    url(~/assets/fonts/NimbusSanL-Bol.woff) format("woff");
+  font-family: "Arial";
+  src: url(~/assets/fonts/ArialMT.woff2) format("woff2"),
+    url(~/assets/fonts/ArialMT.woff) format("woff");
   font-weight: 600;
   font-style: normal;
   font-display: swap;

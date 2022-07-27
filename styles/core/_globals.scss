@@ -27,8 +27,8 @@ html {
 body {
   font-family: $font-body;
   font-size: 16px;
-  line-height: 1.3;
-  letter-spacing: calc(-0.025 * 16px);
+  line-height: 1.25;
+  letter-spacing: calc(-0.05 * 16px);
   color: $black;
   background: $off-white;
 
@@ -45,27 +45,6 @@ button {
   color: inherit;
 }
 
-[data-marquee] {
-  width: fit-content;
-  position: relative;
-  will-change: transform;
-
-  &.active {
-    animation: marquee 25s linear infinite;
-    animation-play-state: running;
-
-    &:hover {
-      animation-play-state: paused;
-    }
-  }
-
-  @keyframes marquee {
-    100% {
-      transform: translate3d(-50%, 0, 0);
-    }
-  }
-}
-
 svg {
   width: 100%;
 }
@@ -73,81 +52,6 @@ svg {
 .c-container {
   max-width: 1800px;
   margin: 0 auto;
-}
-
-.c-rip {
-  width: 100%;
-  display: grid;
-  min-width: 1780px;
-  color: $black;
-  transform: translateX(0);
-
-  &--top {
-    transform: rotate(180deg);
-  }
-
-  &--polaroid {
-    min-width: 890.28px;
-    color: $white;
-    transform: translateX(-5px);
-  }
-
-  &__container {
-    overflow: hidden;
-  }
-}
-
-.uppercase {
-  text-transform: uppercase;
-}
-
-.c-page,
-.c-page__inner {
-  &.inactive {
-    position: fixed;
-    width: 100%;
-    left: 0;
-    height: 100vh;
-  }
-
-  .animating {
-  }
-}
-
-.c-page {
-  &.inactive {
-    height: calc(100vh + 168px);
-    overflow: hidden;
-    transition: transform 1.2s $ease-modal;
-  }
-}
-
-.c-transition--rip {
-  width: 100%;
-  background: $off-white;
-  position: absolute;
-  display: block;
-  bottom: 0;
-  display: none;
-  overflow: hidden;
-
-  &__inner {
-    min-width: 1721px;
-    transform: translateX(0);
-    will-change: transform;
-    transition: transform 1.2s $ease-modal;
-  }
-}
-
-.pages {
-  transform: translateY(calc(100vh + 168px));
-  height: 100%;
-
-  &.disabled {
-    transition: transform 1.2s $ease-modal;
-    height: 100vh;
-    overflow: hidden;
-  }
 }
 
 .visually-hidden {
