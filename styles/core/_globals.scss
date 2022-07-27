@@ -29,14 +29,12 @@ body {
   font-size: 16px;
   line-height: 1.25;
   letter-spacing: calc(-0.05 * 16px);
-  color: $black;
-  background: $off-white;
+  background: $bg-primary;
+  color: $white;
 
   &.no-scroll {
-    position: fixed;
-    overflow-y: scroll;
-    width: 100%;
-    top: var(--top);
+    overflow: hidden;
+    touch-action: none;
   }
 }
 
