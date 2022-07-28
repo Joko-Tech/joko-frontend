@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Hello Tezos</h1>
-    <ConnectButton />
     <button @click="addArtist">Add Artist</button>
     <TokenCard tokenId="1" />
   </div>

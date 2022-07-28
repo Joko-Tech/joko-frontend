@@ -6,14 +6,13 @@
   border: 1px solid $white;
   background: transparent;
 
-  @include cursor {
-    &:hover {
-      background: $white;
-      color: $black;
-    }
-  }
-
   &:not(&--no-animate) {
+    @include cursor {
+      &:hover {
+        background: $white;
+        color: $black;
+      }
+    }
   }
 
   &--primary {

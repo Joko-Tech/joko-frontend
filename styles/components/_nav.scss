@@ -3,6 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: $border-primary;
 
   &__logo {
     height: 100%;
@@ -12,9 +13,47 @@
     max-width: 207px;
     width: 100%;
     border-right: $border-primary;
+    margin-right: 24px;
 
     &__inner {
       max-width: 90px;
+    }
+  }
+
+  &__links {
+    margin-right: 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__link {
+    @extend %link--hidden;
+  }
+
+  &__userarea {
+    display: flex;
+    align-items: center;
+    margin-left: 48px;
+
+    @include media("<=phone") {
+      margin-left: 16px;
+    }
+  }
+
+  .c-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    @extend %ovh;
+    background: $white;
+    margin-left: 8px;
+
+    img {
+      @extend %img;
+    }
+
+    @include media("<=phone") {
+      display: none;
     }
   }
 }
