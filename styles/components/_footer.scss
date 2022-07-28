@@ -1,0 +1,53 @@
+.c-footer {
+  margin-top: auto;
+  border-top: $border-primary;
+  padding-top: 120px;
+  padding-bottom: 64px;
+  @extend %mobile-padding;
+
+  @include media("<=tablet") {
+    padding-top: 64px;
+  }
+
+  &__inner {
+    @extend .c-container;
+  }
+
+  &__title {
+    @extend %title-3;
+    color: $dimmed;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  &__links {
+    @extend %body-large;
+  }
+
+  &__link {
+    text-transform: uppercase;
+
+    &:not(:last-child) {
+      margin-right: 24px;
+    }
+  }
+
+  &__top {
+    margin-bottom: 120px;
+
+    @include media("<=tablet") {
+      margin-bottom: 64px;
+    }
+  }
+
+  &__bottom {
+    @include flex-gap(16px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    @extend %footer-text;
+    color: $dimmed;
+    text-transform: capitalize;
+  }
+}
