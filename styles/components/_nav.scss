@@ -1,0 +1,20 @@
+.c-nav {
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__logo {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 207px;
+    width: 100%;
+    border-right: $border-primary;
+
+    &__inner {
+      max-width: 90px;
+    }
+  }
+}

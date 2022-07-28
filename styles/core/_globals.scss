@@ -1,6 +1,6 @@
 html {
   box-sizing: border-box;
-  font-size: calc(100vw / 1440 * 10);
+  font-size: calc(100vw / 1512 * 10);
   overscroll-behavior: none;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -10,13 +10,13 @@ html {
     font-size: calc(100vw / 768 * 10);
   }
 
-  @include media("<=desktop-sm") {
-    font-size: calc(100vw / 950 * 10);
-  }
+  // @include media("<=desktop-sm") {
+  //   font-size: calc(100vw / 950 * 10);
+  // }
 
-  @include media("<=phone") {
-    font-size: calc(100vw / 425 * 10);
-  }
+  // @include media("<=phone") {
+  //   font-size: calc(100vw / 425 * 10);
+  // }
 
   @include media("<=375px") {
     font-size: calc(100vw / 375 * 10);
@@ -47,11 +47,6 @@ svg {
   width: 100%;
 }
 
-.c-container {
-  max-width: 1800px;
-  margin: 0 auto;
-}
-
 .visually-hidden {
   border: 0;
   padding: 0;
@@ -73,4 +68,19 @@ svg {
     50%
   ); /*modern browsers, clip-path works inwards from each corner*/
   white-space: nowrap; /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
+}
+
+.c-container {
+  @include media(">tablet") {
+    max-width: calc(100% - toRem(160));
+    margin: 0 auto;
+  }
+}
+
+.c-main {
+  @extend .c-container;
+  @include media(">tablet") {
+    border-left: $border-primary;
+    border-right: $border-primary;
+  }
 }
