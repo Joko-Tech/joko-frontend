@@ -49,3 +49,9 @@
   line-height: 1;
   letter-spacing: calc(-0.01 * 16px);
 }
+
+%font-button-large {
+  @extend %body-large;
+  line-height: 1;
+  letter-spacing: calc(-0.01 * 16px);
+}
