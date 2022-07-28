@@ -1,7 +1,9 @@
 <template>
   <div>
-    <button v-if="wallet.isConnected" @click="disconnect">Disconnect</button>
-    <button v-else @click="connect">Connect</button>
+    <ButtonComponent v-if="wallet.isConnected" @click="disconnect">
+      Disconnect
+    </ButtonComponent>
+    <ButtonComponent v-else @click="connect">Connect</ButtonComponent>
   </div>
 </template>
 

@@ -1,17 +1,60 @@
 .c-button {
-  @extend %font-button;
-  border-radius: 8px;
-  padding: 16px;
-  transition: transform 0.2s $ease-button-hover;
+  transition: background 0.2s ease, color 0.2s ease;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid $white;
+  background: transparent;
 
   @include cursor {
     &:hover {
+      background: $white;
+      color: $black;
     }
   }
 
   &:not(&--no-animate) {
+  }
+
+  &--primary {
+    border-radius: 100px;
+
+    .c-button__icon {
+      display: flex;
+      margin-left: 10px;
+    }
+  }
+
+  &--icon {
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+
+    &.c-button {
+      &--medium,
+      &--large {
+        padding: 0;
+      }
+    }
+  }
+
+  &--medium {
+    padding: 10px 16px;
+    @extend %font-button;
+
+    .c-button__icon {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  &--large {
+    padding: 14px 32px;
+    @extend %font-button-large;
+
+    .c-button__icon {
+      width: 16px;
+      height: 16px;
+    }
   }
 }
