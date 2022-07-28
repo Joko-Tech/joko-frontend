@@ -47,6 +47,13 @@ svg {
   width: 100%;
 }
 
+%mobile-padding {
+  @include media("<=tablet") {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
 .visually-hidden {
   border: 0;
   padding: 0;
@@ -70,17 +77,29 @@ svg {
   white-space: nowrap; /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
 }
 
+.c-layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  width: 100%;
+}
+
 .c-container {
+  width: 100%;
   @include media(">tablet") {
     max-width: calc(100% - toRem(160));
     margin: 0 auto;
   }
 }
 
-.c-main {
+.c-pages {
   @extend .c-container;
   @include media(">tablet") {
     border-left: $border-primary;
     border-right: $border-primary;
   }
+}
+
+.c-main {
+  @extend %mobile-padding;
 }

@@ -1,9 +1,10 @@
 <template>
   <div class="c-layout">
-    <div class="c-main">
+    <div class="c-pages">
       <NavComponent />
-      <Nuxt />
+      <div class="c-main"><Nuxt /></div>
     </div>
+    <FooterComponent />
   </div>
 </template>
 
