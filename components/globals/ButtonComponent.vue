@@ -1,6 +1,6 @@
 <template>
   <component
-    :is="href ? 'nuxt-link' : 'button'"
+    :is="shouldRenderAs"
     :href="href"
     :to="href && href.startsWith('/') ? href : ''"
     :class="classNames"
@@ -46,6 +46,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    renderAs: {
+      type: String,
+    },
   },
   computed: {
     classNames() {
@@ -57,6 +60,13 @@ export default {
         this.buttonSize && `c-button--${this.buttonSize}`,
         this.icon && `c-button--${this.icon}`,
       ];
+    },
+    shouldRenderAs() {
+      return !this.renderAs
+        ? this.href
+          ? "nuxt-link"
+          : "button"
+        : this.renderAs;
     },
   },
   methods: {

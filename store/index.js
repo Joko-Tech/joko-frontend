@@ -61,24 +61,22 @@ export const mutations = {
 
 export const actions = {
   async nuxtServerInit({ commit }, { req }) {
-    const tezos = new TezosToolkit(networks.jakartanet.nodes[0]);
-    const contract = await tezos.contract.at(
-      "KT1RsM3NBMSYnNaWRqD6jjWVexY7GprsbG6F"
-    );
-    const storage = await contract.storage();
-
-    const artistsMap = storage.artist_map.valueMap;
-    const artistsKeys = Array.from(artistsMap.keys());
-    const artistsValues = Array.from(artistsMap.values());
-    const artists = artistsKeys.map((key, index) => {
-      return {
-        id: key,
-        ...artistsValues[index],
-      };
-    });
-
-    commit("updateArtists", artists);
-    commit("updateStorage", storage);
+    // const tezos = new TezosToolkit(networks.jakartanet.nodes[0]);
+    // const contract = await tezos.contract.at(
+    //   "KT1RsM3NBMSYnNaWRqD6jjWVexY7GprsbG6F"
+    // );
+    // const storage = await contract.storage();
+    // const artistsMap = storage.artist_map.valueMap;
+    // const artistsKeys = Array.from(artistsMap.keys());
+    // const artistsValues = Array.from(artistsMap.values());
+    // const artists = artistsKeys.map((key, index) => {
+    //   return {
+    //     id: key,
+    //     ...artistsValues[index],
+    //   };
+    // });
+    // commit("updateArtists", artists);
+    // commit("updateStorage", storage);
   },
 
   async fetchInitialData({ commit }) {
