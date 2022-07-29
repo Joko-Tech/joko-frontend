@@ -26,6 +26,7 @@
 
   &__link {
     text-transform: uppercase;
+    @extend %link--hidden;
 
     &:not(:last-child) {
       margin-right: 24px;
