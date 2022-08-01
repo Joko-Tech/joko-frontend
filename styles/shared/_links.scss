@@ -73,11 +73,13 @@
     &__inner {
       display: flex;
       transform: translateY(0);
-      transition: transform 0.3s $ease-button-hover;
+      transition: transform 0.6s $ease-button-expo;
       margin-right: 2px;
 
       > span {
-        /* white-space: nowrap; */
+        white-space: nowrap;
+        padding-bottom: 0.1ch;
+        margin-top: -0.1ch;
       }
     }
 

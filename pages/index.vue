@@ -2,7 +2,7 @@
   <div>
     <!-- <button @click="addArtist">Add Artist</button> -->
     <!-- <TokenCard tokenId="1" /> -->
-    <EpisodeCard :episode="testEpisode" :isAuthenticated="true" />
+    <EpisodeCard :episode="testEpisode" :isAuthenticated="false" />
   </div>
 </template>
 

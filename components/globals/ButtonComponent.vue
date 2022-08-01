@@ -7,11 +7,24 @@
     @click="click"
     :target="href && !href.startsWith('/') && '_blank'"
   >
-    <span class="c-button__text" data-button-text v-if="buttonType !== 'icon'">
-      <slot />
-    </span>
-    <span v-if="icon" class="c-button__icon">
-      <component :is="`${icon}-icon`" />
+    <div class="c-button__bg" />
+    <div class="c-button__border" />
+    <span class="c-button__inner">
+      <span
+        class="c-link c-button__text"
+        data-button-text
+        v-if="buttonType !== 'icon'"
+      >
+        <span class="c-link__inner">
+          <span> <slot /></span>
+          <span v-if="!noAnimate" class="c-link__animated" aria-hidden="true">
+            <slot />
+          </span>
+        </span>
+      </span>
+      <span v-if="icon" class="c-button__icon">
+        <component :is="`${icon}-icon`" />
+      </span>
     </span>
   </component>
 </template>
