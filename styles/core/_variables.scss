@@ -8,7 +8,8 @@ $bg-overlay: #272727;
 
 // easings
 $ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-$ease-button-hover: cubic-bezier(0.5, -0.25, 0.5, 1);
+$ease-button-hover: cubic-bezier(0.33, 1, 0.68, 1);
+$ease-button-expo: cubic-bezier(0.16, 1, 0.3, 1);
 $ease-modal: cubic-bezier(1, 0, 0.75, 1);
 $custom: cubic-bezier(0.2, 0.4, 0.25, 1);
 $ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
