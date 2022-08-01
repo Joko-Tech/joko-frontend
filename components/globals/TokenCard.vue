@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="c-tokencard"></div>
 </template>
 
 <script>
