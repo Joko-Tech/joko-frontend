@@ -47,13 +47,6 @@ svg {
   width: 100%;
 }
 
-%mobile-padding {
-  @include media("<=tablet") {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-}
-
 .visually-hidden {
   border: 0;
   padding: 0;
@@ -101,5 +94,9 @@ svg {
 }
 
 .c-main {
-  @extend %mobile-padding;
+  padding: 0 40px;
+
+  @include media("<=tablet") {
+    padding: 0 16px;
+  }
 }

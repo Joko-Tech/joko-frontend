@@ -50,13 +50,13 @@
   }
 }
 
-@mixin ratio($height, $width) {
+@mixin ratio($width, $height) {
   font-size: 0;
   overflow: hidden;
   position: relative;
-  aspect-ratio: calc($width / $height);
+  // aspect-ratio: calc($width / $height);
 
-  @supports not (aspect-ratio: calc($width / $height)) {
+  @supports (aspect-ratio: calc($width / $height)) {
     &:after {
       content: "";
       display: inline-block;
@@ -66,7 +66,8 @@
   }
 
   img,
-  video {
+  video,
+  .cover {
     @extend %img;
     position: absolute;
     top: 0;
@@ -76,9 +77,9 @@
 
 @mixin flex-gap($row-gap, $column-gap: $row-gap) {
   display: inline-flex;
-  gap: $row-gap $column-gap;
+  // gap: $row-gap $column-gap;
 
-  @supports not (gap: $row-gap $column-gap) {
+  @supports (gap: $row-gap $column-gap) {
     --row-gap: #{$row-gap};
     --column-gap: #{$column-gap};
     margin: calc(-1 * var(--row-gap)) 0 0 calc(-1 * var(--column-gap));

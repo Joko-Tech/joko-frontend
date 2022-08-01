@@ -1,8 +1,8 @@
 import { BeaconWallet } from "@taquito/beacon-wallet";
 import { TezosToolkit } from "@taquito/taquito";
 import { cnetwork, walletOptions, networks } from "~/utils/network";
-import { InMemorySigner } from "@taquito/signer";
-import * as faucet from "~/data/faucet.json";
+// import { InMemorySigner } from "@taquito/signer";
+// import * as faucet from "~/data/faucet.json";
 let beaconWallet;
 
 // check if window exists
@@ -117,13 +117,13 @@ export const actions = {
   async addNewArtist({ state, commit }) {
     const tezos = new TezosToolkit(networks.jakartanet.nodes[0]);
 
-    tezos.setSignerProvider(
-      InMemorySigner.fromFundraiser(
-        faucet.email,
-        faucet.password,
-        faucet.mnemonic.join(" ")
-      )
-    );
+    // tezos.setSignerProvider(
+    //   InMemorySigner.fromFundraiser(
+    //     faucet.email,
+    //     faucet.password,
+    //     faucet.mnemonic.join(" ")
+    //   )
+    // );
 
     const artistObject = {
       artist: "harry2",

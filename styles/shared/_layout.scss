@@ -33,12 +33,9 @@
   height: 100%;
 }
 
-%page-nav-fixed {
-  padding-top: 88px;
-  min-height: calc(560px - 88px);
-
+%mobile-padding {
   @include media("<=tablet") {
-    padding-top: 32px;
-    min-height: unset;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }

@@ -24,6 +24,11 @@
     }
   }
 
+  &--filled {
+    background: $white;
+    color: $black;
+  }
+
   &--icon {
     border-radius: 50%;
     width: 44px;

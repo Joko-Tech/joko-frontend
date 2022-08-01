@@ -1,0 +1,100 @@
+.c-episode {
+  &__card {
+  }
+
+  &__header {
+    margin-bottom: 24px;
+
+    &__inner {
+      @include flex-gap(24px);
+      display: flex;
+      align-items: center;
+      @extend %title-2;
+    }
+  }
+
+  &__line {
+    width: 100%;
+    height: 1px;
+    background: $white;
+  }
+
+  &__number,
+  &__artist {
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  &__main {
+    @include ratio(16, 9);
+
+    @include cursor {
+      &:hover {
+        .c-episode__content {
+          opacity: 1;
+          pointer-events: auto;
+        }
+      }
+    }
+  }
+
+  // &__overlay {
+  // }
+
+  &__content {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.8) 13.02%,
+        rgba(0, 0, 0, 0) 100%
+      ),
+      linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+
+    &__inner {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 16px;
+
+      @include media(">tablet") {
+        max-width: 504px;
+        left: 48px;
+      }
+    }
+
+    .c-episode__artist {
+      @extend %title-2;
+      margin-bottom: 18px;
+      @extend %desktop-tab;
+    }
+  }
+
+  &__description {
+    @extend %body;
+    margin-bottom: 18px;
+    @extend %desktop-tab;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    @include flex-gap(16px);
+  }
+
+  &__prompt {
+    display: flex;
+    align-items: center;
+
+    .c-button {
+      flex-shrink: 0;
+    }
+
+    &__message {
+      margin-left: 14px;
+      @extend %body-small;
+      max-width: 164px;
+    }
+  }
+}
