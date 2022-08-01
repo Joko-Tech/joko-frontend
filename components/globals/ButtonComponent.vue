@@ -25,10 +25,14 @@ export default {
       default: "primary",
       validator: (s) => ["primary", "icon"].includes(s),
     },
-    buttonSize: {
+    size: {
       type: String,
       default: "medium",
       validator: (s) => ["medium", "large"].includes(s),
+    },
+    filled: {
+      type: Boolean,
+      default: false,
     },
     loading: {
       type: Boolean,
@@ -57,8 +61,9 @@ export default {
         this.buttonType && `c-button--${this.buttonType}`,
         this.noAnimate && "c-button--no-animate",
         this.buttonType !== "icon" && this.icon && "c-button--withicon",
-        this.buttonSize && `c-button--${this.buttonSize}`,
+        this.size && `c-button--${this.size}`,
         this.icon && `c-button--${this.icon}`,
+        this.filled && "c-button--filled",
       ];
     },
     shouldRenderAs() {

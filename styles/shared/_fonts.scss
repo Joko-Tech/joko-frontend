@@ -28,20 +28,20 @@
 
 %body-large {
   font-size: 18px;
-  line-height: calc(20 / 18);
-  letter-spacing: calc(-0.05 * 18px);
+  line-height: calc(32 / 18);
+  letter-spacing: calc(-0.01 * 18px);
 }
 
 %body {
   font-size: 16px;
-  line-height: 1.25;
-  letter-spacing: calc(-0.05 * 16px);
+  line-height: 1.5;
+  letter-spacing: calc(-0.01 * 16px);
 }
 
 %body-small {
   font-size: 14px;
-  line-height: calc(20 / 14);
-  letter-spacing: calc(-0.05 * 14px);
+  line-height: calc(16 / 14);
+  letter-spacing: calc(-0.01 * 14px);
 }
 
 %font-button {
