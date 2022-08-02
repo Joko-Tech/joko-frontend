@@ -1,2 +1,88 @@
 .c-tokencard {
+  width: 100%;
+
+  &__image {
+    width: 100%;
+    position: relative;
+    margin-bottom: 18px;
+
+    &--aspect {
+      @include ratio(293, 286);
+    }
+
+    &--auto {
+      height: 100%;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  &__prompt {
+    position: absolute;
+  }
+
+  &__info {
+    &__edition {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      @extend %title-3;
+    }
+  }
+
+  &__edition {
+    display: flex;
+    align-items: center;
+
+    span {
+      display: flex;
+      &:first-of-type {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  &__artist {
+    @extend %body-small;
+    margin-top: 12px;
+
+    a {
+      @extend %link;
+    }
+  }
+
+  &__bottom {
+    margin-top: 18px;
+    padding-top: 8px;
+    border-top: $border-primary;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  &__price {
+    &__label {
+      margin-bottom: 8px;
+      color: $dimmed;
+    }
+
+    &__amount {
+      display: flex;
+      align-items: flex-start;
+
+      span {
+        display: flex;
+        @extend %body-large;
+        line-height: 1;
+
+        &:first-of-type {
+          margin-right: 2px;
+          margin-top: -2px;
+        }
+      }
+    }
+  }
 }
