@@ -1,0 +1,48 @@
+.c-tooltip {
+  position: relative;
+  display: inline-block;
+  pointer-events: none;
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  &__content {
+    @extend %body-small;
+    width: 156px;
+    padding: 12px;
+    // width: 100%;
+    height: auto;
+    background: $bg-overlay;
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: $bg-overlay;
+      left: 50%;
+      bottom: -7px;
+      transform: translateX(-50%) rotate(45deg);
+      z-index: -1;
+    }
+  }
+
+  &:hover {
+    pointer-events: auto;
+
+    .c-tooltip__content {
+      opacity: 1;
+    }
+  }
+}
