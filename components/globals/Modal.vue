@@ -45,12 +45,6 @@ export default {
     },
   },
   watch: {
-    "$store.state.token.isTokenModalOpen": function (newState, oldState) {
-      if (newState) {
-        this.focus();
-      }
-    },
-
     $route() {
       this.close();
     },

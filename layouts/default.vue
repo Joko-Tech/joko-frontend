@@ -5,6 +5,7 @@
       description="a modal showing more details of a specific token"
       v-show="isTokenModalOpen"
       @close="hideTokenModal"
+      ref="tokenModal"
     >
       Hello Modal
     </Modal>
@@ -29,6 +30,18 @@ export default {
   methods: {
     hideTokenModal() {
       this.$store.commit("token/updateIsTokenModalOpen", false);
+    },
+  },
+
+  watch: {
+    "$store.state.token.isTokenModalOpen": function (newState, oldState) {
+      if (newState) {
+        setTimeout(() => {
+          const tokenModalRef = this.$refs.tokenModal;
+
+          tokenModalRef.focus();
+        }, 0);
+      }
     },
   },
 };
