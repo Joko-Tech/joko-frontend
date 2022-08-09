@@ -2,9 +2,14 @@
   <div>
     <!-- <button @click="addArtist">Add Artist</button> -->
     <!-- <EpisodeCard :episode="testEpisode" :isAuthenticated="false" /> -->
-    <div style="max-width: 293px; margin-top: 120px">
+    <div style="max-width: 293px; margin: 120px 0">
       <TokenCard :token="testTokenAspect" />
     </div>
+
+    <label class="c-label">Artist name</label>
+    <input type="text" class="c-input" placeholder="e.g John Doe" />
+    <label class="c-label">Artist desc</label>
+    <textarea class="c-textarea"></textarea>
   </div>
 </template>
 

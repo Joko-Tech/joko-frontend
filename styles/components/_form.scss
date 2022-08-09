@@ -1,0 +1,43 @@
+input,
+textarea,
+select {
+  appearance: none;
+  resize: none;
+}
+
+.c-label {
+  @extend %body-small;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.c-input {
+  height: 40px;
+  width: 100%;
+  font-family: $font-body;
+  @extend %body;
+  color: inherit;
+  text-indent: 8px;
+  border: $border-dimmed;
+  padding: 0;
+  background: transparent;
+
+  &:active,
+  &:focus {
+    border: $border-current;
+  }
+
+  @include placeholder {
+    color: inherit;
+    font-size: 16px;
+    font-family: $font-body;
+    color: $dimmed;
+  }
+}
+
+.c-textarea {
+  @extend .c-input;
+  min-height: 100px;
+  text-indent: 0px;
+  padding: 8px;
+}
