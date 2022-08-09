@@ -1,5 +1,5 @@
 <template>
-  <div class="c-tokencard">
+  <div class="c-tokencard" @click="showTokenModal">
     <div class="c-tokencard__image" :class="`c-tokencard__image--${size}`">
       <img :src="token.image" :alt="token.name" />
       <div class="c-tokencard__prompt"></div>
@@ -54,6 +54,9 @@ export default {
   methods: {
     getTokenMetaData() {
       console.log(this.token.tokenId);
+    },
+    showTokenModal() {
+      this.$store.commit("token/updateIsTokenModalOpen", true);
     },
   },
 };
