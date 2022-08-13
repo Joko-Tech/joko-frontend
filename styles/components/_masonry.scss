@@ -1,0 +1,16 @@
+.c-masonry {
+  display: flex;
+  // gap: 32px;
+  @include flex-gap(32px);
+
+  .c-column {
+    display: flex;
+    flex-direction: column;
+
+    .c-tokencard {
+      &:not(:last-child) {
+        margin-bottom: 32px;
+      }
+    }
+  }
+}

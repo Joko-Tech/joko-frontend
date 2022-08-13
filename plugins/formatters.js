@@ -1,5 +1,6 @@
 import Vue from "vue";
 import { createDataURL } from "~/utils/blockies";
+import { getImageHash } from "~/utils/data";
 
 Vue.mixin({
   methods: {
@@ -8,6 +9,9 @@ Vue.mixin({
     },
     generateIconSrc(address) {
       return createDataURL({ seed: address });
+    },
+    getImageHash(URI) {
+      return getImageHash(URI);
     },
   },
 });

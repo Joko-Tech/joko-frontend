@@ -4,7 +4,17 @@
     <!-- <EpisodeCard :episode="testEpisode" :isAuthenticated="false" /> -->
     <div style="max-width: 293px; margin: 120px 0">
       <!-- <TokenCard :token="testTokenAspect" /> -->
-      <TokenGalleryCard :token="testTokenGallery" />
+      <!-- <TokenGalleryCard :token="testTokenGallery" /> -->
+    </div>
+
+    <div class="c-masonry" data-masonry>
+      <TokenGalleryCard
+        v-for="(token, index) in tokens"
+        :key="index"
+        :token="token"
+        data-masonry-item
+        :data-index="index"
+      />
     </div>
 
     <label class="c-label">Artist name</label>
@@ -15,8 +25,29 @@
 </template>
 
 <script>
+import tokens from "~/data/tokens.json";
+import Masonry from "~/js/components/Masonry";
+import { ipfsMetadataFetcher, getImageHash } from "~/utils/data";
+
 export default {
   name: "IndexPage",
+  async mounted() {
+    this.masonry = new Masonry({ element: this.$el });
+
+    console.log(tokens);
+
+    // let data = await ipfsMetadataFetcher(
+    //   "ipfs://Qmesg68NV9ZooKQo74h4tNPJCJLcNBkra5fUFzeQdGna4Z"
+    // );
+
+    // console.log(data);
+
+    // console.log(
+    //   getImageHash(
+    //     "ipfs://QmeNDZP95sd7j7faTXE4LCP686Sz2aJho6tJ9cuccnESL8/0.png"
+    //   )
+    // );
+  },
   methods: {
     addArtist() {
       this.$store.dispatch("addNewArtist");
@@ -58,6 +89,9 @@ export default {
         description:
           "Born in April, 1996, Kelvin Nnamdi Odenigbo better known as Lojay is a Nigerian singer and songwriter. He came into limelight after featuring Wizkid in his debut EP ‘LV N ATTN’. Having developed interests in music at a very young age, Lojay released Ariel in October 2019. He featured superstar singer, Sarz in his hit single Tonongo and Monalisa, as well as worked with other artists like Wizkid.",
       };
+    },
+    tokens() {
+      return tokens;
     },
   },
 };

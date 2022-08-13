@@ -1,7 +1,10 @@
 <template>
   <div class="c-tokencard c-tokencard--gallery">
     <div class="c-tokencard__image" :class="`c-tokencard__image--${size}`">
-      <img :src="token.image" :alt="token.name" />
+      <img
+        src="https://res.cloudinary.com/dmwfd0zhh/image/upload/v1659430390/Joko%20Test/Test_token_wbznbf.png"
+        :alt="token.name"
+      />
       <div class="c-tokencard__prompt"></div>
       <div class="c-tokencard__overlay">
         <div class="c-tokencard__overlay__button">
@@ -38,6 +41,14 @@ export default {
       type: String,
       default: "auto",
       validator: (s) => ["aspect", "auto"].includes(s),
+    },
+  },
+  computed: {
+    image() {
+      return {
+        uri: this.token.formats[1].uri,
+        aspect: this.token.formats[1].dimensions.value,
+      };
     },
   },
   methods: {
