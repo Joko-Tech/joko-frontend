@@ -6,9 +6,9 @@
     <ButtonComponent v-else @click="connect" icon="indicator">
       Sync
     </ButtonComponent>
-    <div class="c-avatar" v-if="wallet.isConnected">
+    <nuxt-link to="/user" class="c-avatar" v-if="wallet.isConnected">
       <img :src="generateIconSrc(wallet.address)" :alt="wallet.address" />
-    </div>
+    </nuxt-link>
   </div>
 </template>
 
