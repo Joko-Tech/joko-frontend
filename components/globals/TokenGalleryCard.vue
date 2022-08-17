@@ -45,9 +45,17 @@ export default {
   },
   computed: {
     image() {
+      const displayImage = this.token.formats[1];
+      const aspectArray = displayImage.dimensions.value.split("x");
+      const width = aspectArray[0];
+      const height = aspectArray[1];
+
       return {
-        uri: this.token.formats[1].uri,
-        aspect: this.token.formats[1].dimensions.value,
+        uri: displayImage.uri,
+        aspect: {
+          width,
+          height,
+        },
       };
     },
   },
@@ -56,6 +64,11 @@ export default {
       console.log(this.token.tokenId);
     },
     showTokenModal() {
+      const token = {
+        ...this.token,
+        image: this.image,
+      };
+      this.$store.commit("token/updateCurrentModalToken", token);
       this.$store.commit("token/updateIsTokenModalOpen", true);
     },
   },

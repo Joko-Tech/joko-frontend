@@ -6,8 +6,9 @@
       v-show="isTokenModalOpen"
       @close="hideTokenModal"
       ref="tokenModal"
+      class="c-modal--token"
     >
-      Hello Modal
+      <TokenModalContent v-if="currentModalToken" />
     </Modal>
     <div class="c-pages">
       <NavComponent />
@@ -24,12 +25,17 @@ export default {
   computed: {
     ...mapGetters({
       isTokenModalOpen: "token/isTokenModalOpen",
+      currentModalToken: "token/currentModalToken",
     }),
   },
 
   methods: {
     hideTokenModal() {
       this.$store.commit("token/updateIsTokenModalOpen", false);
+
+      setTimeout(() => {
+        this.$store.commit("token/updateCurrentModalToken", null);
+      }, 300);
     },
   },
 

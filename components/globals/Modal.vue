@@ -9,6 +9,9 @@
       @keydown.esc="close"
       tabindex="0"
     >
+      <button class="c-modal__close" @click="close">
+        <CloseIcon />
+      </button>
       <div class="c-modal__main">
         <slot />
       </div>

@@ -56,11 +56,33 @@ export default {
       validator: (s) => ["aspect", "auto"].includes(s),
     },
   },
+  computed: {
+    image() {
+      const displayImage = this.token.formats[1];
+      const aspectArray = displayImage.dimensions.value.split("x");
+      const width = aspectArray[0];
+      const height = aspectArray[1];
+
+      return {
+        uri: displayImage.uri,
+        aspect: {
+          width,
+          height,
+        },
+      };
+    },
+  },
   methods: {
     getTokenMetaData() {
       console.log(this.token.tokenId);
     },
     showTokenModal() {
+      const token = {
+        ...this.token,
+        image: this.image,
+      };
+
+      this.$store.commit("token/updateCurrentModalToken", token);
       this.$store.commit("token/updateIsTokenModalOpen", true);
     },
   },
