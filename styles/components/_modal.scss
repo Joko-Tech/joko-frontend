@@ -65,7 +65,11 @@
     max-width: 50%;
     width: 100%;
     height: 100%;
-    padding: 48px;
+    padding: toRem(48);
+
+    @include media(">desktop") {
+      padding: 48px;
+    }
   }
 
   &__imagecon {
@@ -101,6 +105,52 @@
         a {
           @extend %link;
           margin-bottom: 24px;
+        }
+      }
+
+      &__description {
+        margin-bottom: 34px;
+      }
+
+      &__panel {
+        @include flex-gap(24px);
+        display: flex;
+        align-items: flex-start;
+      }
+
+      &__market {
+        &__label {
+          margin-bottom: 8px;
+          color: $dimmed;
+        }
+
+        &__edition {
+          display: flex;
+          align-items: center;
+          @extend %title-2;
+
+          span {
+            display: flex;
+            &:first-of-type {
+              margin-right: 8px;
+            }
+          }
+        }
+
+        &__amount {
+          display: flex;
+          align-items: flex-start;
+
+          span {
+            display: flex;
+            line-height: 1;
+            @extend %title-2;
+
+            &:first-of-type {
+              margin-right: 4px;
+              margin-top: -2px;
+            }
+          }
         }
       }
     }
