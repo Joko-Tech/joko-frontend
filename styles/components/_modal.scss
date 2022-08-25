@@ -12,6 +12,15 @@
     @extend %element-cover;
     background: #000;
   }
+
+  &__close {
+    position: absolute;
+    top: 36px;
+    right: 36px;
+    width: 32px;
+    height: 32px;
+    z-index: z("1");
+  }
 }
 
 .modal-fade-enter {
@@ -42,4 +51,108 @@
   // .c-modal {
   //   transition: opacity 0.2s ease;
   // }
+}
+
+.c-modal--token {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  &__imagecon,
+  &__content {
+    display: flex;
+    align-items: center;
+    max-width: 50%;
+    width: 100%;
+    height: 100%;
+    padding: toRem(48);
+
+    @include media(">desktop") {
+      padding: 48px;
+    }
+  }
+
+  &__imagecon {
+    justify-content: center;
+  }
+
+  &__image {
+    max-width: 349px;
+    width: 100%;
+    @include ratioVar(--width, --height);
+  }
+
+  &__content {
+    background: $bg-primary;
+
+    .c-content {
+      max-width: 575px;
+      &__label {
+        @extend %body-large;
+        color: $dimmed;
+        margin-bottom: 18px;
+      }
+
+      &__name {
+        @extend %title-1;
+        margin-bottom: 18px;
+      }
+
+      &__artist {
+        @extend %body-small;
+        margin-top: 12px;
+
+        a {
+          @extend %link;
+          margin-bottom: 24px;
+        }
+      }
+
+      &__description {
+        margin-bottom: 34px;
+      }
+
+      &__panel {
+        @include flex-gap(24px);
+        display: flex;
+        align-items: flex-start;
+      }
+
+      &__market {
+        &__label {
+          margin-bottom: 8px;
+          color: $dimmed;
+        }
+
+        &__edition {
+          display: flex;
+          align-items: center;
+          @extend %title-2;
+
+          span {
+            display: flex;
+            &:first-of-type {
+              margin-right: 8px;
+            }
+          }
+        }
+
+        &__amount {
+          display: flex;
+          align-items: flex-start;
+
+          span {
+            display: flex;
+            line-height: 1;
+            @extend %title-2;
+
+            &:first-of-type {
+              margin-right: 4px;
+              margin-top: -2px;
+            }
+          }
+        }
+      }
+    }
+  }
 }

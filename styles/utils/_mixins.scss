@@ -75,6 +75,33 @@
   }
 }
 
+@mixin ratioVar($width, $height) {
+  $iwidth: var(#{$width});
+  $iheight: var(#{$height});
+  font-size: 0;
+  overflow: hidden;
+  position: relative;
+  // aspect-ratio: calc($iwidth / $iheight);
+
+  @supports (aspect-ratio: calc($iwidth / $iheight)) {
+    &:after {
+      content: "";
+      display: inline-block;
+      padding-top: calc(#{calc($iheight / $iwidth)} * 100%);
+      width: 100%;
+    }
+  }
+
+  img,
+  video,
+  .cover {
+    @extend %img;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
 @mixin flex-gap($row-gap, $column-gap: $row-gap) {
   display: inline-flex;
   // gap: $row-gap $column-gap;
