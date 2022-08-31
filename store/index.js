@@ -70,8 +70,8 @@ export const mutations = {
 
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req }) {
-    // await dispatch("fetchAllMetadata");
-    await dispatch("fetchInitialStorage");
+    await dispatch("fetchAllMetadata");
+    // await dispatch("fetchInitialStorage");
   },
 
   async fetchInitialData({ commit }) {
