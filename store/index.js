@@ -105,7 +105,7 @@ export const actions = {
         const tier2_metadata = await ipfsMetadataFetcher(tier2_metadata_path);
         const tier3_metadata = await ipfsMetadataFetcher(tier3_metadata_path);
         return {
-          id: key,
+          artistName: key.replace(/['"]+/g, ""),
           ...artistsValues[index],
           tier1_metadata: tier1_metadata.data,
           tier2_metadata: tier2_metadata.data,
@@ -131,7 +131,6 @@ export const actions = {
     const artists = artistsKeys.map((key, index) => {
       return {
         artistName: key.replace(/['"]+/g, ""),
-        episodeNumber: index + 1,
         ...artistsValues[index],
         tier1_metadata_path: bytes2Char(
           artistsValues[index].tier1_metadata_path
