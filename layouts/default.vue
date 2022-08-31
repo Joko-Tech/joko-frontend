@@ -29,6 +29,10 @@ export default {
     }),
   },
 
+  // mounted() {
+  //   this.$store.dispatch("fetchInitialStorage");
+  // },
+
   methods: {
     hideTokenModal() {
       this.$store.commit("token/updateIsTokenModalOpen", false);

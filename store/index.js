@@ -1,5 +1,7 @@
 import { BeaconWallet } from "@taquito/beacon-wallet";
 import { TezosToolkit } from "@taquito/taquito";
+import { bytes2Char } from "@taquito/utils";
+import { ipfsMetadataFetcher } from "~/utils/data";
 import { cnetwork, walletOptions, networks } from "~/utils/network";
 // import { InMemorySigner } from "@taquito/signer";
 // import * as faucet from "~/data/faucet.json";
@@ -18,6 +20,7 @@ export const state = () => ({
     isConnected: false,
   },
   artists: null,
+  episodeTokenMetadata: null,
   storage: null,
 });
 
@@ -30,6 +33,9 @@ export const getters = {
   },
   artists: (state) => {
     return state.artists;
+  },
+  episodeTokenMetadata: (state) => {
+    return state.episodeTokenMetadata;
   },
   storage: (state) => {
     return state.storage;
@@ -54,38 +60,96 @@ export const mutations = {
   updateArtists: (state, payload) => {
     state.artists = payload;
   },
+  updateEpisodeTokenMetadata: (state, payload) => {
+    state.episodeTokenMetadata = payload;
+  },
   updateStorage: (state, payload) => {
     state.storage = payload;
   },
 };
 
 export const actions = {
-  async nuxtServerInit({ commit }, { req }) {
-    // const tezos = new TezosToolkit(networks.jakartanet.nodes[0]);
-    // const contract = await tezos.contract.at(
-    //   "KT1RsM3NBMSYnNaWRqD6jjWVexY7GprsbG6F"
-    // );
-    // const storage = await contract.storage();
-    // const artistsMap = storage.artist_map.valueMap;
-    // const artistsKeys = Array.from(artistsMap.keys());
-    // const artistsValues = Array.from(artistsMap.values());
-    // const artists = artistsKeys.map((key, index) => {
-    //   return {
-    //     id: key,
-    //     ...artistsValues[index],
-    //   };
-    // });
-    // commit("updateArtists", artists);
-    // commit("updateStorage", storage);
+  async nuxtServerInit({ commit, dispatch }, { req }) {
+    // await dispatch("fetchAllMetadata");
+    await dispatch("fetchInitialStorage");
   },
 
   async fetchInitialData({ commit }) {
-    const response = await this.$axios.$get("/api/initialData");
-    commit("updateInitialData", response);
+    // const response = await this.$axios.$get("/api/initialData");
+    // commit("updateInitialData", response);
+  },
+
+  async fetchAllMetadata({ state, commit }) {
+    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+
+    const contract = await tezos.contract.at(
+      "KT1TumVTRGXRZzRKBxFzsBpTiUeoiWhafj39"
+    );
+    const storage = await contract.storage();
+    const artistsMap = storage.artist_map.valueMap;
+    const artistsKeys = Array.from(artistsMap.keys());
+    const artistsValues = Array.from(artistsMap.values());
+
+    const artists = await Promise.all(
+      artistsKeys.map(async (key, index) => {
+        const tier1_metadata_path = bytes2Char(
+          artistsValues[index].tier1_metadata_path
+        );
+        const tier2_metadata_path = bytes2Char(
+          artistsValues[index].tier2_metadata_path
+        );
+        const tier3_metadata_path = bytes2Char(
+          artistsValues[index].tier3_metadata_path
+        );
+        const tier1_metadata = await ipfsMetadataFetcher(tier1_metadata_path);
+        const tier2_metadata = await ipfsMetadataFetcher(tier2_metadata_path);
+        const tier3_metadata = await ipfsMetadataFetcher(tier3_metadata_path);
+        return {
+          artistName: key.replace(/['"]+/g, ""),
+          ...artistsValues[index],
+          tier1_metadata: tier1_metadata.data,
+          tier2_metadata: tier2_metadata.data,
+          tier3_metadata: tier3_metadata.data,
+        };
+      })
+    );
+
+    commit("updateArtists", artists);
+    commit("updateStorage", storage);
+  },
+
+  async fetchInitialStorage({ commit }) {
+    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+    const contract = await tezos.contract.at(
+      "KT1TumVTRGXRZzRKBxFzsBpTiUeoiWhafj39"
+    );
+    const storage = await contract.storage();
+    const artistsMap = storage.artist_map.valueMap;
+    const artistsKeys = Array.from(artistsMap.keys());
+    const artistsValues = Array.from(artistsMap.values());
+
+    const artists = artistsKeys.map((key, index) => {
+      return {
+        artistName: key.replace(/['"]+/g, ""),
+        ...artistsValues[index],
+        tier1_metadata_path: bytes2Char(
+          artistsValues[index].tier1_metadata_path
+        ),
+        tier2_metadata_path: bytes2Char(
+          artistsValues[index].tier2_metadata_path
+        ),
+        tier3_metadata_path: bytes2Char(
+          artistsValues[index].tier3_metadata_path
+        ),
+      };
+    });
+
+    commit("updateArtists", artists);
+    commit("updateStorage", storage);
   },
 
   async connectWallet({ state, commit }) {
-    const tezos = new TezosToolkit(networks.jakartanet.nodes[0]);
+    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
     tezos.setWalletProvider(beaconWallet);
 
     const activeAccount = await beaconWallet.client.getActiveAccount();
@@ -115,7 +179,7 @@ export const actions = {
     });
   },
   async addNewArtist({ state, commit }) {
-    const tezos = new TezosToolkit(networks.jakartanet.nodes[0]);
+    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
 
     // tezos.setSignerProvider(
     //   InMemorySigner.fromFundraiser(

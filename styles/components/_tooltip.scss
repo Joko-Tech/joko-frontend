@@ -12,9 +12,9 @@
 
   &__content {
     @extend %body-small;
-    width: 156px;
+    max-width: 200px;
     padding: 12px;
-    // width: 100%;
+    width: max-content;
     height: auto;
     background: $bg-overlay;
     position: absolute;
