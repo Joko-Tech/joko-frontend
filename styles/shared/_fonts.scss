@@ -1,8 +1,13 @@
 %font-display {
   font-family: $font-title;
-  font-size: 120px;
+  font-size: toRem(120);
   line-height: 0.8;
-  letter-spacing: calc(-0.05 * 120px);
+  letter-spacing: calc(-0.05 * toRem(120));
+
+  @include media("<=phone") {
+    font-size: 48px;
+    letter-spacing: calc(-0.05 * 48px);
+  }
 }
 
 %title-1 {

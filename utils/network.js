@@ -13,6 +13,10 @@ const networks = {
     networkname: "Jakartanet",
     nodes: ["https://rpc.jakartanet.teztnets.xyz"],
   },
+  ghostnet: {
+    networkname: "Ghostnet",
+    nodes: ["https://rpc.ghostnet.teztnets.xyz/"],
+  },
   ithacanet: {
     networkname: "Ithacanet",
     nodes: ["https://ithacanet.ecadinfra.com", "https://ithacanet.smartpy.io/"],

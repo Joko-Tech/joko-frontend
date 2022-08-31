@@ -1,4 +1,8 @@
 .c-episode {
+  &:not(:last-of-type) {
+    margin-bottom: 120px;
+  }
+
   &__card {
   }
 
@@ -26,7 +30,7 @@
   }
 
   &__main {
-    @include ratio(16, 9);
+    @include ratio(1272, 560);
 
     @include cursor {
       &:hover {
