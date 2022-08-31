@@ -103,6 +103,8 @@ export const actions = {
       })
     );
 
+    console.log(tokenMetadata);
+
     commit("updateEpisodeTokenMetadata", tokenMetadata);
   },
 
