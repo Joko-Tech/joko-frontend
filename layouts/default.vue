@@ -29,9 +29,9 @@ export default {
     }),
   },
 
-  // mounted() {
-  //   this.$store.dispatch("fetchInitialStorage");
-  // },
+  mounted() {
+    this.$store.dispatch("fetchAllMetadata");
+  },
 
   methods: {
     hideTokenModal() {

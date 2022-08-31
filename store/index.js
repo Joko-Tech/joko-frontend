@@ -80,33 +80,22 @@ export const actions = {
   },
 
   async fetchAllMetadata({ state, commit }) {
-    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+    const artists = state.artists;
 
-    const contract = await tezos.contract.at(
-      "KT1TumVTRGXRZzRKBxFzsBpTiUeoiWhafj39"
-    );
-    const storage = await contract.storage();
-    const artistsMap = storage.artist_map.valueMap;
-    const artistsKeys = Array.from(artistsMap.keys());
-    const artistsValues = Array.from(artistsMap.values());
+    const tokenMetadata = await Promise.all(
+      artists.map(async (artist, index) => {
+        const tier1_metadata = await ipfsMetadataFetcher(
+          artist.tier1_metadata_path
+        );
+        const tier2_metadata = await ipfsMetadataFetcher(
+          artist.tier2_metadata_path
+        );
+        const tier3_metadata = await ipfsMetadataFetcher(
+          artist.tier3_metadata_path
+        );
 
-    const artists = await Promise.all(
-      artistsKeys.map(async (key, index) => {
-        const tier1_metadata_path = bytes2Char(
-          artistsValues[index].tier1_metadata_path
-        );
-        const tier2_metadata_path = bytes2Char(
-          artistsValues[index].tier2_metadata_path
-        );
-        const tier3_metadata_path = bytes2Char(
-          artistsValues[index].tier3_metadata_path
-        );
-        const tier1_metadata = await ipfsMetadataFetcher(tier1_metadata_path);
-        const tier2_metadata = await ipfsMetadataFetcher(tier2_metadata_path);
-        const tier3_metadata = await ipfsMetadataFetcher(tier3_metadata_path);
         return {
-          artistName: key.replace(/['"]+/g, ""),
-          ...artistsValues[index],
+          artistName: artist.artistName,
           tier1_metadata: tier1_metadata.data,
           tier2_metadata: tier2_metadata.data,
           tier3_metadata: tier3_metadata.data,
@@ -114,8 +103,7 @@ export const actions = {
       })
     );
 
-    commit("updateArtists", artists);
-    commit("updateStorage", storage);
+    commit("updateEpisodeTokenMetadata", tokenMetadata);
   },
 
   async fetchInitialStorage({ commit }) {
