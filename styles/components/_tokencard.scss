@@ -21,6 +21,20 @@
     position: relative;
     margin-bottom: 18px;
 
+    img {
+      opacity: 0;
+    }
+
+    &.loaded {
+      img {
+        opacity: 1;
+      }
+
+      .c-skeleton__item {
+        display: none;
+      }
+    }
+
     &--aspect {
       @include ratio(293, 286);
     }
@@ -31,6 +45,9 @@
         height: auto;
       }
     }
+  }
+
+  &.loaded {
   }
 
   &__prompt {
