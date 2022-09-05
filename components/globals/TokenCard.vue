@@ -1,7 +1,7 @@
 <template>
   <div class="c-tokencard">
     <div class="c-tokencard__image" :class="`c-tokencard__image--${size}`">
-      <img :src="token.image" :alt="token.name" />
+      <img :src="getImageHash(image.uri)" :alt="token.name" />
       <div class="c-tokencard__prompt"></div>
       <div class="c-tokencard__overlay">
         <div class="c-tokencard__overlay__button">
@@ -21,12 +21,8 @@
       </div>
       <div class="c-tokencard__artist">
         Art by
-        <a
-          :href="token.pixelArtistUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {{ token.pixelArtist }}
+        <a :href="pixelArtistUrl" target="_blank" rel="noopener noreferrer">
+          {{ pixelArtist }}
         </a>
       </div>
 
@@ -70,6 +66,12 @@ export default {
           height,
         },
       };
+    },
+    pixelArtist() {
+      return this.token.creators[1].split(" ")[0];
+    },
+    pixelArtistUrl() {
+      return this.token.creators[1].split(" ")[1];
     },
   },
   methods: {
