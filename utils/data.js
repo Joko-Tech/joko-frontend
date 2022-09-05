@@ -19,6 +19,14 @@ export const ipfsFetcher = async (URI) => {
   return axios.get(url);
 };
 
+export const ipfsIndexFetcher = async (URI, index) => {
+  let url = formatIpfsUrl(URI);
+
+  url = `${url}/${index}`;
+
+  return axios.get(url);
+};
+
 export const ipfsMetadataFetcher = async (URI) => {
   const url = `${formatIpfsUrl(URI)}/_metadata.json`;
 

@@ -6,6 +6,21 @@
   &__card {
   }
 
+  &__maincard {
+    margin-bottom: 36px;
+  }
+
+  &__tokens {
+    display: flex;
+    @include flex-gap(24px);
+    justify-content: center;
+    align-items: center;
+
+    .c-tokencard {
+      max-width: 296px;
+    }
+  }
+
   &__header {
     margin-bottom: 24px;
 
