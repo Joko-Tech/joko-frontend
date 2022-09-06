@@ -62,10 +62,15 @@ export default {
       ]);
 
       this.metadatas = metadatas.map((metadata, index) => {
-        // const tierIndex = this.epis;
+        const tokenIndex = this.episode[`tier${index + 1}_index`];
+        const tokenCount = this.episode[`tier${index + 1}_total_supply`];
+
         return {
           ...metadata.data,
-          // tier,
+          tokenIndex: tokenIndex === tokenCount ? tokenIndex : tokenIndex + 1,
+          tokenCount,
+          tier: index + 1,
+          isFullyMinted: tokenIndex === tokenCount,
         };
       });
 
