@@ -2,7 +2,7 @@ import { BeaconWallet } from "@taquito/beacon-wallet";
 import { TezosToolkit } from "@taquito/taquito";
 import { bytes2Char } from "@taquito/utils";
 import { ipfsMetadataFetcher } from "~/utils/data";
-import { cnetwork, walletOptions, networks } from "~/utils/network";
+import { jokoContractAddress, walletOptions, networks } from "~/utils/network";
 // import { InMemorySigner } from "@taquito/signer";
 // import * as faucet from "~/data/faucet.json";
 let beaconWallet;
@@ -110,9 +110,7 @@ export const actions = {
 
   async fetchInitialStorage({ commit }) {
     const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
-    const contract = await tezos.contract.at(
-      "KT1TumVTRGXRZzRKBxFzsBpTiUeoiWhafj39"
-    );
+    const contract = await tezos.contract.at(jokoContractAddress);
     const storage = await contract.storage();
     const artistsMap = storage.artist_map.valueMap;
     const artistsKeys = Array.from(artistsMap.keys());
@@ -199,9 +197,7 @@ export const actions = {
       },
     };
 
-    const contract = await tezos.contract.at(
-      "KT1KWs63x8KeZQZhbCpLW6WdcHN69hxa9dCg"
-    );
+    const contract = await tezos.contract.at(jokoContractAddress);
 
     const res = await contract.methodsObject.add_artist(artistObject).send();
 
@@ -215,5 +211,24 @@ export const actions = {
     // console.log(storage);
 
     // console.log(contract);
+  },
+  async mintTier2({ state, commit }, tokenPayload) {
+    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+
+    const { artist, pixel_artist } = tokenPayload;
+
+    const tokenObject = {
+      artist,
+      pixel_artist,
+      amount_tokens: 1,
+    };
+
+    const contract = await tezos.contract.at(jokoContractAddress);
+
+    const res = await contract.methodsObject
+      .mint_JOKO_tier2(tokenObject)
+      .send();
+
+    console.log(res);
   },
 };
