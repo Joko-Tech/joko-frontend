@@ -1,11 +1,14 @@
 <template>
   <div class="c-tokencard c-tokencard--gallery">
-    <div class="c-tokencard__image" :class="`c-tokencard__image--${size}`">
-      <img
-        src="https://res.cloudinary.com/dmwfd0zhh/image/upload/v1659430390/Joko%20Test/Test_token_wbznbf.png"
-        :alt="token.name"
-      />
-      <div class="c-tokencard__prompt"></div>
+    <div
+      class="c-tokencard__image"
+      :class="`c-tokencard__image--${size}`"
+      :style="`--width: ${image.aspect.width}; --height: ${image.aspect.height}`"
+      ref="tokenImage"
+    >
+      <img :pre-src="getImageHash(image.uri)" :alt="token.name" />
+      <div class="c-tokencard__prompt" />
+      <div class="c-skeleton__item" />
       <div class="c-tokencard__overlay">
         <div class="c-tokencard__overlay__button">
           <ButtonComponent @click="showTokenModal">See Details</ButtonComponent>
@@ -31,6 +34,7 @@
 </template>
 
 <script>
+import LazyLoader from "~/js/components/ImageLazyLoader";
 export default {
   props: {
     token: {
@@ -42,6 +46,9 @@ export default {
       default: "auto",
       validator: (s) => ["aspect", "auto"].includes(s),
     },
+  },
+  mounted() {
+    new LazyLoader(this.$refs.tokenImage);
   },
   computed: {
     image() {

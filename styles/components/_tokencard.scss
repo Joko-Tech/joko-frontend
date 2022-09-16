@@ -40,9 +40,9 @@
     }
 
     &--auto {
+      @include ratioVar(--width, --height);
       img {
         width: 100%;
-        height: auto;
       }
     }
   }

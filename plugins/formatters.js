@@ -1,6 +1,7 @@
 import Vue from "vue";
 import { createDataURL } from "~/utils/blockies";
 import { getImageHash } from "~/utils/data";
+import { slugify } from "~/utils/formatters";
 
 Vue.mixin({
   methods: {
@@ -12,6 +13,9 @@ Vue.mixin({
     },
     getImageHash(URI) {
       return getImageHash(URI);
+    },
+    slugify(string) {
+      return slugify(string);
     },
   },
 });

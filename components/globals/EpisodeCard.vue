@@ -38,12 +38,15 @@
           </div>
 
           <div class="c-episode__controls">
-            <ButtonComponent size="large">Preview</ButtonComponent>
+            <ButtonComponent size="large" @click="showVideoModal">
+              Preview
+            </ButtonComponent>
             <ButtonComponent
               size="large"
               icon="play"
               v-if="isAuthenticated"
               filled
+              :href="`/episode/${slugify(episode.artistName)}`"
             >
               Watch full episode
             </ButtonComponent>
@@ -77,6 +80,11 @@ export default {
       type: Boolean,
       required: true,
       default: false,
+    },
+  },
+  methods: {
+    showVideoModal() {
+      this.$store.commit("updateIsVideoModalOpen", true);
     },
   },
 };

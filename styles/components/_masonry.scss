@@ -2,10 +2,12 @@
   display: flex;
   // gap: 32px;
   @include flex-gap(32px);
+  opacity: 0;
 
   .c-column {
     display: flex;
     flex-direction: column;
+    width: 100%;
 
     .c-tokencard {
       &:not(:last-child) {

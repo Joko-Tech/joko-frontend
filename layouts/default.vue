@@ -10,6 +10,25 @@
     >
       <TokenModalContent v-if="currentModalToken" />
     </Modal>
+    <Modal
+      title="video modal"
+      description="a modal showing a video"
+      v-show="isVideoModalOpen"
+      @close="hideVideoModal"
+      ref="videoModal"
+      class="c-modal--video"
+    >
+      <div class="c-modal--video__content">
+        <div class="c-modal--video__content__video">
+          <video
+            src="https://res.cloudinary.com/dmwfd0zhh/video/upload/v1645290917/Pith%20Africa/PITH-_JFE_compressed_xjx09l.mp4"
+            poster="https://res.cloudinary.com/dmwfd0zhh/image/upload/q_auto,f_auto/v1645453390/Pith%20Africa/Screenshot_2022-02-21_at_3.21.43_PM_xx2lrw.jpg"
+            preload="auto"
+            controls
+          />
+        </div>
+      </div>
+    </Modal>
     <div class="c-pages">
       <NavComponent />
       <div class="c-main"><Nuxt /></div>
@@ -26,6 +45,7 @@ export default {
     ...mapGetters({
       isTokenModalOpen: "token/isTokenModalOpen",
       currentModalToken: "token/currentModalToken",
+      isVideoModalOpen: "isVideoModalOpen",
     }),
   },
 
@@ -41,6 +61,9 @@ export default {
         this.$store.commit("token/updateCurrentModalToken", null);
       }, 300);
     },
+    hideVideoModal() {
+      this.$store.commit("updateIsVideoModalOpen", false);
+    },
   },
 
   watch: {
@@ -50,6 +73,14 @@ export default {
           const tokenModalRef = this.$refs.tokenModal;
 
           tokenModalRef.focus();
+        }, 0);
+      }
+    },
+    "$store.state.isVideoModalOpen": function (newState, oldState) {
+      if (newState) {
+        setTimeout(() => {
+          const videoModalRef = this.$refs.videoModal;
+          videoModalRef.focus();
         }, 0);
       }
     },
