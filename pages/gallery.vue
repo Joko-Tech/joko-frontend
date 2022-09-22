@@ -20,11 +20,13 @@
 
 <script>
 import Masonry from "~/js/components/Masonry";
-import tokens from "~/data/tokens.json";
+// import tokens from "~/data/tokens.json";
 import { mapGetters } from "vuex";
 export default {
   async mounted() {
-    await this.$store.dispatch("fetchAllMetadata");
+    if (!this.allTokenMetadata) {
+      await this.$store.dispatch("fetchAllMetadata");
+    }
 
     // next tick
     this.$nextTick(() => {
@@ -32,12 +34,24 @@ export default {
     });
   },
   computed: {
-    tokens() {
-      return tokens;
-    },
     ...mapGetters({
       allTokenMetadata: "allTokenMetadata",
     }),
+    tokens() {
+      let tokenArray = [];
+
+      this.allTokenMetadata?.forEach((token) => {
+        const tokens = [
+          ...token.tier1_metadata,
+          ...token.tier2_metadata,
+          ...token.tier3_metadata,
+        ];
+
+        tokenArray.push(...tokens);
+      });
+
+      return tokenArray;
+    },
   },
 };
 </script>
