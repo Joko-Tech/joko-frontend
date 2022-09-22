@@ -156,3 +156,27 @@
     }
   }
 }
+
+.c-modal--video {
+  &__content {
+    padding: toRem(80);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @include media("<=tablet") {
+      padding: 24px;
+    }
+
+    &__video {
+      width: 100%;
+      @include ratio(16, 9);
+
+      @include media("<=desktop") {
+        max-width: 1200px;
+      }
+    }
+  }
+}

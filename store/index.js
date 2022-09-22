@@ -22,6 +22,7 @@ export const state = () => ({
   artists: null,
   episodeTokenMetadata: null,
   storage: null,
+  isVideoModalOpen: false,
 });
 
 export const getters = {
@@ -39,6 +40,9 @@ export const getters = {
   },
   storage: (state) => {
     return state.storage;
+  },
+  isVideoModalOpen: (state) => {
+    return state.isVideoModalOpen;
   },
 };
 
@@ -65,6 +69,9 @@ export const mutations = {
   },
   updateStorage: (state, payload) => {
     state.storage = payload;
+  },
+  updateIsVideoModalOpen: (state, payload) => {
+    state.isVideoModalOpen = payload;
   },
 };
 

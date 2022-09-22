@@ -1,0 +1,15 @@
+.c-gallery {
+  margin-top: 32px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+
+  &__title {
+    @extend %title-1;
+    text-transform: uppercase;
+  }
+}

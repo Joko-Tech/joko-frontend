@@ -46,6 +46,8 @@ export default class Masonry extends Component {
     } else {
       this.generateGrid(4);
     }
+
+    this.elements.masonry.style.opacity = 1;
   }
 
   onResize() {

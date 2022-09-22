@@ -81,9 +81,9 @@
   font-size: 0;
   overflow: hidden;
   position: relative;
-  // aspect-ratio: calc($iwidth / $iheight);
+  aspect-ratio: calc($iwidth / $iheight);
 
-  @supports (aspect-ratio: calc($iwidth / $iheight)) {
+  @supports not (aspect-ratio: calc($iwidth / $iheight)) {
     &:after {
       content: "";
       display: inline-block;
@@ -96,9 +96,6 @@
   video,
   .cover {
     @extend %img;
-    position: absolute;
-    top: 0;
-    left: 0;
   }
 }
 

@@ -5,10 +5,7 @@
         class="c-modal--token__image"
         :style="`--width: ${token.image.aspect.width}; --height: ${token.image.aspect.height}`"
       >
-        <img
-          src="https://res.cloudinary.com/dmwfd0zhh/image/upload/v1659430390/Joko%20Test/Test_token_wbznbf.png"
-          :alt="token.name"
-        />
+        <img :src="getImageHash(token.image.uri)" :alt="token.name" />
       </div>
     </div>
     <div class="c-modal--token__content">
