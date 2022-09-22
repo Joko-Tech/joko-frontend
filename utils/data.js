@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const baseUri = "https://gateway.pinata.cloud/ipfs/";
-const baseUri2 = "https://joko.mypinata.cloud/ipfs/";
+const baseUri = "https://joko.mypinata.cloud/ipfs/";
 
 export const formatIpfsUrl = (URI) => {
   let url;

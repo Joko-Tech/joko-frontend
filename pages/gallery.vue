@@ -21,14 +21,23 @@
 <script>
 import Masonry from "~/js/components/Masonry";
 import tokens from "~/data/tokens.json";
+import { mapGetters } from "vuex";
 export default {
-  mounted() {
-    this.masonry = new Masonry({ element: this.$el });
+  async mounted() {
+    await this.$store.dispatch("fetchAllMetadata");
+
+    // next tick
+    this.$nextTick(() => {
+      this.masonry = new Masonry({ element: this.$el });
+    });
   },
   computed: {
     tokens() {
       return tokens;
     },
+    ...mapGetters({
+      allTokenMetadata: "allTokenMetadata",
+    }),
   },
 };
 </script>

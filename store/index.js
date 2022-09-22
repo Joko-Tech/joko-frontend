@@ -20,7 +20,7 @@ export const state = () => ({
     isConnected: false,
   },
   artists: null,
-  episodeTokenMetadata: null,
+  allTokenMetadata: null,
   storage: null,
   isVideoModalOpen: false,
 });
@@ -35,8 +35,8 @@ export const getters = {
   artists: (state) => {
     return state.artists;
   },
-  episodeTokenMetadata: (state) => {
-    return state.episodeTokenMetadata;
+  allTokenMetadata: (state) => {
+    return state.allTokenMetadata;
   },
   storage: (state) => {
     return state.storage;
@@ -64,8 +64,8 @@ export const mutations = {
   updateArtists: (state, payload) => {
     state.artists = payload;
   },
-  updateEpisodeTokenMetadata: (state, payload) => {
-    state.episodeTokenMetadata = payload;
+  updateAllTokenMetadata: (state, payload) => {
+    state.allTokenMetadata = payload;
   },
   updateStorage: (state, payload) => {
     state.storage = payload;
@@ -89,30 +89,34 @@ export const actions = {
   async fetchAllMetadata({ state, commit }) {
     const artists = state.artists;
 
-    const tokenMetadata = await Promise.all(
-      artists.map(async (artist, index) => {
-        const tier1_metadata = await ipfsMetadataFetcher(
-          artist.tier1_metadata_path
-        );
-        const tier2_metadata = await ipfsMetadataFetcher(
-          artist.tier2_metadata_path
-        );
-        const tier3_metadata = await ipfsMetadataFetcher(
-          artist.tier3_metadata_path
-        );
+    try {
+      const tokenMetadata = await Promise.all(
+        artists.map(async (artist, index) => {
+          const tier1_metadata = await ipfsMetadataFetcher(
+            artist.tier1_metadata_path
+          );
+          const tier2_metadata = await ipfsMetadataFetcher(
+            artist.tier2_metadata_path
+          );
+          const tier3_metadata = await ipfsMetadataFetcher(
+            artist.tier3_metadata_path
+          );
 
-        return {
-          artistName: artist.artistName,
-          tier1_metadata: tier1_metadata.data,
-          tier2_metadata: tier2_metadata.data,
-          tier3_metadata: tier3_metadata.data,
-        };
-      })
-    );
+          return {
+            artistName: artist.artistName,
+            tier1_metadata: tier1_metadata.data,
+            tier2_metadata: tier2_metadata.data,
+            tier3_metadata: tier3_metadata.data,
+          };
+        })
+      );
 
-    console.log(tokenMetadata);
+      console.log(artists);
 
-    commit("updateEpisodeTokenMetadata", tokenMetadata);
+      commit("updateAllTokenMetadata", tokenMetadata);
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   async fetchInitialStorage({ commit }) {
