@@ -21,12 +21,8 @@
       </div>
       <div class="c-tokencard__artist">
         Art by
-        <a
-          :href="token.pixelArtistUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {{ token.pixelArtist }}
+        <a :href="pixelArtistUrl" target="_blank" rel="noopener noreferrer">
+          {{ pixelArtist }}
         </a>
       </div>
     </div>
@@ -65,11 +61,14 @@ export default {
         },
       };
     },
+    pixelArtist() {
+      return this.token.creators[1].split(" ")[0];
+    },
+    pixelArtistUrl() {
+      return this.token.creators[1].split(" ")[1];
+    },
   },
   methods: {
-    getTokenMetaData() {
-      console.log(this.token.tokenId);
-    },
     showTokenModal() {
       const token = {
         ...this.token,

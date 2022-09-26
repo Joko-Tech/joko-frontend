@@ -12,7 +12,18 @@
       <section class="c-user__tokenarea">
         <div class="c-user__tokenarea__header">
           <h1 class="c-user__tokenarea__title">Your Tokens</h1>
-          <div class="c-user__tokenarea__number">3</div>
+          <div class="c-user__tokenarea__number">{{ userTokens.length }}</div>
+        </div>
+        <div class="c-user__tokenarea__main">
+          <div class="c-masonry" data-masonry>
+            <TokenGalleryCard
+              v-for="(token, index) in userTokens"
+              :key="index"
+              :token="token.token.metadata"
+              data-masonry-item
+              :data-index="index"
+            />
+          </div>
         </div>
       </section>
     </div>
@@ -22,12 +33,45 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { jokoContractAddress } from "~/utils/network";
+import Masonry from "~/js/components/Masonry";
 
 export default {
+  data() {
+    return {
+      isLoading: true,
+      userTokens: [],
+    };
+  },
+  async mounted() {
+    this.isLoading = true;
+    this.fetchUserTokens();
+  },
   computed: {
     ...mapGetters({
       wallet: "wallet",
     }),
+  },
+  methods: {
+    async fetchUserTokens() {
+      try {
+        const res = await this.$axios.$get(
+          `https://api.jakartanet.tzkt.io/v1/tokens/balances/?account=${this.wallet.address}&token.contract=${jokoContractAddress}`
+        );
+
+        this.isLoading = false;
+        this.userTokens = res;
+
+        if (this.userTokens.length) {
+          // next tick
+          this.$nextTick(() => {
+            this.masonry = new Masonry({ element: this.$el });
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>

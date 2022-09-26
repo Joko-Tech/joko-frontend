@@ -32,6 +32,6 @@ const walletOptions = {
   name: "joko-wallet",
 };
 
-const jokoContractAddress = "KT1TumVTRGXRZzRKBxFzsBpTiUeoiWhafj39";
+const jokoContractAddress = "KT1XaWDEEGTmLGuhQFQhpN4t8NV6MutUZmW6";
 
 export { networks, cnetwork, walletOptions, jokoContractAddress };
