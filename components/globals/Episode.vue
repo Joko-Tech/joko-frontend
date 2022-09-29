@@ -1,20 +1,23 @@
 <template>
   <div class="c-episode">
     <div class="c-episode__maincard">
-      <EpisodeCard :episode="episode" :isAuthenticated="true" />
-    </div>
-    <div class="c-episode__tokens" v-if="metadatas">
-      <TokenCard
-        v-for="(metadata, index) in metadatas"
-        :key="index"
-        :token="metadata"
-      />
+      <EpisodeCard :episode="episode" :isAuthenticated="false" />
     </div>
 
-    <div class="c-episode__tokens" v-else>
-      <TokenCardSkeleton />
-      <TokenCardSkeleton />
-      <TokenCardSkeleton />
+    <div class="c-episode__token__wrapper">
+      <div class="c-episode__tokens" v-if="metadatas">
+        <TokenCard
+          v-for="(metadata, index) in metadatas"
+          :key="index"
+          :token="metadata"
+        />
+      </div>
+
+      <div class="c-episode__tokens" v-else>
+        <TokenCardSkeleton />
+        <TokenCardSkeleton />
+        <TokenCardSkeleton />
+      </div>
     </div>
   </div>
 </template>
