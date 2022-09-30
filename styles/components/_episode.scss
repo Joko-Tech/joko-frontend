@@ -105,7 +105,6 @@
       linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
 
     transition: opacity 0.5s ease;
-    pointer-events: none;
 
     @include media(">tablet") {
       opacity: 0;
@@ -122,6 +121,7 @@
       left: 50%;
       transform: translate(-50%, 0);
       bottom: 24px;
+      z-index: z("2");
 
       @include media(">tablet") {
         transform: translate(0, -50%);

@@ -10,7 +10,8 @@
 
   &__main {
     @extend %element-cover;
-    background: #000;
+    background: $black;
+    overflow: scroll;
   }
 
   &__close {
@@ -20,6 +21,11 @@
     width: 32px;
     height: 32px;
     z-index: z("1");
+
+    @include media("<=tablet") {
+      top: 48px;
+      right: 20px;
+    }
   }
 }
 
@@ -54,26 +60,44 @@
 }
 
 .c-modal--token {
-  display: flex;
   width: 100%;
   height: 100%;
+  display: flex;
+
+  @include media("<=tablet") {
+    background: $bg-primary;
+    padding-top: 96px;
+    flex-direction: column;
+  }
 
   &__imagecon,
   &__content {
-    display: flex;
-    align-items: center;
-    max-width: 50%;
-    width: 100%;
-    height: 100%;
-    padding: toRem(48);
-
     @include media(">desktop") {
       padding: 48px;
+    }
+
+    @include media(">tablet") {
+      display: flex;
+      align-items: center;
+      max-width: 50%;
+      width: 100%;
+      height: 100%;
+      padding: toRem(48);
     }
   }
 
   &__imagecon {
     justify-content: center;
+    display: flex;
+    background: $black;
+
+    @include media("<=tablet") {
+      padding: 30px 80px;
+    }
+
+    @include media("<=phone") {
+      padding: 24px;
+    }
   }
 
   &__image {
@@ -85,8 +109,14 @@
   &__content {
     background: $bg-primary;
 
+    @include media("<=tablet") {
+      padding: 24px 20px;
+    }
+
     .c-content {
-      max-width: 575px;
+      @include media(">tablet") {
+        max-width: 575px;
+      }
       &__label {
         @extend %body-large;
         color: $dimmed;
@@ -113,9 +143,25 @@
       }
 
       &__panel {
-        @include flex-gap(24px);
-        display: flex;
-        align-items: flex-start;
+        @include media(">tablet") {
+          display: flex;
+
+          .c-button {
+            margin-left: 24px;
+            width: unset;
+          }
+        }
+
+        &__info {
+          @include flex-gap(24px);
+          display: flex;
+          align-items: flex-start;
+        }
+
+        .c-button {
+          width: 100%;
+          margin-top: 24px;
+        }
       }
 
       &__market {
