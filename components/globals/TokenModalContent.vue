@@ -31,35 +31,37 @@
         </div>
 
         <div class="c-content__panel">
-          <div class="c-content__market">
-            <div class="c-content__market__label">Editions</div>
-            <div class="c-content__market__edition">
-              <!-- <span>{{ token.tokenIndex }}/{{ token.tokenCount }}</span> -->
-              <span>1/1</span>
-              <span>
-                <ToolTip>Number of tokens in this edition</ToolTip>
-              </span>
+          <div class="c-content__panel__info">
+            <div class="c-content__market">
+              <div class="c-content__market__label">Editions</div>
+              <div class="c-content__market__edition">
+                <!-- <span>{{ token.tokenIndex }}/{{ token.tokenCount }}</span> -->
+                <span>1/1</span>
+                <span>
+                  <ToolTip>Number of tokens in this edition</ToolTip>
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div class="c-content__market">
-            <div class="c-content__market__label">Lowest ask</div>
-            <div class="c-content__market__amount">
-              <span>10</span> <span><TezosIcon /></span>
+            <div class="c-content__market">
+              <div class="c-content__market__label">Lowest ask</div>
+              <div class="c-content__market__amount">
+                <span>10</span> <span><TezosIcon /></span>
+              </div>
             </div>
-          </div>
 
-          <div class="c-content__market">
-            <div class="c-content__market__label">Highest bid</div>
-            <div class="c-content__market__amount">
-              <span>10</span> <span><TezosIcon /></span>
+            <div class="c-content__market">
+              <div class="c-content__market__label">Highest bid</div>
+              <div class="c-content__market__amount">
+                <span>10</span> <span><TezosIcon /></span>
+              </div>
             </div>
-          </div>
 
-          <div class="c-content__market">
-            <div class="c-content__market__label">Last price</div>
-            <div class="c-content__market__amount">
-              <span>10</span> <span><TezosIcon /></span>
+            <div class="c-content__market">
+              <div class="c-content__market__label">Last price</div>
+              <div class="c-content__market__amount">
+                <span>10</span> <span><TezosIcon /></span>
+              </div>
             </div>
           </div>
 

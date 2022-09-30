@@ -3,21 +3,40 @@
     margin-bottom: 120px;
   }
 
-  &__card {
+  &__mobiledesc {
+    @extend %tablet;
+    margin-top: 24px;
   }
 
   &__maincard {
-    margin-bottom: 36px;
+    margin-bottom: 24px;
+
+    @include media(">tablet") {
+      bottom: 36px;
+    }
+  }
+
+  &__token__wrapper {
+    overflow: hidden;
   }
 
   &__tokens {
     display: flex;
-    @include flex-gap(24px);
-    justify-content: center;
     align-items: center;
+    @include flex-gap(24px);
+    overflow: scroll;
 
-    .c-tokencard {
+    @include media(">tablet") {
+      justify-content: center;
+    }
+
+    .c-tokencard,
+    .c-skeleton {
       max-width: 296px;
+
+      @include media("<=tablet") {
+        min-width: 250px;
+      }
     }
   }
 
@@ -25,17 +44,30 @@
     margin-bottom: 24px;
 
     &__inner {
-      @include flex-gap(24px);
       display: flex;
       align-items: center;
       @extend %title-2;
+      justify-content: center;
+
+      @include media(">tablet") {
+        @include flex-gap(24px);
+        justify-content: baseline;
+      }
     }
   }
 
   &__line {
-    width: 100%;
-    height: 1px;
-    background: $white;
+    @include media(">tablet") {
+      background: $white;
+      width: 100%;
+      height: 1px;
+    }
+
+    span {
+      @include media(">tablet") {
+        display: none;
+      }
+    }
   }
 
   &__number,
@@ -46,6 +78,10 @@
 
   &__main {
     @include ratio(1272, 560);
+
+    @include media("<=tablet") {
+      @include ratio(390, 375);
+    }
 
     @include cursor {
       &:hover {
@@ -62,24 +98,36 @@
 
   &__content {
     background: linear-gradient(
-        90deg,
-        rgba(0, 0, 0, 0.8) 13.02%,
-        rgba(0, 0, 0, 0) 100%
+        360deg,
+        rgba(0, 0, 0, 0.8) 8.2%,
+        rgba(0, 0, 0, 0) 96.67%
       ),
       linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
-    opacity: 0;
+
     transition: opacity 0.5s ease;
-    pointer-events: none;
+
+    @include media(">tablet") {
+      opacity: 0;
+      background: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0.8) 13.02%,
+          rgba(0, 0, 0, 0) 100%
+        ),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+    }
 
     &__inner {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      padding: 16px;
+      left: 50%;
+      transform: translate(-50%, 0);
+      bottom: 24px;
+      z-index: z("2");
 
       @include media(">tablet") {
+        transform: translate(0, -50%);
         max-width: 504px;
         left: 48px;
+        padding: 16px;
       }
     }
 
@@ -100,11 +148,26 @@
     display: flex;
     align-items: center;
     @include flex-gap(16px);
+
+    @include media("<=tablet") {
+      flex-direction: column-reverse;
+      justify-content: flex-end;
+    }
   }
 
   &__prompt {
-    display: flex;
     align-items: center;
+    display: flex;
+
+    @include media("<=tablet") {
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+
+      .c-button {
+        margin-bottom: 14px;
+      }
+    }
 
     .c-button {
       flex-shrink: 0;
