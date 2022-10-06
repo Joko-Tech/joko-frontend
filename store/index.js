@@ -238,7 +238,7 @@ export const actions = {
 
     const res = await contract.methodsObject
       .mint_JOKO_tier2(tokenObject)
-      .send();
+      .send({ amount: 10000000 });
 
     console.log(res);
   },

@@ -38,7 +38,7 @@
             <span>10</span> <span><TezosIcon /></span>
           </div>
         </div>
-        <ButtonComponent>Mint</ButtonComponent>
+        <ButtonComponent @click="mintToken">Mint</ButtonComponent>
       </div>
     </div>
   </div>
@@ -95,6 +95,16 @@ export default {
 
       this.$store.commit("token/updateCurrentModalToken", token);
       this.$store.commit("token/updateIsTokenModalOpen", true);
+    },
+    mintToken() {
+      const payload = {
+        pixel_artist: this.pixelArtist,
+        artist: this.token.artist,
+      };
+
+      if (this.token.tier === 2) {
+        this.$store.dispatch("mintTier2", payload);
+      }
     },
   },
 };

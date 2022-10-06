@@ -65,15 +65,17 @@ export default {
       ]);
 
       this.metadatas = metadatas.map((metadata, index) => {
-        const tokenIndex = this.episode[`tier${index + 1}_index`];
-        const tokenCount = this.episode[`tier${index + 1}_total_supply`];
+        const tier = index + 1;
+        const tokenIndex = this.episode[`tier${tier}_index`];
+        const tokenCount = this.episode[`tier${tier}_total_supply`];
 
         return {
           ...metadata.data,
           tokenIndex: tokenIndex === tokenCount ? tokenIndex : tokenIndex + 1,
           tokenCount,
-          tier: index + 1,
+          tier,
           isFullyMinted: tokenIndex === tokenCount,
+          artist: this.episode.artistName,
         };
       });
 
