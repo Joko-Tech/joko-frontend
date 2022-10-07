@@ -3,10 +3,11 @@ import { TezosToolkit } from "@taquito/taquito";
 import { bytes2Char } from "@taquito/utils";
 import { ipfsMetadataFetcher } from "~/utils/data";
 import { jokoContractAddress, walletOptions, networks } from "~/utils/network";
+import { NetworkType } from "@airgap/beacon-sdk";
 // import { InMemorySigner } from "@taquito/signer";
 // import * as faucet from "~/data/faucet.json";
-let beaconWallet;
-let tezos;
+let beaconWallet = new BeaconWallet(walletOptions);
+let tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
 
 // check if window exists
 if (typeof window !== "undefined") {
@@ -121,7 +122,7 @@ export const actions = {
   },
 
   async fetchInitialStorage({ commit }) {
-    tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+    // tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
     const contract = await tezos.contract.at(jokoContractAddress);
     const storage = await contract.storage();
     const artistsMap = storage.artist_map.valueMap;
@@ -149,7 +150,7 @@ export const actions = {
   },
 
   async connectWallet({ state, commit }) {
-    tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+    // tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
     tezos.setWalletProvider(beaconWallet);
 
     const activeAccount = await beaconWallet.client.getActiveAccount();
@@ -160,7 +161,12 @@ export const actions = {
       });
     } else {
       try {
-        const permissions = await beaconWallet.client.requestPermissions();
+        const permissions = await beaconWallet.client.requestPermissions({
+          network: {
+            type: NetworkType.CUSTOM,
+            rpcUrl: networks.ghostnet.nodes[0],
+          }
+        });
         commit("updateWallet", {
           address: permissions.address,
           connected: true,
@@ -226,18 +232,18 @@ export const actions = {
   },
   async mintTier2({ state, commit }, tokenPayload) {
     const { artist, pixel_artist } = tokenPayload;
-
+    
     const tokenObject = {
       artist,
       pixel_artist,
       amount_tokens: 1,
     };
 
-    const contract = await tezos.contract.at(jokoContractAddress);
+    const contract = await tezos.wallet.at(jokoContractAddress);
 
     const res = await contract.methodsObject
       .mint_JOKO_tier2(tokenObject)
-      .send({ amount: 10000000 });
+      .send({ amount: 10 });
 
     console.log(res);
   },
