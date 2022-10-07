@@ -6,6 +6,7 @@ import { jokoContractAddress, walletOptions, networks } from "~/utils/network";
 // import { InMemorySigner } from "@taquito/signer";
 // import * as faucet from "~/data/faucet.json";
 let beaconWallet;
+let tezos;
 
 // check if window exists
 if (typeof window !== "undefined") {
@@ -120,7 +121,7 @@ export const actions = {
   },
 
   async fetchInitialStorage({ commit }) {
-    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+    tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
     const contract = await tezos.contract.at(jokoContractAddress);
     const storage = await contract.storage();
     const artistsMap = storage.artist_map.valueMap;
@@ -148,7 +149,7 @@ export const actions = {
   },
 
   async connectWallet({ state, commit }) {
-    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+    tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
     tezos.setWalletProvider(beaconWallet);
 
     const activeAccount = await beaconWallet.client.getActiveAccount();
@@ -178,7 +179,7 @@ export const actions = {
     });
   },
   async addNewArtist({ state, commit }) {
-    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+    new TezosToolkit(networks.ghostnet.nodes[0]);
 
     // tezos.setSignerProvider(
     //   InMemorySigner.fromFundraiser(
@@ -224,8 +225,6 @@ export const actions = {
     // console.log(contract);
   },
   async mintTier2({ state, commit }, tokenPayload) {
-    const tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
-
     const { artist, pixel_artist } = tokenPayload;
 
     const tokenObject = {
