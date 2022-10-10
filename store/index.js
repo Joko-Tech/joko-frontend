@@ -165,7 +165,7 @@ export const actions = {
           network: {
             type: NetworkType.CUSTOM,
             rpcUrl: networks.ghostnet.nodes[0],
-          }
+          },
         });
         commit("updateWallet", {
           address: permissions.address,
@@ -232,7 +232,7 @@ export const actions = {
   },
   async mintTier2({ state, commit }, tokenPayload) {
     const { artist, pixel_artist } = tokenPayload;
-    
+
     const tokenObject = {
       artist,
       pixel_artist,
@@ -244,7 +244,20 @@ export const actions = {
     const res = await contract.methodsObject
       .mint_JOKO_tier2(tokenObject)
       .send({ amount: 10 });
+  },
+  async mintTier3({ state, commit }, tokenPayload) {
+    const { artist, pixel_artist } = tokenPayload;
 
-    console.log(res);
+    const tokenObject = {
+      artist,
+      pixel_artist,
+      amount_tokens: 1,
+    };
+
+    const contract = await tezos.wallet.at(jokoContractAddress);
+
+    const res = await contract.methodsObject
+      .mint_JOKO_tier3(tokenObject)
+      .send({ amount: 5 });
   },
 };

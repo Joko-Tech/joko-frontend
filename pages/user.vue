@@ -33,7 +33,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { jokoContractAddress } from "~/utils/network";
+import { fa2ContractAddress } from "~/utils/network";
 import Masonry from "~/js/components/Masonry";
 
 export default {
@@ -56,13 +56,14 @@ export default {
     async fetchUserTokens() {
       try {
         const res = await this.$axios.$get(
-          `https://api.jakartanet.tzkt.io/v1/tokens/balances/?account=${this.wallet.address}&token.contract=${jokoContractAddress}`
+          `https://api.ghostnet.tzkt.io/v1/tokens/balances/?account=${this.wallet.address}&token.contract=${fa2ContractAddress}`
         );
 
         this.isLoading = false;
         this.userTokens = res;
 
         if (this.userTokens.length) {
+          console.log("userTokens", this.userTokens);
           // next tick
           this.$nextTick(() => {
             this.masonry = new Masonry({ element: this.$el });

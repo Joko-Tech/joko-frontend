@@ -76,6 +76,8 @@ export default {
           tier,
           isFullyMinted: tokenIndex === tokenCount,
           artist: this.episode.artistName,
+          tier2_price: this.episode.tier2_price,
+          tier3_price: this.episode.tier3_price,
         };
       });
 
