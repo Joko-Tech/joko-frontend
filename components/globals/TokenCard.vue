@@ -35,10 +35,10 @@
         <div class="c-tokencard__price">
           <div class="c-tokencard__price__label">Price</div>
           <div class="c-tokencard__price__amount">
-            <span>10</span> <span><TezosIcon /></span>
+            <span>{{ price }}</span> <span><TezosIcon /></span>
           </div>
         </div>
-        <ButtonComponent>Mint</ButtonComponent>
+        <ButtonComponent @click="mintToken">Mint</ButtonComponent>
       </div>
     </div>
   </div>
@@ -82,6 +82,17 @@ export default {
     pixelArtistUrl() {
       return this.token.creators[1].split(" ")[1];
     },
+    price() {
+      if (this.token.tier === 1) {
+        return 30;
+      }
+      if (this.token.tier === 2) {
+        return this.token.tier2_price / Math.pow(10, 6);
+      }
+      if (this.token.tier === 3) {
+        return this.token.tier3_price / Math.pow(10, 6);
+      }
+    },
   },
   methods: {
     getTokenMetaData() {
@@ -95,6 +106,20 @@ export default {
 
       this.$store.commit("token/updateCurrentModalToken", token);
       this.$store.commit("token/updateIsTokenModalOpen", true);
+    },
+    mintToken() {
+      const payload = {
+        pixel_artist: this.pixelArtist,
+        artist: this.token.artist,
+      };
+
+      if (this.token.tier === 2) {
+        this.$store.dispatch("mintTier2", payload);
+      }
+
+      if (this.token.tier === 3) {
+        this.$store.dispatch("mintTier3", payload);
+      }
     },
   },
 };

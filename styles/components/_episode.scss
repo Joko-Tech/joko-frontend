@@ -119,9 +119,11 @@
     &__inner {
       position: absolute;
       left: 50%;
+      top: 50%;
       transform: translate(-50%, 0);
       bottom: 24px;
       z-index: z("2");
+      height: fit-content;
 
       @include media(">tablet") {
         transform: translate(0, -50%);

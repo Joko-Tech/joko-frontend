@@ -1,3 +1,8 @@
+import {
+  NetworkType,
+  BeaconEvent,
+  defaultEventCallbacks,
+} from "@airgap/beacon-sdk";
 const networks = {
   mainnet: {
     networkname: "Mainnet",
@@ -30,8 +35,26 @@ const cnetwork = {
 
 const walletOptions = {
   name: "joko-wallet",
+  preferredNetwork: NetworkType.CUSTOM,
+  disableDefaultEvents: true, // Disable all events / UI. This also disables the pairing alert.
+  eventHandlers: {
+    // To keep the pairing alert, we have to add the following default event handlers back
+    [BeaconEvent.PAIR_INIT]: {
+      handler: defaultEventCallbacks.PAIR_INIT,
+    },
+    [BeaconEvent.PAIR_SUCCESS]: {
+      handler: (data) => setPublicToken(data.publicKey),
+    },
+  },
 };
 
-const jokoContractAddress = "KT1XaWDEEGTmLGuhQFQhpN4t8NV6MutUZmW6";
+const jokoContractAddress = "KT1WJEug8U8quEwRWi2sFcoLRK8HnPhZSCGG";
+const fa2ContractAddress = "KT1AeR1UB2traBoSxSFnWkqVKVhGxHvVoS8k";
 
-export { networks, cnetwork, walletOptions, jokoContractAddress };
+export {
+  networks,
+  cnetwork,
+  walletOptions,
+  jokoContractAddress,
+  fa2ContractAddress,
+};

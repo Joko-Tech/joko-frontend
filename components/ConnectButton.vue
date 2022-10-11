@@ -1,8 +1,11 @@
 <template>
   <div class="c-nav__userarea">
-    <ButtonComponent v-if="wallet.isConnected" noAnimate renderAs="div">
-      {{ shortenAddress(wallet.address) }}
-    </ButtonComponent>
+    <div v-if="wallet.isConnected">
+      <ButtonComponent @click="disconnect" noAnimate>
+        {{ shortenAddress(wallet.address) }}
+      </ButtonComponent>
+    </div>
+
     <ButtonComponent v-else @click="connect" icon="indicator">
       Sync
     </ButtonComponent>
