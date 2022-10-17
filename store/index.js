@@ -6,7 +6,7 @@ import { jokoContractAddress, walletOptions, networks } from "~/utils/network";
 import { NetworkType } from "@airgap/beacon-sdk";
 // import { InMemorySigner } from "@taquito/signer";
 // import * as faucet from "~/data/faucet.json";
-let beaconWallet = new BeaconWallet(walletOptions);
+let beaconWallet;
 let tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
 
 // check if window exists
