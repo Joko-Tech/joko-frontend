@@ -41,7 +41,7 @@ export default class Masonry extends Component {
   init() {
     if (this.innerWidth < 600) {
       this.generateGrid(1);
-    } else if (this.innerWidth >= 600 && this.innerWidth < 1000) {
+    } else if (this.innerWidth >= 600 && this.innerWidth < 950) {
       this.generateGrid(2);
     } else {
       this.generateGrid(4);
@@ -55,11 +55,11 @@ export default class Masonry extends Component {
       this.generateGrid(1);
     } else if (
       window.innerWidth >= 600 &&
-      window.innerWidth < 1000 &&
-      (this.innerWidth < 600 || this.innerWidth >= 1000)
+      window.innerWidth < 950 &&
+      (this.innerWidth < 600 || this.innerWidth >= 950)
     ) {
       this.generateGrid(2);
-    } else if (window.innerWidth >= 1000 && this.innerWidth < 1000) {
+    } else if (window.innerWidth >= 950 && this.innerWidth < 950) {
       this.generateGrid(4);
     }
   }

@@ -15,7 +15,7 @@
       }
     }
 
-    @include media(">tablet") {
+    @include media(">desktop-sm") {
       max-width: 296px;
       .c-tokencard {
         max-width: 296px;

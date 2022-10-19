@@ -2,7 +2,12 @@ import { BeaconWallet } from "@taquito/beacon-wallet";
 import { TezosToolkit } from "@taquito/taquito";
 import { bytes2Char } from "@taquito/utils";
 import { ipfsMetadataFetcher } from "~/utils/data";
-import { jokoContractAddress, walletOptions, networks } from "~/utils/network";
+import {
+  jokoContractAddress,
+  fa2ContractAddress,
+  walletOptions,
+  networks,
+} from "~/utils/network";
 import { NetworkType } from "@airgap/beacon-sdk";
 // import { InMemorySigner } from "@taquito/signer";
 // import * as faucet from "~/data/faucet.json";
@@ -113,8 +118,6 @@ export const actions = {
         })
       );
 
-      console.log(artists);
-
       commit("updateAllTokenMetadata", tokenMetadata);
     } catch (error) {
       console.log(error);
@@ -147,6 +150,19 @@ export const actions = {
 
     commit("updateArtists", artists);
     commit("updateStorage", storage);
+  },
+
+  async fetchGalleryMetadata() {
+    const contract = await tezos.contract.at(fa2ContractAddress);
+    const storage = await contract.storage();
+
+    const tokenMetadata = storage.token_metadata;
+
+    console.log(tokenMetadata);
+
+    // const valueMap = storage.get("token_metadata");
+
+    // console.log(valueMap);
   },
 
   async connectWallet({ state, commit }) {

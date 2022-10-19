@@ -26,12 +26,15 @@ export default {
   async mounted() {
     if (!this.allTokenMetadata) {
       await this.$store.dispatch("fetchAllMetadata");
+      await this.$store.dispatch("fetchGalleryMetadata");
     }
 
-    // next tick
-    this.$nextTick(() => {
-      this.masonry = new Masonry({ element: this.$el });
-    });
+    if (this.tokens.length) {
+      // next tick
+      this.$nextTick(() => {
+        this.masonry = new Masonry({ element: this.$el });
+      });
+    }
   },
   computed: {
     ...mapGetters({
@@ -49,6 +52,8 @@ export default {
 
         tokenArray.push(...tokens);
       });
+
+      // console.log(tokenArray);
 
       return tokenArray;
     },
