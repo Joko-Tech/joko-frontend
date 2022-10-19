@@ -6,16 +6,14 @@
 }
 
 %link__line {
-  @media (any-pointer: fine) {
-    background: currentColor;
-    bottom: 0;
-    content: "";
-    height: 1px;
-    left: 0;
-    position: absolute;
-    transition: transform 0.7s $ease-out-expo;
-    width: 100%;
-  }
+  background: currentColor;
+  bottom: 0;
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  transition: transform 0.7s $ease-out-expo;
+  width: 100%;
 }
 
 %link__line--visible {
