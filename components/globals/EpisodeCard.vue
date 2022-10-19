@@ -12,7 +12,7 @@
     </div>
 
     <div>
-      <div class="c-episode__main">
+      <div class="c-episode__main c-episode__desktopitems">
         <div class="c-episode__coverimage">
           <!-- <img :src="episode.image" :alt="episode.artist" /> -->
           <img
@@ -28,14 +28,7 @@
             </div>
 
             <div class="c-episode__description">
-              <!-- {{ episode.description }} -->
-              Born in April, 1996, Kelvin Nnamdi Odenigbo better known as Lojay
-              is a Nigerian singer and songwriter. He came into limelight after
-              featuring Wizkid in his debut EP ‘LV N ATTN’. Having developed
-              interests in music at a very young age, Lojay released Ariel in
-              October 2019. He featured superstar singer, Sarz in his hit single
-              Tonongo and Monalisa, as well as worked with other artists like
-              Wizkid.
+              {{ description }}
             </div>
 
             <div class="c-episode__controls">
@@ -49,7 +42,7 @@
                 filled
                 :href="`/episode/${slugify(episode.artistName)}`"
               >
-                Watch episode
+                Watch full episode
               </ButtonComponent>
               <div v-else class="c-episode__prompt">
                 <ButtonComponent
@@ -67,20 +60,58 @@
           </div>
         </div>
       </div>
-      <p class="c-episode__mobiledesc">
-        Born in April, 1996, Kelvin Nnamdi Odenigbo better known as Lojay is a
-        Nigerian singer and songwriter. He came into limelight after featuring
-        Wizkid in his debut EP ‘LV N ATTN’. Having developed interests in music
-        at a very young age, Lojay released Ariel in October 2019. He featured
-        superstar singer, Sarz in his hit single Tonongo and Monalisa, as well
-        as worked with other artists like Wizkid.
-      </p>
+      <div class="c-episode__mobileitems">
+        <p class="c-desc">
+          {{ truncatedDescription }}
+          <button
+            class="c-desc__more"
+            v-if="description.length !== truncatedDescription.length"
+            @click="showFullText"
+          >
+            Read More
+          </button>
+        </p>
+
+        <div class="c-episode__controls">
+          <ButtonComponent size="large" @click="showVideoModal">
+            Preview
+          </ButtonComponent>
+          <ButtonComponent
+            size="large"
+            icon="play"
+            v-if="isAuthenticated"
+            filled
+            :href="`/episode/${slugify(episode.artistName)}`"
+          >
+            Watch full episode
+          </ButtonComponent>
+          <div v-else class="c-episode__prompt">
+            <ButtonComponent
+              size="large"
+              buttonType="icon"
+              icon="lock"
+              noAnimate
+              renderAs="div"
+            />
+            <p class="c-episode__prompt__message">
+              You need a token to watch the full episode.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { truncateText } from "~/utils/formatters";
 export default {
+  data() {
+    return {
+      isTextShortened: true,
+      description: `Born in April, 1996, Kelvin Nnamdi Odenigbo better known as Lojay is a Nigerian singer and songwriter. He came into limelight after featuring Wizkid in his debut EP ‘LV N ATTN’. Having developed interests in music at a very young age, Lojay released Ariel in October 2019. He featured superstar singer, Sarz in his hit single Tonongo and Monalisa, as well as worked with other artists like Wizkid.`,
+    };
+  },
   props: {
     episode: {
       type: Object,
@@ -92,9 +123,19 @@ export default {
       default: false,
     },
   },
+  computed: {
+    truncatedDescription() {
+      return this.isTextShortened
+        ? truncateText(this.description, 139)
+        : this.description;
+    },
+  },
   methods: {
     showVideoModal() {
       this.$store.commit("updateIsVideoModalOpen", true);
+    },
+    showFullText() {
+      this.isTextShortened = false;
     },
   },
 };

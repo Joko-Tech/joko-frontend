@@ -3,9 +3,27 @@
     margin-bottom: 120px;
   }
 
-  &__mobiledesc {
-    @extend %tablet;
+  &__mobileitems {
     margin-top: 24px;
+    @extend %tablet;
+
+    .c-desc {
+      margin-bottom: 32px;
+
+      &__more {
+        @extend %link;
+        text-transform: uppercase;
+        font-size: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+      }
+    }
+  }
+
+  &__desktopitems {
+    .c-episode__controls {
+      @extend %desktop-tab;
+    }
   }
 
   &__maincard {
@@ -150,26 +168,11 @@
     display: flex;
     align-items: center;
     @include flex-gap(16px);
-
-    @include media("<=tablet") {
-      flex-direction: column-reverse;
-      justify-content: flex-end;
-    }
   }
 
   &__prompt {
     align-items: center;
     display: flex;
-
-    @include media("<=tablet") {
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-
-      .c-button {
-        margin-bottom: 14px;
-      }
-    }
 
     .c-button {
       flex-shrink: 0;
