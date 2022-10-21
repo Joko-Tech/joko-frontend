@@ -17,13 +17,11 @@
         <div class="c-content__artist">
           Art by
           <a
-            href="https://www.artstation.com/artwork/5ZQZQ"
+            :href="token.pixelArtistUrl"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <!-- :href="token.pixelArtistUrl" -->
-            <!-- {{ token.pixelArtist }} -->
-            Daniel Picasso
+            {{ token.pixelArtist }}
           </a>
         </div>
         <div class="c-content__description">
@@ -46,7 +44,10 @@
             <div class="c-content__market">
               <div class="c-content__market__label">Lowest ask</div>
               <div class="c-content__market__amount">
-                <span>10</span> <span><TezosIcon /></span>
+                <span>
+                  {{ lowestAsk ? lowestAsk : "N/A" }}
+                </span>
+                <span><TezosIcon /></span>
               </div>
             </div>
 
@@ -76,10 +77,38 @@
 import { mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+      lowestAsk: null,
+    };
+  },
   computed: {
     ...mapGetters({
       token: "token/currentModalToken",
     }),
+  },
+  mounted() {
+    this.fetchAsk();
+
+    this.fetchInterval = setInterval(() => {
+      this.fetchAsk();
+    }, 5000);
+  },
+  destroyed() {
+    clearInterval(this.fetchInterval);
+  },
+  methods: {
+    async fetchAsk() {
+      const res = await this.$axios.$get(
+        `http://15.207.106.83/api/rest/ask?id=${this.token.tokenId}`
+      );
+
+      if (res.askByPk) {
+        this.lowestAsk = res.askByPk.amount;
+      } else {
+        this.lowestAsk = null;
+      }
+    },
   },
 };
 </script>

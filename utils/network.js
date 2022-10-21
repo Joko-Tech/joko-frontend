@@ -49,7 +49,7 @@ const walletOptions = {
 };
 
 const jokoContractAddress = "KT1WJEug8U8quEwRWi2sFcoLRK8HnPhZSCGG";
-const fa2ContractAddress = "KT1AeR1UB2traBoSxSFnWkqVKVhGxHvVoS8k";
+const fa2ContractAddress = "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW";
 
 export {
   networks,

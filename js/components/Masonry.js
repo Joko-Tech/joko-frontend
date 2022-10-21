@@ -28,13 +28,13 @@ export default class Masonry extends Component {
       const columnWrapper = document.createElement("div");
       columnWrapper.classList.add("c-column");
       columnWrappers[column] = columnWrapper;
+
+      masonry.appendChild(columnWrappers[column]);
     });
 
     masonryItems.forEach((item, index) => {
       const column = index % columns;
       columnWrappers[column].appendChild(item);
-
-      masonry.appendChild(columnWrappers[column]);
     });
   }
 

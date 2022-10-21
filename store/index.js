@@ -28,6 +28,7 @@ export const state = () => ({
   },
   artists: null,
   allTokenMetadata: null,
+  mintedTokenMetadata: null,
   storage: null,
   isVideoModalOpen: false,
 });
@@ -44,6 +45,9 @@ export const getters = {
   },
   allTokenMetadata: (state) => {
     return state.allTokenMetadata;
+  },
+  mintedTokenMetadata: (state) => {
+    return state.mintedTokenMetadata;
   },
   storage: (state) => {
     return state.storage;
@@ -73,6 +77,9 @@ export const mutations = {
   },
   updateAllTokenMetadata: (state, payload) => {
     state.allTokenMetadata = payload;
+  },
+  updateMintedTokenMetadata: (state, payload) => {
+    state.mintedTokenMetadata = payload;
   },
   updateStorage: (state, payload) => {
     state.storage = payload;
@@ -152,17 +159,19 @@ export const actions = {
     commit("updateStorage", storage);
   },
 
-  async fetchGalleryMetadata() {
-    const contract = await tezos.contract.at(fa2ContractAddress);
-    const storage = await contract.storage();
+  async fetchGalleryMetadata({ commit }) {
+    const res = await this.$axios.$get(
+      `https://api.tzkt.io/v1/tokens?contract=${fa2ContractAddress}`
+    );
 
-    const tokenMetadata = storage.token_metadata;
+    const medatada = res.map((token) => {
+      return {
+        tokenId: token.tokenId,
+        ...token.metadata,
+      };
+    });
 
-    console.log(tokenMetadata);
-
-    // const valueMap = storage.get("token_metadata");
-
-    // console.log(valueMap);
+    commit("updateMintedTokenMetadata", medatada);
   },
 
   async connectWallet({ state, commit }) {

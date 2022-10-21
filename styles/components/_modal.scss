@@ -143,15 +143,7 @@
       }
 
       &__panel {
-        @include media(">tablet") {
-          display: flex;
-
-          .c-button {
-            margin-left: 24px;
-            width: unset;
-          }
-        }
-
+        align-items: center;
         &__info {
           @include flex-gap(24px);
           display: flex;
@@ -161,6 +153,16 @@
         .c-button {
           width: 100%;
           margin-top: 24px;
+        }
+
+        @include media(">tablet") {
+          display: flex;
+
+          .c-button {
+            margin-left: 24px;
+            width: unset;
+            margin-top: 0;
+          }
         }
       }
 

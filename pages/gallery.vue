@@ -7,7 +7,7 @@
     <section class="c-gallery__tokens">
       <div class="c-masonry" data-masonry>
         <TokenGalleryCard
-          v-for="(token, index) in tokens"
+          v-for="(token, index) in mintedTokenMetadata"
           :key="index"
           :token="token"
           data-masonry-item
@@ -25,11 +25,10 @@ import { mapGetters } from "vuex";
 export default {
   async mounted() {
     if (!this.allTokenMetadata) {
-      await this.$store.dispatch("fetchAllMetadata");
       await this.$store.dispatch("fetchGalleryMetadata");
     }
 
-    if (this.tokens.length) {
+    if (this.mintedTokenMetadata.length) {
       // next tick
       this.$nextTick(() => {
         this.masonry = new Masonry({ element: this.$el });
@@ -38,25 +37,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      allTokenMetadata: "allTokenMetadata",
+      mintedTokenMetadata: "mintedTokenMetadata",
     }),
-    tokens() {
-      let tokenArray = [];
-
-      this.allTokenMetadata?.forEach((token) => {
-        const tokens = [
-          ...token.tier1_metadata,
-          ...token.tier2_metadata,
-          ...token.tier3_metadata,
-        ];
-
-        tokenArray.push(...tokens);
-      });
-
-      // console.log(tokenArray);
-
-      return tokenArray;
-    },
   },
 };
 </script>
