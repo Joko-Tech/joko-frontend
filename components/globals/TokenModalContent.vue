@@ -54,7 +54,10 @@
             <div class="c-content__market">
               <div class="c-content__market__label">Highest bid</div>
               <div class="c-content__market__amount">
-                <span>10</span> <span><TezosIcon /></span>
+                <span>
+                  {{ highestBid ? highestBid : "N/A" }}
+                </span>
+                <span><TezosIcon /></span>
               </div>
             </div>
 
@@ -80,6 +83,7 @@ export default {
   data() {
     return {
       lowestAsk: null,
+      highestBid: null,
     };
   },
   computed: {
@@ -89,9 +93,11 @@ export default {
   },
   mounted() {
     this.fetchAsk();
+    this.fetchBid();
 
     this.fetchInterval = setInterval(() => {
       this.fetchAsk();
+      this.fetchBid();
     }, 5000);
   },
   destroyed() {
@@ -107,6 +113,18 @@ export default {
         this.lowestAsk = res.askByPk.amount;
       } else {
         this.lowestAsk = null;
+      }
+    },
+
+    async fetchBid() {
+      const res = await this.$axios.$get(
+        `http://15.207.106.83/api/rest/bid?id=${this.token.tokenId}`
+      );
+
+      if (res.bidByPk) {
+        this.highestBid = Number(res.bidByPk.price).toFixed(2);
+      } else {
+        this.highestBid = null;
       }
     },
   },
