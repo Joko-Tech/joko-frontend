@@ -64,7 +64,10 @@
             <div class="c-content__market">
               <div class="c-content__market__label">Last price</div>
               <div class="c-content__market__amount">
-                <span>10</span> <span><TezosIcon /></span>
+                <span>
+                  {{ lastSale ? lastSale : "N/A" }}
+                </span>
+                <span><TezosIcon /></span>
               </div>
             </div>
           </div>
@@ -84,6 +87,8 @@ export default {
     return {
       lowestAsk: null,
       highestBid: null,
+      lastSale: null,
+      baseURL: "http://15.207.106.83/api/rest/",
     };
   },
   computed: {
@@ -94,10 +99,12 @@ export default {
   mounted() {
     this.fetchAsk();
     this.fetchBid();
+    this.fetchSale();
 
     this.fetchInterval = setInterval(() => {
       this.fetchAsk();
       this.fetchBid();
+      this.fetchSale();
     }, 5000);
   },
   destroyed() {
@@ -106,7 +113,7 @@ export default {
   methods: {
     async fetchAsk() {
       const res = await this.$axios.$get(
-        `http://15.207.106.83/api/rest/ask?id=${this.token.tokenId}`
+        `${this.baseURL}ask?id=${this.token.tokenId}`
       );
 
       if (res.askByPk) {
@@ -118,13 +125,25 @@ export default {
 
     async fetchBid() {
       const res = await this.$axios.$get(
-        `http://15.207.106.83/api/rest/bid?id=${this.token.tokenId}`
+        `${this.baseURL}bid?id=${this.token.tokenId}`
       );
 
       if (res.bidByPk) {
         this.highestBid = Number(res.bidByPk.price).toFixed(2);
       } else {
         this.highestBid = null;
+      }
+    },
+
+    async fetchSale() {
+      const res = await this.$axios.$get(
+        `${this.baseURL}lastSale?id=${this.token.tokenId}`
+      );
+
+      if (res.lastSaleByPk) {
+        this.lastSale = Number(res.lastSaleByPk.amount).toFixed(2);
+      } else {
+        this.lastSale = null;
       }
     },
   },
