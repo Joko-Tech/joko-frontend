@@ -113,8 +113,6 @@ export default {
     }),
   },
   mounted() {
-    console.log(this.token);
-
     if (this.token.type === "gallery") {
       this.fetchAsk();
       this.fetchBid();
