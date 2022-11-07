@@ -1,13 +1,19 @@
 <template>
   <div class="c-home">
     <section class="c-home__hero">
-      <h1 class="c-home__hero__title">
-        <span class="c-line">Stories</span>
-        <span class="c-line c-line--bottom">
-          <span class="c-line__dash"></span>
-          <span>Behind</span>
-        </span>
-        <span class="c-line c-line--bottom">The Music.</span>
+      <h1 class="c-home__hero__title" data-animation="title">
+        <div class="word c-line">
+          <span class="c-line__inner">Stories</span>
+        </div>
+        <div class="word c-line c-line--bottom">
+          <span class="c-line__inner">
+            <span class="c-line__dash"></span>
+            <span>Behind</span>
+          </span>
+        </div>
+        <div class="word c-line c-line--bottom">
+          <span class="c-line__inner">The Music.</span>
+        </div>
       </h1>
       <p class="c-home__hero__desc">
         We are using the power of storytelling to enable musicians build a
@@ -35,21 +41,13 @@
 import { mapGetters } from "vuex";
 import tokens from "~/data/tokens.json";
 import Masonry from "~/js/components/Masonry";
+import pages from "~/js/pages";
 import { ipfsMetadataFetcher, getImageHash } from "~/utils/data";
 
 export default {
   name: "IndexPage",
   async mounted() {
-    // this.masonry = new Masonry({ element: this.$el });
-    // let data = await ipfsMetadataFetcher(
-    //   "ipfs://Qmesg68NV9ZooKQo74h4tNPJCJLcNBkra5fUFzeQdGna4Z"
-    // );
-    // console.log(data);
-    // console.log(
-    //   getImageHash(
-    //     "ipfs://QmeNDZP95sd7j7faTXE4LCP686Sz2aJho6tJ9cuccnESL8/0.png"
-    //   )
-    // );
+    this.page = new pages(this.$el);
   },
   methods: {
     addArtist() {

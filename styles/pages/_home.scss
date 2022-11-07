@@ -24,8 +24,8 @@
       }
 
       .c-line {
-        display: flex;
         align-items: center;
+        width: 100%;
 
         &:not(:last-child) {
           margin-bottom: toRem(30);
@@ -33,6 +33,11 @@
 
         &--bottom {
           margin-left: toRem(32);
+
+          .c-line__inner {
+            display: inline-flex;
+            align-items: center;
+          }
         }
 
         @include media("<=phone") {
@@ -51,6 +56,7 @@
           height: toRem(7);
           background-color: $white;
           margin-right: toRem(16);
+          flex-shrink: 0;
 
           @include media("<=phone") {
             max-width: 48px;
