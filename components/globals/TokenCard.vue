@@ -102,6 +102,9 @@ export default {
       const token = {
         ...this.token,
         image: this.image,
+        pixelArtist: this.pixelArtist,
+        pixelArtistUrl: this.pixelArtistUrl,
+        type: "mint",
       };
 
       this.$store.commit("token/updateCurrentModalToken", token);

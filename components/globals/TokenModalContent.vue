@@ -17,13 +17,11 @@
         <div class="c-content__artist">
           Art by
           <a
-            href="https://www.artstation.com/artwork/5ZQZQ"
+            :href="token.pixelArtistUrl"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <!-- :href="token.pixelArtistUrl" -->
-            <!-- {{ token.pixelArtist }} -->
-            Daniel Picasso
+            {{ token.pixelArtist }}
           </a>
         </div>
         <div class="c-content__description">
@@ -43,29 +41,54 @@
               </div>
             </div>
 
-            <div class="c-content__market">
+            <div class="c-content__market" v-if="token.type === 'gallery'">
               <div class="c-content__market__label">Lowest ask</div>
               <div class="c-content__market__amount">
-                <span>10</span> <span><TezosIcon /></span>
+                <span>
+                  {{ lowestAsk ? lowestAsk : "N/A" }}
+                </span>
+                <span class="c-content__market__amount__icon"
+                  ><TezosIcon
+                /></span>
               </div>
             </div>
 
-            <div class="c-content__market">
+            <div class="c-content__market" v-if="token.type === 'gallery'">
               <div class="c-content__market__label">Highest bid</div>
               <div class="c-content__market__amount">
-                <span>10</span> <span><TezosIcon /></span>
+                <span>
+                  {{ highestBid ? highestBid : "N/A" }}
+                </span>
+                <span class="c-content__market__amount__icon"
+                  ><TezosIcon
+                /></span>
               </div>
             </div>
 
-            <div class="c-content__market">
+            <div class="c-content__market" v-if="token.type === 'gallery'">
               <div class="c-content__market__label">Last price</div>
               <div class="c-content__market__amount">
-                <span>10</span> <span><TezosIcon /></span>
+                <span>
+                  {{ lastSale ? lastSale : "N/A" }}
+                </span>
+                <span class="c-content__market__amount__icon"
+                  ><TezosIcon
+                /></span>
               </div>
             </div>
           </div>
 
-          <ButtonComponent size="large" filled>Sell</ButtonComponent>
+          <ButtonComponent size="large" filled v-if="token.type === 'gallery'">
+            Sell
+          </ButtonComponent>
+          <ButtonComponent
+            size="large"
+            filled
+            v-if="token.type === 'mint'"
+            @click="mintToken"
+          >
+            Mint
+          </ButtonComponent>
         </div>
       </div>
     </div>
@@ -76,10 +99,86 @@
 import { mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+      lowestAsk: null,
+      highestBid: null,
+      lastSale: null,
+      baseURL: "http://15.207.106.83/api/rest/",
+    };
+  },
   computed: {
     ...mapGetters({
       token: "token/currentModalToken",
     }),
+  },
+  mounted() {
+    if (this.token.type === "gallery") {
+      this.fetchAsk();
+      this.fetchBid();
+      this.fetchSale();
+
+      this.fetchInterval = setInterval(() => {
+        this.fetchAsk();
+        this.fetchBid();
+        this.fetchSale();
+      }, 5000);
+    }
+  },
+  destroyed() {
+    clearInterval(this.fetchInterval);
+  },
+  methods: {
+    async fetchAsk() {
+      const res = await this.$axios.$get(
+        `${this.baseURL}ask?id=${this.token.tokenId}`
+      );
+
+      if (res.askByPk) {
+        this.lowestAsk = res.askByPk.amount;
+      } else {
+        this.lowestAsk = null;
+      }
+    },
+
+    async fetchBid() {
+      const res = await this.$axios.$get(
+        `${this.baseURL}bid?id=${this.token.tokenId}`
+      );
+
+      if (res.bidByPk) {
+        this.highestBid = Number(res.bidByPk.price).toFixed(2);
+      } else {
+        this.highestBid = null;
+      }
+    },
+
+    async fetchSale() {
+      const res = await this.$axios.$get(
+        `${this.baseURL}lastSale?id=${this.token.tokenId}`
+      );
+
+      if (res.lastSaleByPk) {
+        this.lastSale = Number(res.lastSaleByPk.amount).toFixed(2);
+      } else {
+        this.lastSale = null;
+      }
+    },
+
+    mintToken() {
+      const payload = {
+        pixel_artist: this.token.pixelArtist,
+        artist: this.token.artist,
+      };
+
+      if (this.token.tier === 2) {
+        this.$store.dispatch("mintTier2", payload);
+      }
+
+      if (this.token.tier === 3) {
+        this.$store.dispatch("mintTier3", payload);
+      }
+    },
   },
 };
 </script>

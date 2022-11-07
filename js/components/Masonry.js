@@ -28,20 +28,20 @@ export default class Masonry extends Component {
       const columnWrapper = document.createElement("div");
       columnWrapper.classList.add("c-column");
       columnWrappers[column] = columnWrapper;
+
+      masonry.appendChild(columnWrappers[column]);
     });
 
     masonryItems.forEach((item, index) => {
       const column = index % columns;
       columnWrappers[column].appendChild(item);
-
-      masonry.appendChild(columnWrappers[column]);
     });
   }
 
   init() {
     if (this.innerWidth < 600) {
       this.generateGrid(1);
-    } else if (this.innerWidth >= 600 && this.innerWidth < 1000) {
+    } else if (this.innerWidth >= 600 && this.innerWidth < 950) {
       this.generateGrid(2);
     } else {
       this.generateGrid(4);
@@ -55,11 +55,11 @@ export default class Masonry extends Component {
       this.generateGrid(1);
     } else if (
       window.innerWidth >= 600 &&
-      window.innerWidth < 1000 &&
-      (this.innerWidth < 600 || this.innerWidth >= 1000)
+      window.innerWidth < 950 &&
+      (this.innerWidth < 600 || this.innerWidth >= 950)
     ) {
       this.generateGrid(2);
-    } else if (window.innerWidth >= 1000 && this.innerWidth < 1000) {
+    } else if (window.innerWidth >= 950 && this.innerWidth < 950) {
       this.generateGrid(4);
     }
   }

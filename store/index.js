@@ -2,7 +2,12 @@ import { BeaconWallet } from "@taquito/beacon-wallet";
 import { TezosToolkit } from "@taquito/taquito";
 import { bytes2Char } from "@taquito/utils";
 import { ipfsMetadataFetcher } from "~/utils/data";
-import { jokoContractAddress, walletOptions, networks } from "~/utils/network";
+import {
+  jokoContractAddress,
+  fa2ContractAddress,
+  walletOptions,
+  networks,
+} from "~/utils/network";
 import { NetworkType } from "@airgap/beacon-sdk";
 // import { InMemorySigner } from "@taquito/signer";
 // import * as faucet from "~/data/faucet.json";
@@ -23,6 +28,7 @@ export const state = () => ({
   },
   artists: null,
   allTokenMetadata: null,
+  mintedTokenMetadata: null,
   storage: null,
   isVideoModalOpen: false,
 });
@@ -39,6 +45,9 @@ export const getters = {
   },
   allTokenMetadata: (state) => {
     return state.allTokenMetadata;
+  },
+  mintedTokenMetadata: (state) => {
+    return state.mintedTokenMetadata;
   },
   storage: (state) => {
     return state.storage;
@@ -68,6 +77,9 @@ export const mutations = {
   },
   updateAllTokenMetadata: (state, payload) => {
     state.allTokenMetadata = payload;
+  },
+  updateMintedTokenMetadata: (state, payload) => {
+    state.mintedTokenMetadata = payload;
   },
   updateStorage: (state, payload) => {
     state.storage = payload;
@@ -113,8 +125,6 @@ export const actions = {
         })
       );
 
-      console.log(artists);
-
       commit("updateAllTokenMetadata", tokenMetadata);
     } catch (error) {
       console.log(error);
@@ -147,6 +157,21 @@ export const actions = {
 
     commit("updateArtists", artists);
     commit("updateStorage", storage);
+  },
+
+  async fetchGalleryMetadata({ commit }) {
+    const res = await this.$axios.$get(
+      `https://api.tzkt.io/v1/tokens?contract=${fa2ContractAddress}`
+    );
+
+    const medatada = res.map((token) => {
+      return {
+        tokenId: token.tokenId,
+        ...token.metadata,
+      };
+    });
+
+    commit("updateMintedTokenMetadata", medatada);
   },
 
   async connectWallet({ state, commit }) {
