@@ -75,6 +75,7 @@ export default {
         image: this.image,
         pixelArtist: this.pixelArtist,
         pixelArtistUrl: this.pixelArtistUrl,
+        type: "gallery",
       };
       this.$store.commit("token/updateCurrentModalToken", token);
       this.$store.commit("token/updateIsTokenModalOpen", true);

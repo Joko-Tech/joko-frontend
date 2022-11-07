@@ -41,38 +41,54 @@
               </div>
             </div>
 
-            <div class="c-content__market">
+            <div class="c-content__market" v-if="token.type === 'gallery'">
               <div class="c-content__market__label">Lowest ask</div>
               <div class="c-content__market__amount">
                 <span>
                   {{ lowestAsk ? lowestAsk : "N/A" }}
                 </span>
-                <span><TezosIcon /></span>
+                <span class="c-content__market__amount__icon"
+                  ><TezosIcon
+                /></span>
               </div>
             </div>
 
-            <div class="c-content__market">
+            <div class="c-content__market" v-if="token.type === 'gallery'">
               <div class="c-content__market__label">Highest bid</div>
               <div class="c-content__market__amount">
                 <span>
                   {{ highestBid ? highestBid : "N/A" }}
                 </span>
-                <span><TezosIcon /></span>
+                <span class="c-content__market__amount__icon"
+                  ><TezosIcon
+                /></span>
               </div>
             </div>
 
-            <div class="c-content__market">
+            <div class="c-content__market" v-if="token.type === 'gallery'">
               <div class="c-content__market__label">Last price</div>
               <div class="c-content__market__amount">
                 <span>
                   {{ lastSale ? lastSale : "N/A" }}
                 </span>
-                <span><TezosIcon /></span>
+                <span class="c-content__market__amount__icon"
+                  ><TezosIcon
+                /></span>
               </div>
             </div>
           </div>
 
-          <ButtonComponent size="large" filled>Sell</ButtonComponent>
+          <ButtonComponent size="large" filled v-if="token.type === 'gallery'">
+            Sell
+          </ButtonComponent>
+          <ButtonComponent
+            size="large"
+            filled
+            v-if="token.type === 'mint'"
+            @click="mintToken"
+          >
+            Mint
+          </ButtonComponent>
         </div>
       </div>
     </div>
@@ -97,15 +113,19 @@ export default {
     }),
   },
   mounted() {
-    this.fetchAsk();
-    this.fetchBid();
-    this.fetchSale();
+    console.log(this.token);
 
-    this.fetchInterval = setInterval(() => {
+    if (this.token.type === "gallery") {
       this.fetchAsk();
       this.fetchBid();
       this.fetchSale();
-    }, 5000);
+
+      this.fetchInterval = setInterval(() => {
+        this.fetchAsk();
+        this.fetchBid();
+        this.fetchSale();
+      }, 5000);
+    }
   },
   destroyed() {
     clearInterval(this.fetchInterval);
@@ -144,6 +164,21 @@ export default {
         this.lastSale = Number(res.lastSaleByPk.amount).toFixed(2);
       } else {
         this.lastSale = null;
+      }
+    },
+
+    mintToken() {
+      const payload = {
+        pixel_artist: this.token.pixelArtist,
+        artist: this.token.artist,
+      };
+
+      if (this.token.tier === 2) {
+        this.$store.dispatch("mintTier2", payload);
+      }
+
+      if (this.token.tier === 3) {
+        this.$store.dispatch("mintTier3", payload);
       }
     },
   },
