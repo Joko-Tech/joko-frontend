@@ -9,11 +9,13 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@airgap/beacon-sdk": "^3.2.0",
+    "@airgap/beacon-sdk": "^3.3.0",
     "@nuxtjs/axios": "^5.13.6",
-    "@taquito/beacon-wallet": "^13.0.1",
-    "@taquito/signer": "^13.0.1",
-    "@taquito/taquito": "^13.0.1",
+    "@taquito/beacon-wallet": "^14.1.0",
+    "@taquito/signer": "^14.1.0",
+    "@taquito/taquito": "^14.1.0",
+    "aws-amplify": "^5.0.2",
+    "aws-sdk": "^2.1256.0",
     "axios": "^0.27.2",
     "core-js": "^3.19.3",
     "fs": "^0.0.1-security",

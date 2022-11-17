@@ -48,7 +48,7 @@ const walletOptions = {
   },
 };
 
-const jokoContractAddress = "KT1WJEug8U8quEwRWi2sFcoLRK8HnPhZSCGG";
+const jokoContractAddress = "KT1W3XVRdVnHuNNRYucXNXCijsxtxoAKCNyH";
 const fa2ContractAddress = "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW";
 
 export {

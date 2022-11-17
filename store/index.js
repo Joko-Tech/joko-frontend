@@ -1,6 +1,7 @@
 import { BeaconWallet } from "@taquito/beacon-wallet";
 import { TezosToolkit } from "@taquito/taquito";
 import { bytes2Char } from "@taquito/utils";
+import { Amplify, Auth } from 'aws-amplify';
 import { ipfsMetadataFetcher } from "~/utils/data";
 import {
   jokoContractAddress,
@@ -9,10 +10,31 @@ import {
   networks,
 } from "~/utils/network";
 import { NetworkType } from "@airgap/beacon-sdk";
+import { char2Bytes } from '@taquito/utils';
+import { RequestSignPayloadInput, SigningType } from '@airgap/beacon-sdk';
+import { checkUser, handleAmplifySignIn } from '~/utils/user';
+Amplify.configure({
+  Auth: {
+    region: process.env.NEXT_PUBLIC_REGION,
+    identityPoolId: process.env.NEXT_PUBLIC_IDENTITY_POOL_ID,
+    userPoolId: process.env.NEXT_PUBLIC_USER_POOL_ID,
+    userPoolWebClientId: process.env.NEXT_PUBLIC_WEB_CLIENT_ID,
+    authenticationFlowType: 'CUSTOM_AUTH',
+    mandatorySignIn: false
+  },
+  API: {
+    endpoints: [
+      {
+        name: process.env.NEXT_PUBLIC_API_NAME,
+        endpoint: process.env.NEXT_PUBLIC_API_BASE_URL
+      }
+    ]
+  }
+});
 // import { InMemorySigner } from "@taquito/signer";
 // import * as faucet from "~/data/faucet.json";
 let beaconWallet;
-let tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+let tezos = new TezosToolkit(networks.mainnet.nodes[0]);
 
 // check if window exists
 if (typeof window !== "undefined") {
@@ -186,16 +208,54 @@ export const actions = {
       });
     } else {
       try {
-        const permissions = await beaconWallet.client.requestPermissions({
+        const permissions = await beaconWallet.requestPermissions({
           network: {
-            type: NetworkType.CUSTOM,
-            rpcUrl: networks.ghostnet.nodes[0],
+            type: NetworkType.MAINNET,
+            rpcUrl: networks.mainnet.nodes[0],
           },
         });
-        commit("updateWallet", {
-          address: permissions.address,
-          connected: true,
-        });
+        const userAddress = await beaconWallet.client.getPKH();
+        const cognitoUser = await handleAmplifySignIn(userAddress);
+        console.log("User: ");
+        console.log(cognitoUser);
+        const message = cognitoUser.challengeParam.message;
+        console.log("Message to sign: " + message);
+        // The bytes to sign
+        const bytes = char2Bytes(message.toString());
+        const payloadBytes = '05' + '0100' + char2Bytes(bytes.length.toString()) + bytes;
+
+        // The payload to send to the wallet
+        const payload = {
+          signingType: SigningType.MICHELINE,
+          payload: payloadBytes,
+          sourceAddress: userAddress,
+        };
+        // Request to user to Sign the message on the blockchain
+        // The signing
+        const signedPayload = await beaconWallet.client.requestSignPayload(payload);
+        // The signature
+        const { signature } = signedPayload;
+
+        const publicKey = (await beaconWallet.client.getActiveAccount()).publicKey;
+        const clientMetadata = { "publicKey": publicKey }
+        console.log("Send challenge answer: \n" + cognitoUser + "\n" + signature);
+        await Auth.sendCustomChallengeAnswer(cognitoUser, signature, clientMetadata)
+          .then(async (user) => {
+            console.log('user after answer');
+            console.log(user);
+          })
+          .catch((err) => {
+            console.log(err);
+            throw err;
+          });
+        if (!await checkUser())
+          throw "Authentication failed";
+        else {
+          commit("updateWallet", {
+            address: permissions.address,
+            connected: true,
+          });
+        }
       } catch (error) {
         console.log(error);
       }
