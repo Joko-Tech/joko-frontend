@@ -35,7 +35,7 @@ const cnetwork = {
 
 const walletOptions = {
   name: "joko-wallet",
-  preferredNetwork: NetworkType.CUSTOM,
+  preferredNetwork: NetworkType.MAINNET,
   disableDefaultEvents: true, // Disable all events / UI. This also disables the pairing alert.
   eventHandlers: {
     // To keep the pairing alert, we have to add the following default event handlers back
