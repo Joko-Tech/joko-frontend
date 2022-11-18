@@ -1,7 +1,7 @@
 <template>
   <div class="c-episode">
     <div class="c-episode__maincard">
-      <EpisodeCard :episode="episode" :isAuthenticated="false" />
+      <EpisodeCard :episode="episode" :isAuthenticated="true" />
     </div>
 
     <div class="c-episode__token__wrapper">

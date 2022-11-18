@@ -13,6 +13,7 @@ import { NetworkType } from "@airgap/beacon-sdk";
 import { char2Bytes } from '@taquito/utils';
 import { RequestSignPayloadInput, SigningType } from '@airgap/beacon-sdk';
 import { checkUser, handleAmplifySignIn } from '~/utils/user';
+import { getHttp } from '~/utils/api';
 Amplify.configure({
   Auth: {
     region: process.env.NEXT_PUBLIC_REGION,
@@ -176,7 +177,6 @@ export const actions = {
         ),
       };
     });
-
     commit("updateArtists", artists);
     commit("updateStorage", storage);
   },
@@ -208,13 +208,14 @@ export const actions = {
       });
     } else {
       try {
+        console.log(process.env.NEXT_PUBLIC_REGION)
         const permissions = await beaconWallet.requestPermissions({
           network: {
             type: NetworkType.MAINNET,
             rpcUrl: networks.mainnet.nodes[0],
           },
         });
-        const userAddress = await beaconWallet.client.getPKH();
+        const userAddress = await beaconWallet.getPKH();
         const cognitoUser = await handleAmplifySignIn(userAddress);
         console.log("User: ");
         console.log(cognitoUser);
@@ -238,6 +239,7 @@ export const actions = {
 
         const publicKey = (await beaconWallet.client.getActiveAccount()).publicKey;
         const clientMetadata = { "publicKey": publicKey }
+
         console.log("Send challenge answer: \n" + cognitoUser + "\n" + signature);
         await Auth.sendCustomChallengeAnswer(cognitoUser, signature, clientMetadata)
           .then(async (user) => {
@@ -252,7 +254,7 @@ export const actions = {
           throw "Authentication failed";
         else {
           commit("updateWallet", {
-            address: permissions.address,
+            address: userAddress,
             connected: true,
           });
         }
@@ -345,4 +347,17 @@ export const actions = {
       .mint_JOKO_tier3(tokenObject)
       .send({ amount: 5 });
   },
-};
+  async getNFTsFromLambda({ state, commit }) {
+    const userAddress = state.wallet.address;
+
+    try {
+      const nfts = await getHttp('getFromLambda');
+      console.log(nfts);
+      return nfts;
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+}
+

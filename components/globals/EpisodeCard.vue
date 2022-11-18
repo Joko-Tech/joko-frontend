@@ -35,16 +35,24 @@
               <ButtonComponent size="large" @click="showVideoModal">
                 Preview
               </ButtonComponent>
-              <ButtonComponent
+              <!-- <ButtonComponent
                 size="large"
                 icon="play"
                 v-if="isAuthenticated"
                 filled
                 :href="`/episode/${slugify(episode.artistName)}`"
               >
+                Watch full episode -->
+              </ButtonComponent>
+               <ButtonComponent
+                size="large"
+                icon="play"
+                @click="checkIfAuthenticated"
+                filled
+              >
                 Watch full episode
               </ButtonComponent>
-              <div v-else class="c-episode__prompt">
+              <!-- <div v-else class="c-episode__prompt">
                 <ButtonComponent
                   size="large"
                   buttonType="icon"
@@ -55,7 +63,7 @@
                 <p class="c-episode__prompt__message">
                   You need a token to watch the full episode.
                 </p>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -120,7 +128,7 @@ export default {
     isAuthenticated: {
       type: Boolean,
       required: true,
-      default: false,
+      default: true,
     },
   },
   computed: {
@@ -137,6 +145,9 @@ export default {
     showFullText() {
       this.isTextShortened = false;
     },
+    checkIfAuthenticated() {
+      const nfts = this.$store.dispatch("getNFTsFromLambda");
+    }
   },
 };
 </script>
