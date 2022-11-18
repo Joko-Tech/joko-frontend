@@ -347,13 +347,36 @@ export const actions = {
       .mint_JOKO_tier3(tokenObject)
       .send({ amount: 5 });
   },
-  async getNFTsFromLambda({ state, commit }) {
-    const userAddress = state.wallet.address;
-
+  async isAuthenticated({ state, commit }, artistName) {
+    const nftIdList = [];
+    const requiredNftList = [];
+    let hasNft = false;
     try {
+      const contractStorage = await this.$axios.$get(
+        `https://api.tzkt.io/v1/contracts/${jokoContractAddress}/storage`
+      );
+      const tier_map = contractStorage.tier_map[artistName];
+      console.log(tier_map)
+      tier_map["tier1"]?.map(tokenId => {
+        requiredNftList.push(tokenId)
+      })
+      tier_map["tier2"]?.map(tokenId => {
+        requiredNftList.push(tokenId)
+      })
+      tier_map["tier3"]?.map(tokenId => {
+        requiredNftList.push(tokenId)
+      })
+      console.log(requiredNftList);
       const nfts = await getHttp('getFromLambda');
-      console.log(nfts);
-      return nfts;
+      nfts.map(nft => {
+        nftIdList.push(nft.token.tokenId);
+      })
+      console.log(nftIdList);
+      nftIdList.map(nft => {
+        if (requiredNftList.includes(nft))
+          hasNft = true;
+      })
+      return hasNft;
     }
     catch (e) {
       console.log(e);

@@ -42,8 +42,8 @@
                 filled
                 :href="`/episode/${slugify(episode.artistName)}`"
               >
-                Watch full episode -->
-              </ButtonComponent>
+                Watch full episode
+              </ButtonComponent> -->
                <ButtonComponent
                 size="large"
                 icon="play"
@@ -146,7 +146,13 @@ export default {
       this.isTextShortened = false;
     },
     checkIfAuthenticated() {
-      const nfts = this.$store.dispatch("getNFTsFromLambda");
+      const isAuthenticated = this.$store.dispatch("isAuthenticated", this.episode.artistName);
+      // const requiredNfts = this.$store.dispatch("getRequiredNfts", this.episode.artistName);
+      isAuthenticated.then(value => {
+        console.log(value);
+        if(value) window.location.href = `/episode/${(this.episode.artistName)}`;
+      })
+      
     }
   },
 };
