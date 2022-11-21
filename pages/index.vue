@@ -15,7 +15,7 @@
           <span class="c-line__inner">The Music.</span>
         </div>
       </h1>
-      <p class="c-home__hero__desc">
+      <p class="c-home__hero__desc" data-animation="in-view">
         We are using the power of storytelling to enable musicians build a
         stronger connection with existing fans, and acquire new core fans.
       </p>

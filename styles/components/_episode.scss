@@ -79,6 +79,13 @@
       background: $white;
       width: 100%;
       height: 1px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1s ease;
+
+      &.in-view {
+        transform: scaleX(1);
+      }
     }
 
     span {
