@@ -21,17 +21,16 @@ import { mapGetters } from "vuex";
 export default {
   computed: {
     ...mapGetters({
-      wallet: "wallet",
+      wallet: "wallet/wallet",
     }),
   },
 
   methods: {
     connect() {
-      console.log("connect");
-      this.$store.dispatch("connectWallet");
+      this.$store.dispatch("wallet/connectWallet");
     },
     disconnect() {
-      this.$store.dispatch("disconnectWallet");
+      this.$store.dispatch("wallet/disconnectWallet");
     },
   },
 };

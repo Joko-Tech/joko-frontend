@@ -1,0 +1,249 @@
+import { BeaconWallet } from "@taquito/beacon-wallet";
+import { TezosToolkit } from "@taquito/taquito";
+import { Amplify, Auth } from "aws-amplify";
+import { jokoContractAddress, walletOptions, networks } from "~/utils/network";
+import { NetworkType } from "@airgap/beacon-sdk";
+import { char2Bytes } from "@taquito/utils";
+import { SigningType } from "@airgap/beacon-sdk";
+import { checkUser, handleAmplifySignIn } from "~/utils/user";
+import { getHttp } from "~/utils/api";
+
+Amplify.configure({
+  Auth: {
+    region: process.env.NEXT_PUBLIC_REGION,
+    identityPoolId: process.env.NEXT_PUBLIC_IDENTITY_POOL_ID,
+    userPoolId: process.env.NEXT_PUBLIC_USER_POOL_ID,
+    userPoolWebClientId: process.env.NEXT_PUBLIC_WEB_CLIENT_ID,
+    authenticationFlowType: "CUSTOM_AUTH",
+    mandatorySignIn: false,
+  },
+  API: {
+    endpoints: [
+      {
+        name: process.env.NEXT_PUBLIC_API_NAME,
+        endpoint: process.env.NEXT_PUBLIC_API_BASE_URL,
+      },
+    ],
+  },
+});
+
+let beaconWallet;
+let tezos = new TezosToolkit(networks.mainnet.nodes[0]);
+
+// check if window exists
+if (typeof window !== "undefined") {
+  beaconWallet = new BeaconWallet(walletOptions);
+}
+
+export const state = () => ({
+  wallet: {
+    address: "",
+    balance: "",
+    isConnected: false,
+  },
+});
+
+export const getters = {
+  wallet: (state) => {
+    return state.wallet;
+  },
+};
+
+export const mutations = {
+  updateWallet: (state, payload) => {
+    const { address, connected } = payload;
+
+    const updatedWallet = {
+      ...state.wallet,
+      address,
+      isConnected: connected,
+    };
+
+    state.wallet = updatedWallet;
+  },
+};
+
+export const actions = {
+  async connectWallet({ state, commit }) {
+    // tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+    tezos.setWalletProvider(beaconWallet);
+
+    const activeAccount = await beaconWallet.client.getActiveAccount();
+    if (activeAccount) {
+      commit("updateWallet", {
+        address: activeAccount.address,
+        connected: true,
+      });
+    } else {
+      try {
+        console.log(process.env.NEXT_PUBLIC_REGION);
+        const permissions = await beaconWallet.requestPermissions({
+          network: {
+            type: NetworkType.MAINNET,
+            rpcUrl: networks.mainnet.nodes[0],
+          },
+        });
+        const userAddress = await beaconWallet.getPKH();
+        const cognitoUser = await handleAmplifySignIn(userAddress);
+        console.log("User: ");
+        console.log(cognitoUser);
+        const message = cognitoUser.challengeParam.message;
+        console.log("Message to sign: " + message);
+        // The bytes to sign
+        const bytes = char2Bytes(message.toString());
+        const payloadBytes =
+          "05" + "0100" + char2Bytes(bytes.length.toString()) + bytes;
+
+        // The payload to send to the wallet
+        const payload = {
+          signingType: SigningType.MICHELINE,
+          payload: payloadBytes,
+          sourceAddress: userAddress,
+        };
+        // Request to user to Sign the message on the blockchain
+        // The signing
+        const signedPayload = await beaconWallet.client.requestSignPayload(
+          payload
+        );
+        // The signature
+        const { signature } = signedPayload;
+
+        const publicKey = (await beaconWallet.client.getActiveAccount())
+          .publicKey;
+        const clientMetadata = { publicKey: publicKey };
+
+        console.log(
+          "Send challenge answer: \n" + cognitoUser + "\n" + signature
+        );
+        await Auth.sendCustomChallengeAnswer(
+          cognitoUser,
+          signature,
+          clientMetadata
+        )
+          .then(async (user) => {
+            console.log("user after answer");
+            console.log(user);
+          })
+          .catch((err) => {
+            console.log(err);
+            throw err;
+          });
+        if (!(await checkUser())) throw "Authentication failed";
+        else {
+          commit("updateWallet", {
+            address: userAddress,
+            connected: true,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  },
+  async disconnectWallet({ commit }) {
+    await beaconWallet.clearActiveAccount();
+
+    commit("updateWallet", {
+      address: "",
+      connected: false,
+    });
+  },
+  async addNewArtist({ state, commit }) {
+    new TezosToolkit(networks.ghostnet.nodes[0]);
+
+    // tezos.setSignerProvider(
+    //   InMemorySigner.fromFundraiser(
+    //     faucet.email,
+    //     faucet.password,
+    //     faucet.mnemonic.join(" ")
+    //   )
+    // );
+
+    const artistObject = {
+      artist: "harry2",
+      artist_record: {
+        address: "tz1bnmFGgKfrRfHLNABQpWh14CjsTKmrFNog",
+        max_mint: 2,
+        tier1_index: 0,
+        tier1_metadata_path:
+          "697066733a2f2f516d53635262716947655231625778376b6661757246767678734d457353",
+        tier1_total_supply: 1,
+        tier2_index: 0,
+        tier2_metadata_path:
+          "697066733a2f2f516d53635262716947655231625778376b6661757246767678734d457353",
+        tier2_total_supply: 10,
+        tier3_index: 0,
+        tier3_metadata_path:
+          "697066733a2f2f516d53635262716947655231625778376b6661757246767678734d457353",
+        tier3_total_supply: 20,
+      },
+    };
+
+    const contract = await tezos.contract.at(jokoContractAddress);
+
+    const res = await contract.methodsObject.add_artist(artistObject).send();
+  },
+  async mintTier2({ state, commit }, tokenPayload) {
+    const { artist, pixel_artist } = tokenPayload;
+
+    const tokenObject = {
+      artist,
+      pixel_artist,
+      amount_tokens: 1,
+    };
+
+    const contract = await tezos.wallet.at(jokoContractAddress);
+
+    const res = await contract.methodsObject
+      .mint_JOKO_tier2(tokenObject)
+      .send({ amount: 10 });
+  },
+  async mintTier3({ state, commit }, tokenPayload) {
+    const { artist, pixel_artist } = tokenPayload;
+
+    const tokenObject = {
+      artist,
+      pixel_artist,
+      amount_tokens: 1,
+    };
+
+    const contract = await tezos.wallet.at(jokoContractAddress);
+
+    const res = await contract.methodsObject
+      .mint_JOKO_tier3(tokenObject)
+      .send({ amount: 5 });
+  },
+  async isAuthenticated({ state, commit }, artistName) {
+    const nftIdList = [];
+    const requiredNftList = [];
+    let hasNft = false;
+    try {
+      const contractStorage = await this.$axios.$get(
+        `https://api.tzkt.io/v1/contracts/${jokoContractAddress}/storage`
+      );
+      const tier_map = contractStorage.tier_map[artistName];
+      console.log(tier_map);
+      tier_map["tier1"]?.map((tokenId) => {
+        requiredNftList.push(tokenId);
+      });
+      tier_map["tier2"]?.map((tokenId) => {
+        requiredNftList.push(tokenId);
+      });
+      tier_map["tier3"]?.map((tokenId) => {
+        requiredNftList.push(tokenId);
+      });
+      console.log(requiredNftList);
+      const nfts = await getHttp("getFromLambda");
+      nfts.map((nft) => {
+        nftIdList.push(nft.token.tokenId);
+      });
+      console.log(nftIdList);
+      nftIdList.map((nft) => {
+        if (requiredNftList.includes(nft)) hasNft = true;
+      });
+      return hasNft;
+    } catch (e) {
+      console.log(e);
+    }
+  },
+};
