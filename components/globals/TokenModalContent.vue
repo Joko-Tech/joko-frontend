@@ -10,7 +10,7 @@
     </div>
     <div class="c-modal--token__content">
       <div class="c-content">
-        <div class="c-content__label">You own 1</div>
+        <!-- <div class="c-content__label">You own 1</div> -->
         <div class="c-content__name">
           {{ token.name }}
         </div>
@@ -84,7 +84,11 @@
             v-if="token.type === 'gallery'"
             :href="raribleUrl"
           >
-            Sell
+            <span v-if="highestBid">Bid</span>
+            <span
+              v-if="(!highestBid && lowestAsk) || (!highestBid && !lowestAsk)"
+              >Buy</span
+            >
           </ButtonComponent>
           <ButtonComponent
             size="large"
