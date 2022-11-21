@@ -3,7 +3,9 @@
     <div class="c-episode__header">
       <div class="c-episode__header__inner">
         <div class="c-episode__number">{{ episode.artistName }}</div>
-        <div class="c-episode__line"><span> &nbsp; - &nbsp;</span></div>
+        <div class="c-episode__line" data-animation="in-view">
+          <span> &nbsp; - &nbsp;</span>
+        </div>
         <h2 class="c-episode__artist">
           <!-- {{ episode.episodeName }} -->
           Choices

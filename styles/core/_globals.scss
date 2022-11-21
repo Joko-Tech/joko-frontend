@@ -100,3 +100,26 @@ svg {
     padding: 0 16px;
   }
 }
+
+[data-animation="paragraph"],
+[data-animation="title"] {
+  .word {
+    overflow: hidden;
+    vertical-align: top;
+    display: inline-flex;
+    // padding-bottom: 0.2ch;
+    // margin-top: -0.2ch;
+
+    > span {
+      display: inline-block;
+    }
+  }
+}
+
+[data-animation] {
+  opacity: 0;
+
+  &.in-view {
+    opacity: 1;
+  }
+}
