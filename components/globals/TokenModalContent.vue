@@ -78,7 +78,12 @@
             </div>
           </div>
 
-          <ButtonComponent size="large" filled v-if="token.type === 'gallery'">
+          <ButtonComponent
+            size="large"
+            filled
+            v-if="token.type === 'gallery'"
+            :href="raribleUrl"
+          >
             Sell
           </ButtonComponent>
           <ButtonComponent
@@ -104,6 +109,7 @@ export default {
       lowestAsk: null,
       highestBid: null,
       lastSale: null,
+      raribleUrl: null,
       baseURL: "http://15.207.106.83/api/rest/",
     };
   },
@@ -117,6 +123,7 @@ export default {
       this.fetchAsk();
       this.fetchBid();
       this.fetchSale();
+      this.fetchMint();
 
       this.fetchInterval = setInterval(() => {
         this.fetchAsk();
@@ -162,6 +169,18 @@ export default {
         this.lastSale = Number(res.lastSaleByPk.amount).toFixed(2);
       } else {
         this.lastSale = null;
+      }
+    },
+
+    async fetchMint() {
+      const res = await this.$axios.$get(
+        `${this.baseURL}mint?id=${this.token.tokenId}`
+      );
+
+      if (res.mintByPk) {
+        this.raribleUrl = res.mintByPk.raribleUrl;
+      } else {
+        this.raribleUrl = null;
       }
     },
 
