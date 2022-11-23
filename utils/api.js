@@ -1,6 +1,6 @@
 import { Auth, API } from 'aws-amplify';
 
-export async function getHttp(path, myInit) {
+export async function getHttp(path, myInit, artistName) {
     const apiName = process.env.NEXT_PUBLIC_API_NAME;
     
     // Http API call init parameters
@@ -10,34 +10,13 @@ export async function getHttp(path, myInit) {
             .getIdToken()
             .getJwtToken()}`
     };
-    console.log(apiName, myInit.headers)
+    myInit.queryStringParameters = {
+        artistName: artistName // OPTIONAL
+    }
+    console.log(myInit)
     // We make sure we have an authenticated user with fresh token
     await Auth.currentAuthenticatedUser();
 
     return API.get(apiName, path, myInit);
 }
-
-// export async function getNFTsAlchemy() {
-//     const path = '/getNFTsAlchemy';
-//     try {
-//         const nfts = await getCall(path);
-//         console.log(nfts);
-//         return nfts;
-//     } catch (error) {
-//         console.log(error);
-//         return null;
-//     }
-// }
-
-// export async function getFromLambda() {
-//     const path = '/getFromLambda';
-//     try {
-//         const nfts = await getCall(path);
-//         console.log(nfts);
-//         return nfts;
-//     } catch (error) {
-//         console.log(error);
-//         return null;
-//     }
-// }
 

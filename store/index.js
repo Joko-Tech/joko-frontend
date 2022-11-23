@@ -11,7 +11,7 @@ import {
 } from "~/utils/network";
 import { NetworkType } from "@airgap/beacon-sdk";
 import { char2Bytes } from '@taquito/utils';
-import { RequestSignPayloadInput, SigningType } from '@airgap/beacon-sdk';
+import { SigningType } from '@airgap/beacon-sdk';
 import { checkUser, handleAmplifySignIn } from '~/utils/user';
 import { getHttp } from '~/utils/api';
 Amplify.configure({
@@ -348,39 +348,9 @@ export const actions = {
       .send({ amount: 5 });
   },
   async isAuthenticated({ state, commit }, artistName) {
-    const nftIdList = [];
-    const requiredNftList = [];
-    let hasNft = false;
-    try {
-      const contractStorage = await this.$axios.$get(
-        `https://api.tzkt.io/v1/contracts/${jokoContractAddress}/storage`
-      );
-      const tier_map = contractStorage.tier_map[artistName];
-      console.log(tier_map)
-      tier_map["tier1"]?.map(tokenId => {
-        requiredNftList.push(tokenId)
-      })
-      tier_map["tier2"]?.map(tokenId => {
-        requiredNftList.push(tokenId)
-      })
-      tier_map["tier3"]?.map(tokenId => {
-        requiredNftList.push(tokenId)
-      })
-      console.log(requiredNftList);
-      const nfts = await getHttp('getFromLambda');
-      nfts.map(nft => {
-        nftIdList.push(nft.token.tokenId);
-      })
-      console.log(nftIdList);
-      nftIdList.map(nft => {
-        if (requiredNftList.includes(nft))
-          hasNft = true;
-      })
-      return hasNft;
-    }
-    catch (e) {
-      console.log(e);
-    }
+      const res = await getHttp('getFromLambda',{}, artistName);
+      console.log(res)
+      return res.hasNft;
   }
 }
 

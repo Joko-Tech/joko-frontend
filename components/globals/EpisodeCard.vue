@@ -147,7 +147,6 @@ export default {
     },
     checkIfAuthenticated() {
       const isAuthenticated = this.$store.dispatch("isAuthenticated", this.episode.artistName);
-      // const requiredNfts = this.$store.dispatch("getRequiredNfts", this.episode.artistName);
       isAuthenticated.then(value => {
         console.log(value);
         if(value) window.location.href = `/episode/${(this.episode.artistName)}`;
