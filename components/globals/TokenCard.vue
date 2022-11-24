@@ -117,11 +117,11 @@ export default {
       };
 
       if (this.token.tier === 2) {
-        this.$store.dispatch("mintTier2", payload);
+        this.$store.dispatch("wallet/mintTier2", payload);
       }
 
       if (this.token.tier === 3) {
-        this.$store.dispatch("mintTier3", payload);
+        this.$store.dispatch("wallet/mintTier3", payload);
       }
     },
   },

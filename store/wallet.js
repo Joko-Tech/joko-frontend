@@ -142,7 +142,7 @@ export const actions = {
   },
   async disconnectWallet({ commit }) {
     await beaconWallet.clearActiveAccount();
-
+    await Auth.signOut();
     commit("updateWallet", {
       address: "",
       connected: false,

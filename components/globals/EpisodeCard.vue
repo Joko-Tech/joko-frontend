@@ -146,7 +146,7 @@ export default {
       this.isTextShortened = false;
     },
     checkIfAuthenticated() {
-      const isAuthenticated = this.$store.dispatch("isAuthenticated", this.episode.artistName);
+      const isAuthenticated = this.$store.dispatch("wallet/isAuthenticated", this.episode.artistName);
       isAuthenticated.then(value => {
         console.log(value);
         if(value) window.location.href = `/episode/${(this.episode.artistName)}`;
