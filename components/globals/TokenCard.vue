@@ -117,7 +117,7 @@ export default {
         price: this.price,
       };
 
-      if (this.token.tier === 2) {
+      if (this.token.tier === 1) {
         this.$store.dispatch("wallet/mintTier1", payload);
       }
 
