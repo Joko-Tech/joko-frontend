@@ -110,8 +110,6 @@ export const actions = {
     const artistsKeys = Array.from(artistsMap.keys());
     const artistsValues = Array.from(artistsMap.values());
 
-    console.log(storage);
-
     const artists = artistsKeys.map((key, index) => {
       return {
         artistName: key.replace(/['"]+/g, ""),
