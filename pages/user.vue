@@ -56,7 +56,7 @@ export default {
     async fetchUserTokens() {
       try {
         const res = await this.$axios.$get(
-          `https://api.ghostnet.tzkt.io/v1/tokens/balances/?account=${this.wallet.address}&token.contract=${fa2ContractAddress}`
+          `https://api.mainnet.tzkt.io/v1/tokens/balances/?account=${this.wallet.address}&token.contract=${fa2ContractAddress}`
         );
 
         this.isLoading = false;
