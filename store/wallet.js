@@ -41,11 +41,15 @@ export const state = () => ({
     balance: "",
     isConnected: false,
   },
+  walletTokens: null,
 });
 
 export const getters = {
   wallet: (state) => {
     return state.wallet;
+  },
+  walletTokens: (state) => {
+    return state.walletTokens;
   },
 };
 
@@ -60,6 +64,9 @@ export const mutations = {
     };
 
     state.wallet = updatedWallet;
+  },
+  updateWalletTokens: (state, payload) => {
+    state.walletTokens = payload;
   },
 };
 

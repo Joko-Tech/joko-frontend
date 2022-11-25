@@ -12,14 +12,16 @@
       <section class="c-user__tokenarea">
         <div class="c-user__tokenarea__header">
           <h1 class="c-user__tokenarea__title">Your Tokens</h1>
-          <div class="c-user__tokenarea__number">{{ userTokens.length }}</div>
+          <div class="c-user__tokenarea__number">
+            {{ modifiedTokens.length }}
+          </div>
         </div>
         <div class="c-user__tokenarea__main">
           <div class="c-masonry" data-masonry>
             <TokenGalleryCard
-              v-for="(token, index) in userTokens"
+              v-for="(token, index) in modifiedTokens"
               :key="index"
-              :token="token.token.metadata"
+              :token="token"
               data-masonry-item
               :data-index="index"
             />
@@ -40,12 +42,15 @@ export default {
   data() {
     return {
       isLoading: true,
-      userTokens: [],
+      modifiedTokens: [],
     };
   },
   async mounted() {
     this.isLoading = true;
-    this.fetchUserTokens();
+
+    if (this.wallet.isConnected) {
+      this.fetchUserTokens();
+    }
   },
   computed: {
     ...mapGetters({
@@ -60,10 +65,18 @@ export default {
         );
 
         this.isLoading = false;
-        this.userTokens = res;
 
-        if (this.userTokens.length) {
-          console.log("userTokens", this.userTokens);
+        this.modifiedTokens = res.map((token) => {
+          return {
+            ...token.token.metadata,
+            tokenId: token.token.tokenId,
+          };
+        });
+
+        console.log(this.modifiedTokens);
+
+        if (res.length) {
+          this.$store.commit("wallet/updateWalletTokens", this.modifiedTokens);
           // next tick
           this.$nextTick(() => {
             this.masonry = new Masonry({ element: this.$el });
@@ -72,6 +85,16 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+  },
+  watch: {
+    wallet: {
+      handler: function (val) {
+        if (val.isConnected) {
+          this.fetchUserTokens();
+        }
+      },
+      deep: true,
     },
   },
 };
