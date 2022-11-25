@@ -110,6 +110,10 @@
         </div>
       </div>
     </div>
+
+    <Toast toastState="error" v-show="showToast">
+      You need a token to watch the full episode.
+    </Toast>
   </div>
 </template>
 
@@ -120,8 +124,10 @@ export default {
     return {
       isTextShortened: true,
       description: `Born in April, 1996, Kelvin Nnamdi Odenigbo better known as Lojay is a Nigerian singer and songwriter. He came into limelight after featuring Wizkid in his debut EP ‘LV N ATTN’. Having developed interests in music at a very young age, Lojay released Ariel in October 2019. He featured superstar singer, Sarz in his hit single Tonongo and Monalisa, as well as worked with other artists like Wizkid.`,
+      showToast: false,
     };
   },
+
   props: {
     episode: {
       type: Object,
@@ -153,9 +159,13 @@ export default {
         this.episode.artistName
       );
       isAuthenticated.then((value) => {
-        console.log(value);
-        if(value){
-        this.$router.push(`/episode/${this.episode.artistName}`);
+        if (value) {
+          this.$router.push(`/episode/${this.episode.artistName}`);
+        } else {
+          this.showToast = true;
+          setTimeout(() => {
+            this.showToast = false;
+          }, 3000);
         }
       });
     },

@@ -1,0 +1,76 @@
+.c-toast {
+  position: fixed;
+  left: 0;
+  right: 24px;
+  bottom: 24px;
+  z-index: z("toast");
+  width: 100%;
+  margin-left: auto;
+
+  &__inner {
+    margin-left: auto;
+    min-width: 320px;
+    width: fit-content;
+    @extend %modal-bg;
+    border-radius: 4px;
+    padding: 16px;
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+
+    &--success {
+      color: $success;
+    }
+
+    &--error {
+      color: $error;
+    }
+
+    &__text {
+      @extend %body;
+      text-transform: uppercase;
+      margin-right: 2px;
+    }
+
+    &__icon {
+      display: flex;
+    }
+  }
+
+  &__body {
+    color: $white;
+  }
+
+  &__message {
+    @extend %body-small;
+  }
+
+  &__cta {
+    margin-top: 12px;
+  }
+}
+
+.toast-fade-enter,
+.toast-fade-leave-to {
+  transform: translateX(100%);
+  .c-toast__inner {
+    transform: translateX(100%);
+  }
+}
+
+.toast-fade-enter-active {
+  transition: transform 0.3s $custom;
+  .c-toast__inner {
+    transition: transform 0.3s $custom;
+  }
+}
+
+.toast-fade-leave-active {
+  transition: transform 0.4s $custom;
+  .c-toast__inner {
+    transition: transform 0.4s $custom;
+  }
+}

@@ -48,11 +48,9 @@ export default {
       isVideoModalOpen: "isVideoModalOpen",
     }),
   },
-
   mounted() {
     // this.$store.dispatch("fetchAllMetadata");
   },
-
   methods: {
     hideTokenModal() {
       this.$store.commit("token/updateIsTokenModalOpen", false);
