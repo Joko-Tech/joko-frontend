@@ -9,7 +9,7 @@
           preload="auto"
           controls
         /> -->
-        <video-player :options="videoOptions" />
+        <video-player :options="videoOptions" v-if="videoOptions" />
       </div>
       <div class="c-episodepage__bio">
         <div class="c-episodepage__bio__label">Bio</div>
@@ -83,36 +83,39 @@
 </template>
 
 <script>
-
-import VideoPlayer from '@/components/VideoPlayer.vue';
-  import  { getSignedUrl } from '@aws-sdk/cloudfront-signer';
-  
-  const key = Buffer.from(process.env.PRIVATE_KEY , 'base64').toString('ascii');
-
-  const imageUrl = getSignedUrl({
-    url: "https://d2o1rek401wuzo.cloudfront.net/assets/VANLIFE/HLS/JOKO-IMRAN_360.m3u8",
-    dateLessThan: new Date(Date.now() + 1000 * 60 * 60 *24),
-    privateKey: key,
-    keyPaidId: process.env.CLOUDFRONT_KEYPAIR_ID,
-  })
-
-  console.log(imageUrl);
+import { getSignedUrl } from "@aws-sdk/cloudfront-signer";
 
 export default {
   data() {
     return {
-      videoOptions: {
-        controls: true,
-        preload: true,
-        fluid: true,
-        sources: [
-          {
-            src: {imageUrl},
-            type: "application/x-mpegURL",
-          },
-        ],
-      },
+      videoOptions: null,
     };
+  },
+  mounted() {
+    const key = Buffer.from(process.env.PRIVATE_KEY, "base64").toString(
+      "ascii"
+    );
+
+    const imageUrl = getSignedUrl({
+      url: "https://d2o1rek401wuzo.cloudfront.net/assets/VANLIFE/HLS/JOKO-IMRAN_360.m3u8",
+      dateLessThan: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      privateKey: key,
+      keyPaidId: process.env.CLOUDFRONT_KEYPAIR_ID,
+    });
+
+    const videoOptions = {
+      controls: true,
+      preload: true,
+      fluid: true,
+      sources: [
+        {
+          src: imageUrl,
+          type: "application/x-mpegURL",
+        },
+      ],
+    };
+
+    this.videoOptions = videoOptions;
   },
   computed: {
     slug() {
