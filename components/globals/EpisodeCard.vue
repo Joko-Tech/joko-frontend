@@ -44,7 +44,7 @@
               >
                 Watch full episode
               </ButtonComponent> -->
-               <ButtonComponent
+              <ButtonComponent
                 size="large"
                 icon="play"
                 @click="checkIfAuthenticated"
@@ -146,13 +146,16 @@ export default {
       this.isTextShortened = false;
     },
     checkIfAuthenticated() {
-      const isAuthenticated = this.$store.dispatch("wallet/isAuthenticated", this.episode.artistName);
-      isAuthenticated.then(value => {
+      const isAuthenticated = this.$store.dispatch(
+        "wallet/isAuthenticated",
+        this.episode.artistName
+      );
+      isAuthenticated.then((value) => {
         console.log(value);
-        if(value) window.location.href = `/episode/${(this.episode.artistName)}`;
-      })
-      
-    }
+
+        this.$router.push(`/episode/${this.episode.artistName}`);
+      });
+    },
   },
 };
 </script>
