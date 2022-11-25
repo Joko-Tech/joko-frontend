@@ -154,8 +154,9 @@ export default {
       );
       isAuthenticated.then((value) => {
         console.log(value);
-
+        if(value){
         this.$router.push(`/episode/${this.episode.artistName}`);
+        }
       });
     },
   },
