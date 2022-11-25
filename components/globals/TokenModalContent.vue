@@ -10,7 +10,7 @@
     </div>
     <div class="c-modal--token__content">
       <div class="c-content">
-        <div class="c-content__label">You own 1</div>
+        <!-- <div class="c-content__label">You own 1</div> -->
         <div class="c-content__name">
           {{ token.name }}
         </div>
@@ -78,8 +78,17 @@
             </div>
           </div>
 
-          <ButtonComponent size="large" filled v-if="token.type === 'gallery'">
-            Sell
+          <ButtonComponent
+            size="large"
+            filled
+            v-if="token.type === 'gallery'"
+            :href="raribleUrl"
+          >
+            <span v-if="highestBid">Bid</span>
+            <span
+              v-if="(!highestBid && lowestAsk) || (!highestBid && !lowestAsk)"
+              >Buy</span
+            >
           </ButtonComponent>
           <ButtonComponent
             size="large"
@@ -104,6 +113,7 @@ export default {
       lowestAsk: null,
       highestBid: null,
       lastSale: null,
+      raribleUrl: null,
       baseURL: "http://15.207.106.83/api/rest/",
     };
   },
@@ -117,6 +127,7 @@ export default {
       this.fetchAsk();
       this.fetchBid();
       this.fetchSale();
+      this.fetchMint();
 
       this.fetchInterval = setInterval(() => {
         this.fetchAsk();
@@ -162,6 +173,18 @@ export default {
         this.lastSale = Number(res.lastSaleByPk.amount).toFixed(2);
       } else {
         this.lastSale = null;
+      }
+    },
+
+    async fetchMint() {
+      const res = await this.$axios.$get(
+        `${this.baseURL}mint?id=${this.token.tokenId}`
+      );
+
+      if (res.mintByPk) {
+        this.raribleUrl = res.mintByPk.raribleUrl;
+      } else {
+        this.raribleUrl = null;
       }
     },
 

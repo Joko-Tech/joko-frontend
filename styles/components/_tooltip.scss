@@ -12,16 +12,15 @@
 
   &__content {
     @extend %body-small;
-    max-width: 200px;
+    max-width: 314px;
     padding: 12px;
     width: max-content;
     height: auto;
     background: $bg-overlay;
     position: absolute;
     top: -16px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100%);
-    text-align: center;
+    right: -8px;
+    transform: translateY(-100%);
     opacity: 0;
     transition: opacity 0.5s ease;
 
@@ -31,9 +30,9 @@
       width: 14px;
       height: 14px;
       background: $bg-overlay;
-      left: 50%;
       bottom: -7px;
-      transform: translateX(-50%) rotate(45deg);
+      right: 10px;
+      transform: rotate(45deg);
       z-index: -1;
     }
   }
