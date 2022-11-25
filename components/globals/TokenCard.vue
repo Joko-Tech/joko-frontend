@@ -114,7 +114,12 @@ export default {
       const payload = {
         pixel_artist: this.pixelArtist,
         artist: this.token.artist,
+        price: this.price,
       };
+
+      if (this.token.tier === 2) {
+        this.$store.dispatch("wallet/mintTier1", payload);
+      }
 
       if (this.token.tier === 2) {
         this.$store.dispatch("wallet/mintTier2", payload);

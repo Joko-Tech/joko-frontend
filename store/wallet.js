@@ -183,8 +183,25 @@ export const actions = {
 
     const res = await contract.methodsObject.add_artist(artistObject).send();
   },
+
+  async mintTier1({ state, commit }, tokenPayload) {
+    const { artist, pixel_artist, price } = tokenPayload;
+
+    const tokenObject = {
+      artist,
+      pixel_artist,
+      amount_tokens: 1,
+    };
+
+    const contract = await tezos.wallet.at(jokoContractAddress);
+
+    const res = await contract.methodsObject
+      .mint_JOKO_tier1(tokenObject)
+      .send({ amount: price });
+  },
+
   async mintTier2({ state, commit }, tokenPayload) {
-    const { artist, pixel_artist } = tokenPayload;
+    const { artist, pixel_artist, price } = tokenPayload;
 
     const tokenObject = {
       artist,
@@ -196,10 +213,11 @@ export const actions = {
 
     const res = await contract.methodsObject
       .mint_JOKO_tier2(tokenObject)
-      .send({ amount: 10 });
+      .send({ amount: price });
   },
+
   async mintTier3({ state, commit }, tokenPayload) {
-    const { artist, pixel_artist } = tokenPayload;
+    const { artist, pixel_artist, price } = tokenPayload;
 
     const tokenObject = {
       artist,
@@ -211,11 +229,12 @@ export const actions = {
 
     const res = await contract.methodsObject
       .mint_JOKO_tier3(tokenObject)
-      .send({ amount: 5 });
+      .send({ amount: price });
   },
+
   async isAuthenticated({ state, commit }, artistName) {
-    const res = await getHttp('getFromLambda',{}, artistName);
-    console.log(res)
+    const res = await getHttp("getFromLambda", {}, artistName);
+    console.log(res);
     return res.hasNft;
   },
 };
