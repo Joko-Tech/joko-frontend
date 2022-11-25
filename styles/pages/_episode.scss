@@ -10,6 +10,7 @@
   &__video {
     @include ratio(16, 9);
     margin-bottom: 64px;
+    overflow: visible;
 
     > div {
       position: absolute;
