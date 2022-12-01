@@ -13,13 +13,13 @@
         <div class="c-user__tokenarea__header">
           <h1 class="c-user__tokenarea__title">Your Tokens</h1>
           <div class="c-user__tokenarea__number">
-            {{ modifiedTokens.length }}
+            {{ walletTokens.length }}
           </div>
         </div>
         <div class="c-user__tokenarea__main">
           <div class="c-masonry" data-masonry>
             <TokenGalleryCard
-              v-for="(token, index) in modifiedTokens"
+              v-for="(token, index) in walletTokens"
               :key="index"
               :token="token"
               data-masonry-item
@@ -35,64 +35,38 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { fa2ContractAddress } from "~/utils/network";
 import Masonry from "~/js/components/Masonry";
 
 export default {
   data() {
     return {
       isLoading: true,
-      modifiedTokens: [],
     };
   },
   async mounted() {
     this.isLoading = true;
-
-    if (this.wallet.isConnected) {
-      this.fetchUserTokens();
-    }
+    this.setMasonry();
   },
   computed: {
     ...mapGetters({
       wallet: "wallet/wallet",
+      walletTokens: "wallet/walletTokens",
     }),
   },
   methods: {
-    async fetchUserTokens() {
-      try {
-        const res = await this.$axios.$get(
-          `https://api.mainnet.tzkt.io/v1/tokens/balances/?account=${this.wallet.address}&token.contract=${fa2ContractAddress}`
-        );
-
-        this.isLoading = false;
-
-        this.modifiedTokens = res.map((token) => {
-          return {
-            ...token.token.metadata,
-            tokenId: token.token.tokenId,
-          };
+    setMasonry() {
+      if (this.walletTokens && this.walletTokens.length) {
+        // next tick
+        this.$nextTick(() => {
+          this.masonry = new Masonry({ element: this.$el });
         });
-
-        console.log(this.modifiedTokens);
-
-        if (res.length) {
-          this.$store.commit("wallet/updateWalletTokens", this.modifiedTokens);
-          // next tick
-          this.$nextTick(() => {
-            this.masonry = new Masonry({ element: this.$el });
-          });
-        }
-      } catch (error) {
-        console.log(error);
       }
     },
   },
   watch: {
-    wallet: {
-      handler: function (val) {
-        if (val.isConnected) {
-          this.fetchUserTokens();
-        }
+    walletTokens: {
+      handler: function () {
+        this.setMasonry();
       },
       deep: true,
     },

@@ -1,7 +1,12 @@
 import { BeaconWallet } from "@taquito/beacon-wallet";
 import { TezosToolkit } from "@taquito/taquito";
 import { Amplify, Auth } from "aws-amplify";
-import { jokoContractAddress, walletOptions, networks } from "~/utils/network";
+import {
+  jokoContractAddress,
+  walletOptions,
+  networks,
+  fa2ContractAddress,
+} from "~/utils/network";
 import { NetworkType } from "@airgap/beacon-sdk";
 import { char2Bytes } from "@taquito/utils";
 import { SigningType } from "@airgap/beacon-sdk";
@@ -41,7 +46,7 @@ export const state = () => ({
     balance: "",
     isConnected: false,
   },
-  walletTokens: null,
+  walletTokens: [],
 });
 
 export const getters = {
@@ -243,5 +248,24 @@ export const actions = {
     const res = await getHttp("getFromLambda", {}, artistName);
     console.log(res);
     return res.hasNft;
+  },
+
+  async fetchUserTokens({ state, commit }) {
+    try {
+      const res = await this.$axios.$get(
+        `https://api.mainnet.tzkt.io/v1/tokens/balances/?account=${state.wallet.address}&token.contract=${fa2ContractAddress}`
+      );
+
+      const modifiedTokens = res.map((token) => {
+        return {
+          ...token.token.metadata,
+          tokenId: token.token.tokenId,
+        };
+      });
+
+      commit("updateWalletTokens", modifiedTokens);
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
