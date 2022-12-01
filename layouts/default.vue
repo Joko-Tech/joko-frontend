@@ -46,13 +46,12 @@ export default {
       isTokenModalOpen: "token/isTokenModalOpen",
       currentModalToken: "token/currentModalToken",
       isVideoModalOpen: "isVideoModalOpen",
+      wallet: "wallet/wallet",
     }),
   },
-
   mounted() {
     // this.$store.dispatch("fetchAllMetadata");
   },
-
   methods: {
     hideTokenModal() {
       this.$store.commit("token/updateIsTokenModalOpen", false);
@@ -83,6 +82,14 @@ export default {
           videoModalRef.focus();
         }, 0);
       }
+    },
+    wallet: {
+      handler: function (val) {
+        if (val.isConnected) {
+          this.$store.dispatch("wallet/fetchUserTokens");
+        }
+      },
+      deep: true,
     },
   },
 };

@@ -34,3 +34,11 @@
   background: linear-gradient(180deg, #373737 0%, rgba(55, 55, 55, 0) 100%);
   animation: fadeIn 1.2s $ease-in-out infinite;
 }
+
+%modal-bg {
+  background: rgba(10, 3, 0, 0.9);
+
+  @supports (backdrop-filter: blur(50px)) {
+    backdrop-filter: blur(50px);
+  }
+}

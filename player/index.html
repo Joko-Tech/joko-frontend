@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joko video streaming app</title>
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+</head>
+<body>
+    <video
+    id="my-video"
+    class="video-js"
+    controls
+    preload="auto"
+    width="640"
+    height="264"
+    poster="MY_VIDEO_POSTER.jpg"
+    data-setup="{}"
+  >
+    <source src="https://d2o1rek401wuzo.cloudfront.net/assets/VANLIFE/HLS/JOKO-IMRAN_360.m3u8?Expires=1669356976&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9kMm8xcmVrNDAxd3V6by5jbG91ZGZyb250Lm5ldC9hc3NldHMvVkFOTElGRS9ITFMvSk9LTy1JTVJBTl8zNjAubTN1OCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTY2OTM1Njk3Nn19fV19&Signature=taV-yQWgBLmrJe1Kw0xXTQPOvrmE764TzQbvndwndyvU7YochnZD5SK5fIHsl~MA460na5HC-JBfP~L3L4KVJ9rz7LXbh4tduk0YmkCqsWgGofE6EUpPvQG27LnIhbcGt1LFwZktuFA7nTJhWu4Epib4K5IZk7u01AdNevyTo7jh1S~G8FkBtZIUUwoIzbSXQlJV0rUwzZYwKkJ78SYaDoMUXQQvUXodea16b4TaTbeladBfi9RdKksBXDX45AEtukuZvNeDlpQlQKcjShBoYZcv4FGRHVwfPGqIWjybXn9hZkXFU4F~vfO~OfwJn3HihEDMoYgrkwcbJz0g81LW7w__&Key-Pair-Id=KFDSTL4XUWKY1" type="application/x-mpegURL" />
+    <source src="MY_VIDEO.webm" type="video/webm" />
+    <p class="vjs-no-js">
+      To view this video please enable JavaScript, and consider upgrading to a
+      web browser that
+      <a href="https://videojs.com/html5-video-support/" target="_blank"
+        >supports HTML5 video</a
+      >
+    </p>
+  </video>
+
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+</body>
+</html>

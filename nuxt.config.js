@@ -1,3 +1,4 @@
+require('dotenv').config()
 export default {
   // // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   // ssr: false,
@@ -30,7 +31,9 @@ export default {
   components: ["~/components", "~/components/globals", "~/components/icons"],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [],
+  buildModules: [
+    '@nuxtjs/dotenv'
+  ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [

@@ -84,11 +84,15 @@
             v-if="token.type === 'gallery'"
             :href="raribleUrl"
           >
-            <span v-if="highestBid">Bid</span>
+            <span v-if="highestBid && !isUserToken">Bid</span>
             <span
-              v-if="(!highestBid && lowestAsk) || (!highestBid && !lowestAsk)"
+              v-if="
+                (!highestBid && lowestAsk && !isUserToken) ||
+                (!highestBid && !lowestAsk && !isUserToken)
+              "
               >Buy</span
             >
+            <span v-if="isUserToken">Sell</span>
           </ButtonComponent>
           <ButtonComponent
             size="large"
@@ -120,7 +124,13 @@ export default {
   computed: {
     ...mapGetters({
       token: "token/currentModalToken",
+      walletTokens: "wallet/walletTokens",
     }),
+    isUserToken() {
+      return this.walletTokens.some(
+        (walletToken) => walletToken.tokenId === this.token.tokenId
+      );
+    },
   },
   mounted() {
     if (this.token.type === "gallery") {
@@ -195,11 +205,11 @@ export default {
       };
 
       if (this.token.tier === 2) {
-        this.$store.dispatch("mintTier2", payload);
+        this.$store.dispatch("wallet/mintTier2", payload);
       }
 
       if (this.token.tier === 3) {
-        this.$store.dispatch("mintTier3", payload);
+        this.$store.dispatch("wallet/mintTier3", payload);
       }
     },
   },

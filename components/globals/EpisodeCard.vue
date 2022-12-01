@@ -37,7 +37,7 @@
               <ButtonComponent size="large" @click="showVideoModal">
                 Preview
               </ButtonComponent>
-              <ButtonComponent
+              <!-- <ButtonComponent
                 size="large"
                 icon="play"
                 v-if="isAuthenticated"
@@ -45,8 +45,16 @@
                 :href="`/episode/${slugify(episode.artistName)}`"
               >
                 Watch full episode
+              </ButtonComponent> -->
+              <ButtonComponent
+                size="large"
+                icon="play"
+                @click="checkIfAuthenticated"
+                filled
+              >
+                Watch full episode
               </ButtonComponent>
-              <div v-else class="c-episode__prompt">
+              <!-- <div v-else class="c-episode__prompt">
                 <ButtonComponent
                   size="large"
                   buttonType="icon"
@@ -57,7 +65,7 @@
                 <p class="c-episode__prompt__message">
                   You need a token to watch the full episode.
                 </p>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -102,6 +110,10 @@
         </div>
       </div>
     </div>
+
+    <Toast toastState="error" v-show="showToast">
+      You need a token to watch the full episode.
+    </Toast>
   </div>
 </template>
 
@@ -112,8 +124,10 @@ export default {
     return {
       isTextShortened: true,
       description: `Born in April, 1996, Kelvin Nnamdi Odenigbo better known as Lojay is a Nigerian singer and songwriter. He came into limelight after featuring Wizkid in his debut EP ‘LV N ATTN’. Having developed interests in music at a very young age, Lojay released Ariel in October 2019. He featured superstar singer, Sarz in his hit single Tonongo and Monalisa, as well as worked with other artists like Wizkid.`,
+      showToast: false,
     };
   },
+
   props: {
     episode: {
       type: Object,
@@ -122,7 +136,7 @@ export default {
     isAuthenticated: {
       type: Boolean,
       required: true,
-      default: false,
+      default: true,
     },
   },
   computed: {
@@ -138,6 +152,22 @@ export default {
     },
     showFullText() {
       this.isTextShortened = false;
+    },
+    checkIfAuthenticated() {
+      const isAuthenticated = this.$store.dispatch(
+        "wallet/isAuthenticated",
+        this.episode.artistName
+      );
+      isAuthenticated.then((value) => {
+        if (value) {
+          this.$router.push(`/episode/${this.episode.artistName}`);
+        } else {
+          this.showToast = true;
+          setTimeout(() => {
+            this.showToast = false;
+          }, 3000);
+        }
+      });
     },
   },
 };

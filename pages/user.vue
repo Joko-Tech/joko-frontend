@@ -12,14 +12,16 @@
       <section class="c-user__tokenarea">
         <div class="c-user__tokenarea__header">
           <h1 class="c-user__tokenarea__title">Your Tokens</h1>
-          <div class="c-user__tokenarea__number">{{ userTokens.length }}</div>
+          <div class="c-user__tokenarea__number">
+            {{ walletTokens.length }}
+          </div>
         </div>
         <div class="c-user__tokenarea__main">
           <div class="c-masonry" data-masonry>
             <TokenGalleryCard
-              v-for="(token, index) in userTokens"
+              v-for="(token, index) in walletTokens"
               :key="index"
-              :token="token.token.metadata"
+              :token="token"
               data-masonry-item
               :data-index="index"
             />
@@ -33,45 +35,40 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { fa2ContractAddress } from "~/utils/network";
 import Masonry from "~/js/components/Masonry";
 
 export default {
   data() {
     return {
       isLoading: true,
-      userTokens: [],
     };
   },
   async mounted() {
     this.isLoading = true;
-    this.fetchUserTokens();
+    this.setMasonry();
   },
   computed: {
     ...mapGetters({
-      wallet: "wallet",
+      wallet: "wallet/wallet",
+      walletTokens: "wallet/walletTokens",
     }),
   },
   methods: {
-    async fetchUserTokens() {
-      try {
-        const res = await this.$axios.$get(
-          `https://api.ghostnet.tzkt.io/v1/tokens/balances/?account=${this.wallet.address}&token.contract=${fa2ContractAddress}`
-        );
-
-        this.isLoading = false;
-        this.userTokens = res;
-
-        if (this.userTokens.length) {
-          console.log("userTokens", this.userTokens);
-          // next tick
-          this.$nextTick(() => {
-            this.masonry = new Masonry({ element: this.$el });
-          });
-        }
-      } catch (error) {
-        console.log(error);
+    setMasonry() {
+      if (this.walletTokens && this.walletTokens.length) {
+        // next tick
+        this.$nextTick(() => {
+          this.masonry = new Masonry({ element: this.$el });
+        });
       }
+    },
+  },
+  watch: {
+    walletTokens: {
+      handler: function () {
+        this.setMasonry();
+      },
+      deep: true,
     },
   },
 };

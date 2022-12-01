@@ -1,5 +1,6 @@
 import Component from "../classes/Component";
 import AutoBind from "../utils/bind";
+import { mapEach } from "../utils/dom";
 
 export default class Masonry extends Component {
   constructor({ element }) {
@@ -24,7 +25,7 @@ export default class Masonry extends Component {
 
     const columnArray = [...Array(columns).keys()];
 
-    columnArray.forEach((column) => {
+    mapEach(columnArray, (column) => {
       const columnWrapper = document.createElement("div");
       columnWrapper.classList.add("c-column");
       columnWrappers[column] = columnWrapper;
@@ -32,7 +33,8 @@ export default class Masonry extends Component {
       masonry.appendChild(columnWrappers[column]);
     });
 
-    masonryItems.forEach((item, index) => {
+    mapEach(masonryItems, (item, i) => {
+      const index = i ? i : 0;
       const column = index % columns;
       columnWrappers[column].appendChild(item);
     });

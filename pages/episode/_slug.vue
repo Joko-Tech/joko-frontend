@@ -3,12 +3,13 @@
     <section>
       <h1 class="c-episodepage__title">EPISODE 1 - CHOICES</h1>
       <div class="c-episodepage__video">
-        <video
+        <!-- <video
           src="https://res.cloudinary.com/dmwfd0zhh/video/upload/v1645290917/Pith%20Africa/PITH-_JFE_compressed_xjx09l.mp4"
           poster="https://res.cloudinary.com/dmwfd0zhh/image/upload/q_auto,f_auto/v1645453390/Pith%20Africa/Screenshot_2022-02-21_at_3.21.43_PM_xx2lrw.jpg"
           preload="auto"
           controls
-        />
+        /> -->
+        <video-player :options="videoOptions" v-if="videoOptions" />
       </div>
       <div class="c-episodepage__bio">
         <div class="c-episodepage__bio__label">Bio</div>
@@ -82,7 +83,40 @@
 </template>
 
 <script>
+import { getSignedUrl } from "@aws-sdk/cloudfront-signer";
+
 export default {
+  data() {
+    return {
+      videoOptions: null,
+    };
+  },
+  mounted() {
+    const key = Buffer.from(process.env.PRIVATE_KEY, "base64").toString(
+      "ascii"
+    );
+
+    const imageUrl = getSignedUrl({
+      url: "https://d2o1rek401wuzo.cloudfront.net/assets/VANLIFE/HLS/JOKO-IMRAN_360.m3u8",
+      dateLessThan: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      privateKey: key,
+      keyPaidId: process.env.CLOUDFRONT_KEYPAIR_ID,
+    });
+
+    const videoOptions = {
+      controls: true,
+      preload: true,
+      fluid: true,
+      sources: [
+        {
+          src: imageUrl,
+          type: "application/x-mpegURL",
+        },
+      ],
+    };
+
+    this.videoOptions = videoOptions;
+  },
   computed: {
     slug() {
       return this.$route.params.slug;

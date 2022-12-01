@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       metadatas: null,
-      isAuthenticated: true,
+      isAuthenticated: false,
     };
   },
   props: {
@@ -39,9 +39,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters({
-      episodeTokenMetadata: "episodeTokenMetadata",
-    }),
+    ...mapGetters({}),
   },
   async mounted() {
     // getch all token tier metadata from 1 - 3

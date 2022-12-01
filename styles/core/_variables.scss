@@ -24,6 +24,7 @@ $font-body: "Arial", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
   "Segoe UI Symbol";
 
 // functional colors
+$success: #0ae706;
 $error: #cf3820;
 
 // border
@@ -34,6 +35,7 @@ $border-current: 1px solid currentColor;
 
 $z-indexes: (
   "splashscreen",
+  "toast",
   "modal",
   "backdrop",
   "overlay",
