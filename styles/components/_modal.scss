@@ -101,7 +101,7 @@
   }
 
   &__image {
-    max-width: 349px;
+    max-width: 600px;
     width: 100%;
     @include ratioVar(--width, --height);
   }
