@@ -5,7 +5,20 @@
       ref="tokenImage"
       :class="`c-tokencard__image--${size}`"
     >
-      <img :pre-src="getImageHash(image.uri)" :alt="token.name" />
+      <img
+        :pre-src="getImageHash(image.uri)"
+        :alt="token.name"
+        v-if="!isVideo"
+      />
+      <video
+        v-else
+        :pre-src="getImageHash(image.uri)"
+        autoplay
+        preload="auto"
+        muted
+        loop
+        playsinline
+      />
       <div class="c-tokencard__prompt" />
       <div class="c-skeleton__item" />
       <div class="c-tokencard__overlay">
@@ -64,7 +77,28 @@ export default {
   computed: {
     image() {
       const displayImage = this.token.formats[1];
-      const aspectArray = displayImage.dimensions.value.split("x");
+      const aspectArray = displayImage.dimensions?.value.split("x");
+
+      if (this.isVideo) {
+        return {
+          uri: displayImage.uri,
+          aspect: {
+            width: 16,
+            height: 9,
+          },
+        };
+      }
+
+      if (!aspectArray) {
+        return {
+          uri: displayImage.uri,
+          aspect: {
+            width: 1,
+            height: 1,
+          },
+        };
+      }
+
       const width = aspectArray[0];
       const height = aspectArray[1];
 
@@ -75,6 +109,9 @@ export default {
           height,
         },
       };
+    },
+    isVideo() {
+      return this.token.formats[1].mimeType === "video/mp4";
     },
     pixelArtist() {
       return this.token.creators[1].split(" ")[0];
@@ -102,6 +139,7 @@ export default {
       const token = {
         ...this.token,
         image: this.image,
+        isVideo: this.isVideo,
         pixelArtist: this.pixelArtist,
         pixelArtistUrl: this.pixelArtistUrl,
         type: "mint",

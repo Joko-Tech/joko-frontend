@@ -5,7 +5,17 @@
         class="c-modal--token__image"
         :style="`--width: ${token.image.aspect.width}; --height: ${token.image.aspect.height}`"
       >
-        <img :src="getImageHash(token.image.uri)" :alt="token.name" />
+        <img
+          v-if="!token.isVideo"
+          :src="getImageHash(token.image.uri)"
+          :alt="token.name"
+        />
+        <video
+          v-else
+          :src="getImageHash(token.image.uri)"
+          preload="auto"
+          controls
+        />
       </div>
     </div>
     <div class="c-modal--token__content">
