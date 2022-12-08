@@ -16,7 +16,7 @@
     "@taquito/beacon-wallet": "^14.1.0",
     "@taquito/signer": "^14.1.0",
     "@taquito/taquito": "^14.1.0",
-    "aws-amplify": "^4.3.39",
+    "aws-amplify": "^5.0.5",
     "aws-sdk": "^2.1233.0",
     "axios": "^0.27.2",
     "core-js": "^3.19.3",
