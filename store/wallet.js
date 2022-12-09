@@ -6,6 +6,7 @@ import {
   walletOptions,
   networks,
   fa2ContractAddress,
+  base_tzkt_api_url,
 } from "~/utils/network";
 import { NetworkType } from "@airgap/beacon-sdk";
 import { char2Bytes } from "@taquito/utils";
@@ -33,7 +34,8 @@ Amplify.configure({
 });
 
 let beaconWallet;
-let tezos = new TezosToolkit(networks.mainnet.nodes[0]);
+// let tezos = new TezosToolkit(networks.mainnet.nodes[0]);
+let tezos = new TezosToolkit(networks.ghostnet.nodes[1]);
 
 // check if window exists
 if (typeof window !== "undefined") {
@@ -91,8 +93,8 @@ export const actions = {
         console.log(process.env.NEXT_PUBLIC_REGION);
         const permissions = await beaconWallet.requestPermissions({
           network: {
-            type: NetworkType.MAINNET,
-            rpcUrl: networks.mainnet.nodes[0],
+            type: NetworkType.GHOSTNET,
+            rpcUrl: networks.ghostnet.nodes[1],
           },
         });
         const userAddress = await beaconWallet.getPKH();
@@ -253,7 +255,7 @@ export const actions = {
   async fetchUserTokens({ state, commit }) {
     try {
       const res = await this.$axios.$get(
-        `https://api.mainnet.tzkt.io/v1/tokens/balances/?account=${state.wallet.address}&token.contract=${fa2ContractAddress}`
+        `${base_tzkt_api_url}tokens/balances/?account=${state.wallet.address}&token.contract=${fa2ContractAddress}`
       );
 
       const modifiedTokens = res.map((token) => {

@@ -50,23 +50,22 @@ export default {
       const metadatas = await Promise.all([
         await ipfsIndexFetcher(
           this.episode.tier1_metadata_path,
-          this.episode.tier1_index
+          this.episode.tier1_total_supply
         ),
         await ipfsIndexFetcher(
           this.episode.tier2_metadata_path,
-          this.episode.tier2_index
+          this.episode.tier2_total_supply
         ),
         await ipfsIndexFetcher(
           this.episode.tier3_metadata_path,
-          this.episode.tier3_index
+          this.episode.tier3_total_supply
         ),
       ]);
 
       this.metadatas = metadatas.map((metadata, index) => {
         const tier = index + 1;
-        const tokenIndex = this.episode[`tier${tier}_index`];
-        const tokenCount = this.episode[`tier${tier}_total_supply`];
-
+        const tokenIndex = Number(this.episode[`tier${tier}_total_supply`]);
+        const tokenCount = Number(this.episode[`tier${tier}_max_supply`]);
         return {
           ...metadata.data,
           tokenIndex: tokenIndex === tokenCount ? tokenIndex : tokenIndex + 1,
