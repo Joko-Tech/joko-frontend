@@ -48,12 +48,12 @@ export default class extends Animation {
       const dataSrc = video.getAttribute("pre-src");
 
       if (dataSrc) {
-        const src = optimizeCloudinaryUrl(dataSrc);
-        const poster = dataSrc;
-
-        video.setAttribute("poster", poster);
-        video.setAttribute("src", src);
+        video.setAttribute("src", dataSrc);
         video.removeAttribute("pre-src");
+
+        setTimeout(() => {
+          this.element.classList.add("loaded");
+        }, 500);
       }
     }
 
