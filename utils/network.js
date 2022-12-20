@@ -48,8 +48,8 @@ const walletOptions = {
   },
 };
 
-const jokoContractAddress = "KT1N4NzVtwCWCdnNLSsSUG9a7zJt1NUP2rxw";
-const fa2ContractAddress = "KT1SoQSSHknvaUUvBRxRiT9ynBHME8sQ191P";
+const jokoContractAddress = "KT1VFnAEjAJvN9e4bqB3HRJMwZTSEKh1EoAS";
+const fa2ContractAddress = "KT1JdcVuRJZizh9VQNQvCnaPShWBdrBK6L2b";
 
 const base_tzkt_api_url = "https://api.ghostnet.tzkt.io/v1/"
 
