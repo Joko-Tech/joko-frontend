@@ -246,10 +246,16 @@ export const actions = {
       .send({ amount: price });
   },
 
-  async isAuthenticated({ state, commit }, artistName) {
-    const res = await getHttp("getFromLambda", {}, artistName);
+  async isAuthenticatedVideo({ state, commit }, artistName) {
+    const res = await getHttp("getFromLambda", {}, artistName, jokoContractAddress, fa2ContractAddress, NetworkType.GHOSTNET);
     console.log(res);
-    return res.hasNft;
+    return res.hasNft.tier1 || res.hasNft.tier2 || res.hasNft.tier3;
+  },
+
+  async isAuthenticatedBTS({ state, commit }, artistName) {
+    const res = await getHttp("getFromLambda", {}, artistName, jokoContract, fa2ContractAddress, NetworkType.GHOSTNET);
+    console.log(res);
+    return res.hasNft.tier1 || res.hasNft.tier2;
   },
 
   async fetchUserTokens({ state, commit }) {

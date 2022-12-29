@@ -1,7 +1,7 @@
 <template>
   <div class="c-episode">
     <div class="c-episode__maincard">
-      <EpisodeCard :episode="episode" :isAuthenticated="false" />
+      <EpisodeCard :episode="episode" :isAuthenticatedVideo="false" />
     </div>
 
     <div class="c-episode__token__wrapper">
@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       metadatas: null,
-      isAuthenticated: false,
+      isAuthenticatedVideo: false,
     };
   },
   props: {

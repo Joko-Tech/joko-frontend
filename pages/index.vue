@@ -104,7 +104,7 @@ export default {
 <style lang="scss"></style>
 
 <!-- <button @click="addArtist">Add Artist</button> -->
-<!-- <EpisodeCard :episode="testEpisode" :isAuthenticated="false" /> -->
+<!-- <EpisodeCard :episode="testEpisode" :isAuthenticatedVideo="false" /> -->
 <!-- <div style="max-width: 293px; margin: 120px 0">
       <TokenCard :token="testTokenAspect" />
       <TokenGalleryCard :token="testTokenGallery" />
