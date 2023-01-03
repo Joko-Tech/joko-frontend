@@ -199,7 +199,7 @@ export const actions = {
   },
 
   async mintTier1({ state, commit }, tokenPayload) {
-    const { artist, price } = tokenPayload;
+    const { artist } = tokenPayload;
 
     const tokenObject = {
       artist,
@@ -210,7 +210,7 @@ export const actions = {
 
     const res = await contract.methodsObject
       .mint_JOKO_tier1(tokenObject)
-      .send({ amount: price });
+      .send();
   },
 
   async mintTier2({ state, commit }, tokenPayload) {
