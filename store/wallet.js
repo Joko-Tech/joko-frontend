@@ -197,11 +197,10 @@ export const actions = {
   },
 
   async mintTier1({ state, commit }, tokenPayload) {
-    const { artist, pixel_artist, price } = tokenPayload;
+    const { artist, price } = tokenPayload;
 
     const tokenObject = {
       artist,
-      pixel_artist,
       amount_tokens: 1,
     };
 
