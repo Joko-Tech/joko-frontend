@@ -162,11 +162,11 @@ export default {
   methods: {
     async fetchAsk() {
       const res = await this.$axios.$get(
-        `${this.baseURL}ask?id=${this.token.tokenId}`
+        `${this.baseURL}sellv2?_tokenId=${this.token.tokenId}`
       );
 
-      if (res.askByPk) {
-        this.lowestAsk = res.askByPk.amount;
+      if (res.sell.length) {
+        this.lowestAsk = res.sell[0].saleAmount;
       } else {
         this.lowestAsk = null;
       }
