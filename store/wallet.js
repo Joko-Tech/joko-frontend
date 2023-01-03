@@ -208,7 +208,7 @@ export const actions = {
 
     const res = await contract.methodsObject
       .mint_JOKO_tier1(tokenObject)
-      .send({ amount: price });
+      .send();
   },
 
   async mintTier2({ state, commit }, tokenPayload) {
