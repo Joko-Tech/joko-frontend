@@ -1,6 +1,6 @@
 import { TezosToolkit } from "@taquito/taquito";
 import { bytes2Char } from "@taquito/utils";
-import { ipfsMetadataFetcher } from "~/utils/data";
+import { ipfsMetadataFetcher, ipfsFetcher } from "~/utils/data";
 import {
   jokoContractAddress,
   fa2ContractAddress,
@@ -11,27 +11,27 @@ import axios from "axios";
 
 // let tezos = new TezosToolkit(networks.mainnet.nodes[0]);
 let tezos = new TezosToolkit(networks.ghostnet.nodes[1]);
-let getArtistMapId = async() => {
-  const contractBigMaps = ( 
-      await axios.get(
-          `${base_tzkt_api_url}bigmaps?contract=${jokoContractAddress}`
-      )
+let getArtistMapId = async () => {
+  const contractBigMaps = (
+    await axios.get(
+      `${base_tzkt_api_url}bigmaps?contract=${jokoContractAddress}`
+    )
   ).data;
   for (const bigMap of contractBigMaps) {
-      if(bigMap.path == "artist_map")
-          return bigMap.ptr;
+    if (bigMap.path == "artist_map")
+      return bigMap.ptr;
   }
   return null;
 }
-let getBigMapValue = async(artistsMapId) => {
+let getBigMapValue = async (artistsMapId) => {
   let value = [];
-  const bigMaps = ( 
-      await axios.get(
-          `https://api.ghostnet.tzkt.io/v1/bigmaps/${artistsMapId}/keys`
-      )
+  const bigMaps = (
+    await axios.get(
+      `https://api.ghostnet.tzkt.io/v1/bigmaps/${artistsMapId}/keys`
+    )
   ).data;
   for (const bigMap of bigMaps) {
-      value.push(bigMap)
+    value.push(bigMap)
   }
   return value;
 }
@@ -163,17 +163,27 @@ export const actions = {
   },
 
   async fetchGalleryMetadata({ commit }) {
+    const fa2_big_maps = await this.$axios.$get(
+      `${base_tzkt_api_url}bigmaps?contract=${fa2ContractAddress}`
+    );
+    const token_metadata = fa2_big_maps.find(element => element.path === "token_metadata");
+    const token_metadata_ptr = token_metadata?.ptr
     const res = await this.$axios.$get(
-      `${base_tzkt_api_url}tokens?contract=${fa2ContractAddress}`
+      `${base_tzkt_api_url}bigmaps/${token_metadata_ptr}/keys`
     );
 
-    const medatada = res.map((token) => {
-      return {
-        tokenId: token.tokenId,
-        ...token.metadata,
-      };
-    });
+    const metadata = await Promise.all(
+      res.map(async(token) => {
+        const tokenId = token.value.token_id;
+        const metadataPath = bytes2Char(token.value.token_info[""]);
+        const tokenMetadata = await ipfsFetcher(metadataPath);
+        return {
+          tokenId: tokenId,
+          ...tokenMetadata.data,
+        };
+      })
+    );
 
-    commit("updateMintedTokenMetadata", medatada);
+    commit("updateMintedTokenMetadata", metadata);
   },
 };
