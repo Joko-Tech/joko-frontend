@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUri = process.env.BASE_IPFS_PATH;
+const baseUri = "https://joko.mypinata.cloud/ipfs/";
 
 export const formatIpfsUrl = (URI) => {
   let url;
