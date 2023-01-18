@@ -35,7 +35,6 @@ let getRepTokensPerTier = (artistName, tokenList) => {
     } 
     // Check if already have the reprentative token of this artist
     if(pixelArtistList.indexOf(pixel_artist) == -1) { 
-      console.log(pixel_artist)
       pixelArtistList.push(pixel_artist)
       repTokensPerTier.push({
         tokenIds: [],
