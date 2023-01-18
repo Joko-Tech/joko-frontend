@@ -15,14 +15,33 @@ let getRepTokensPerTier = (artistName, tokenList) => {
   let pixelArtistList = []
   let repTokensPerTier = []
   tokenList.map((token, index) => {
-    const pixel_artist = token.creators[1].split(" ")[0];
+    let artist = "";
+    let tier = "";
+    let pixel_artist = "";
+    for (let i = 0; i < token.attributes.length; i++) {
+      switch (token.attributes[i].name) {
+        case "Tier":
+          tier = token.attributes[i].value ? token.attributes[i].value : null;
+          break;
+        case "Artist":
+          artist = token.attributes[i].value ? token.attributes[i].value : token.creators[0].split(" ")[0];
+          break;
+        case "Pixel artist":
+          pixel_artist = token.attributes[i].value ? token.attributes[i].value : token.creators[1].split(" ")[0];
+          break;
+        default:
+          break;
+      }
+    } 
     // Check if already have the reprentative token of this artist
     if(pixelArtistList.indexOf(pixel_artist) == -1) { 
+      console.log(pixel_artist)
       pixelArtistList.push(pixel_artist)
       repTokensPerTier.push({
-        tokenId: token.tokenId,
-        artistName: artistName,
+        tokenIds: [],
+        artistName: artist,
         pixel_artist: pixel_artist,
+        tier: tier,
         ...token
       })
     }
