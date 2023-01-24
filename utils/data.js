@@ -16,7 +16,13 @@ export const formatIpfsUrl = (URI) => {
 export const ipfsFetcher = async (URI) => {
   const url = formatIpfsUrl(URI);
 
-  return axios.get(url);
+  return axios.get(url,
+    {
+      headers: {
+        'Accept': 'text/plain'
+      }
+    }
+  );
 };
 
 export const ipfsIndexFetcher = async (URI, index) => {
@@ -24,13 +30,25 @@ export const ipfsIndexFetcher = async (URI, index) => {
 
   url = `${url}/${index}`;
 
-  return axios.get(url);
+  return axios.get(url,
+    {
+      headers: {
+        'Accept': 'text/plain'
+      }
+    }
+  );
 };
 
 export const ipfsMetadataFetcher = async (URI) => {
   const url = `${formatIpfsUrl(URI)}/_metadata.json`;
 
-  return axios.get(url);
+  return axios.get(url,
+    {
+      headers: {
+        'Accept': 'text/plain'
+      }
+    }
+  );
 };
 
 export const getImageHash = (URI) => {
