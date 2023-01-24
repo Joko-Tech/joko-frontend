@@ -1,7 +1,10 @@
 import Vue from "vue";
+import VueCookies from 'vue-cookies';
 import { createDataURL } from "~/utils/blockies";
 import { getImageHash } from "~/utils/data";
 import { slugify } from "~/utils/formatters";
+
+Vue.use(VueCookies);
 
 Vue.mixin({
   methods: {
