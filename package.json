@@ -26,6 +26,8 @@
     "video.js": "^7.20.3",
     "videojs-youtube": "^2.6.1",
     "vue": "^2.6.14",
+    "vue-cookie": "^1.1.4",
+    "vue-cookies": "^1.8.2",
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
     "webpack": "^4.46.0"

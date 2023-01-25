@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { getSignedUrl } from "@aws-sdk/cloudfront-signer";
+import { getSignedCookies } from "@aws-sdk/cloudfront-signer";
 
 export default {
   data() {
@@ -96,12 +96,54 @@ export default {
       "ascii"
     );
 
-    const imageUrl = getSignedUrl({
-      url: "https://d2o1rek401wuzo.cloudfront.net/assets/c6eee826-f3e3-4aaf-bcf2-8f04093a932a/HLS/test.m3u8",
-      dateLessThan: new Date(Date.now() + 1000 * 60),
-      privateKey: key,
-      keyPairId: process.env.CLOUDFRONT_KEYPAIR_ID,
+    const cloudfrontDistributionDomain = "https://d2o1rek401wuzo.cloudfront.net";
+    const s3ObjectKey = "assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8";
+    const url = `${cloudfrontDistributionDomain}/${s3ObjectKey}`;
+    const privateKey = key;
+    const keyPairId = process.env.CLOUDFRONT_KEYPAIR_ID;
+    const dateLessThan = "2023-01-24";
+
+    const policy = JSON.stringify({
+        "Statement": [
+            {
+                "Resource": "https://d2o1rek401wuzo.cloudfront.net/*",
+                "Condition": {
+                    "DateLessThan": {
+                        "AWS:EpochTime": new Date(Date.now + 1000 * 60)
+                    }
+                }
+            }
+        ]
     });
+
+
+    const cookies = getSignedCookies({
+        url,
+        keyPairId,
+        dateLessThan,
+        privateKey,
+        policy,
+      });
+
+    $cookies.set("CloudFront-Key-Pair-Id", cookies["CloudFront-Key-Pair-Id"], "/", { domain: process.env.COOKIE_BASE_URL })
+    $cookies.set("CloudFront-Signature", cookies["CloudFront-Signature"], "/", { domain: process.env.COOKIE_BASE_URL })
+    $cookies.set("CloudFront-Policy", cookies["CloudFront-Policy"], "/", { domain: process.env.COOKIE_BASE_URL })
+
+ console.log(cookies);
+
+      const headers = {
+        "CloudFront-Key-Pair-Id": cookies["CloudFront-Key-Pair-Id"],
+        "CloudFront-Signature": cookies["CloudFront-Signature"],
+        "CloudFront-Policy": cookies["CloudFront-Policy"],
+      };
+
+      const response = fetch("https://d2o1rek401wuzo.cloudfront.net/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8", {
+        method: "GET",
+        headers,
+        mode: 'cors',
+      })
+
+      console.log(response);
 
     const videoOptions = {
       controls: true,
@@ -109,8 +151,10 @@ export default {
       fluid: true,
       sources: [
         {
-          src: imageUrl,
+          src: response,
           type: "application/x-mpegURL",
+          withCredentials: true,
+          overrideNative: true,
         },
       ],
     };
