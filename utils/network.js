@@ -37,8 +37,6 @@ const cnetwork = {
   node: "https://mainnet.api.tez.ie",
 };
 
-console.log(BeaconEvent);
-
 const walletOptions = {
   name: "joko-wallet",
   preferredNetwork: NetworkType.GHOSTNET,
