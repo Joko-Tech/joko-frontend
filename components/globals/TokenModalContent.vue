@@ -51,7 +51,7 @@
               </div>
             </div>
 
-            <div class="c-content__market" v-if="token.type === 'gallery'">
+            <div class="c-content__market" v-if="token.type === 'gallery' | token.type === 'userPage'">
               <div class="c-content__market__label">Lowest ask</div>
               <div class="c-content__market__amount">
                 <span>
@@ -63,7 +63,7 @@
               </div>
             </div>
 
-            <div class="c-content__market" v-if="token.type === 'gallery'">
+            <div class="c-content__market" v-if="token.type === 'gallery' | token.type === 'userPage'">
               <div class="c-content__market__label">Highest bid</div>
               <div class="c-content__market__amount">
                 <span>
@@ -75,7 +75,7 @@
               </div>
             </div>
 
-            <div class="c-content__market" v-if="token.type === 'gallery'">
+            <div class="c-content__market" v-if="token.type === 'gallery' | token.type === 'userPage'">
               <div class="c-content__market__label">Last price</div>
               <div class="c-content__market__amount">
                 <span>
@@ -154,6 +154,18 @@ export default {
         this.fetchBid();
         this.fetchSale();
       }, 5000);
+    };
+    if (this.token.type === "userPage") {
+      this.fetchAskByTokenId();
+      this.fetchBid();
+      this.fetchSale();
+      this.fetchMint();
+
+      this.fetchInterval = setInterval(() => {
+        this.fetchAskByTokenId();
+        this.fetchBid();
+        this.fetchSale();
+      }, 5000);
     }
   },
   destroyed() {
@@ -222,6 +234,19 @@ export default {
         this.$store.dispatch("wallet/mintTier3", payload);
       }
     },
+
+    async fetchAskByTokenId() {
+      const res = await this.$axios.$get(
+        `${this.baseURL}sellv1?tokenAddress=KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW&tokenId=${this.token.tokenId}`
+      );
+      console.log(res);
+      if (res.sell.length) {
+        this.lowestAsk = res.sell[0].saleAmount;
+      } else {
+        this.lowestAsk = null;
+      }
+    },
+    
   },
 };
 </script>

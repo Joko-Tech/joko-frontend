@@ -267,6 +267,7 @@ export const actions = {
         return {
           ...token.token.metadata,
           tokenId: token.token.tokenId,
+          tokenAddress: token.token.contract.address,
         };
       });
 
