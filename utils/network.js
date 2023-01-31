@@ -20,7 +20,11 @@ const networks = {
   },
   ghostnet: {
     networkname: "Ghostnet",
-    nodes: ["https://rpc.ghostnet.teztnets.xyz/", "https://ghostnet.ecadinfra.com", "https://ghostnet.tezos.marigold.dev/"],
+    nodes: [
+      "https://rpc.ghostnet.teztnets.xyz/",
+      "https://ghostnet.ecadinfra.com",
+      "https://ghostnet.tezos.marigold.dev/",
+    ],
   },
   ithacanet: {
     networkname: "Ithacanet",
@@ -32,6 +36,8 @@ const cnetwork = {
   networkname: "Mainnet",
   node: "https://mainnet.api.tez.ie",
 };
+
+console.log(BeaconEvent);
 
 const walletOptions = {
   name: "joko-wallet",
@@ -51,7 +57,7 @@ const walletOptions = {
 const jokoContractAddress = "KT1N4NzVtwCWCdnNLSsSUG9a7zJt1NUP2rxw";
 const fa2ContractAddress = "KT1SoQSSHknvaUUvBRxRiT9ynBHME8sQ191P";
 
-const base_tzkt_api_url = "https://api.ghostnet.tzkt.io/v1/"
+const base_tzkt_api_url = "https://api.ghostnet.tzkt.io/v1/";
 
 export {
   networks,
@@ -59,5 +65,5 @@ export {
   walletOptions,
   jokoContractAddress,
   fa2ContractAddress,
-  base_tzkt_api_url
+  base_tzkt_api_url,
 };

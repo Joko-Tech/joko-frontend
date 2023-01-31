@@ -8,7 +8,7 @@ import {
   fa2ContractAddress,
   base_tzkt_api_url,
 } from "~/utils/network";
-import { NetworkType } from "@airgap/beacon-sdk";
+import { NetworkType, BeaconEvent } from "@airgap/beacon-sdk";
 import { char2Bytes } from "@taquito/utils";
 import { SigningType } from "@airgap/beacon-sdk";
 import { checkUser, handleAmplifySignIn } from "~/utils/user";
@@ -48,6 +48,10 @@ export const state = () => ({
     balance: "",
     isConnected: false,
   },
+  walletState: {
+    error: false,
+    loading: false,
+  },
   walletTokens: [],
 });
 
@@ -57,6 +61,9 @@ export const getters = {
   },
   walletTokens: (state) => {
     return state.walletTokens;
+  },
+  walletState: (state) => {
+    return state.walletState;
   },
 };
 
@@ -75,6 +82,17 @@ export const mutations = {
   updateWalletTokens: (state, payload) => {
     state.walletTokens = payload;
   },
+  updateWalletState: (state, payload) => {
+    const { error, loading } = payload;
+
+    const updatedWalletState = {
+      ...state.walletState,
+      error,
+      loading,
+    };
+
+    state.walletState = updatedWalletState;
+  },
 };
 
 export const actions = {
@@ -90,13 +108,24 @@ export const actions = {
       });
     } else {
       try {
-        console.log(process.env.NEXT_PUBLIC_REGION);
+        // console.log(process.env.NEXT_PUBLIC_REGION);
         const permissions = await beaconWallet.requestPermissions({
           network: {
             type: NetworkType.GHOSTNET,
             rpcUrl: networks.ghostnet.nodes[1],
           },
         });
+
+        beaconWallet.client.subscribeToEvent(
+          BeaconEvent.SIGN_REQUEST_SUCCESS,
+          () => {
+            commit("updateWalletState", {
+              error: false,
+              loading: true,
+            });
+          }
+        );
+
         const userAddress = await beaconWallet.getPKH();
         const cognitoUser = await handleAmplifySignIn(userAddress);
         console.log("User: ");
@@ -150,7 +179,15 @@ export const actions = {
           });
         }
       } catch (error) {
-        console.log(error);
+        commit("updateWalletState", {
+          error: true,
+          loading: false,
+        });
+      } finally {
+        commit("updateWalletState", {
+          error: false,
+          loading: false,
+        });
       }
     }
   },
@@ -246,13 +283,27 @@ export const actions = {
   },
 
   async isAuthenticatedVideo({ state, commit }, artistName) {
-    const res = await getHttp("getFromLambda", {}, artistName, jokoContractAddress, fa2ContractAddress, NetworkType.GHOSTNET);
+    const res = await getHttp(
+      "getFromLambda",
+      {},
+      artistName,
+      jokoContractAddress,
+      fa2ContractAddress,
+      NetworkType.GHOSTNET
+    );
     console.log(res);
     return res.hasNft.tier1 || res.hasNft.tier2 || res.hasNft.tier3;
   },
 
   async isAuthenticatedBTS({ state, commit }, artistName) {
-    const res = await getHttp("getFromLambda", {}, artistName, jokoContract, fa2ContractAddress, NetworkType.GHOSTNET);
+    const res = await getHttp(
+      "getFromLambda",
+      {},
+      artistName,
+      jokoContract,
+      fa2ContractAddress,
+      NetworkType.GHOSTNET
+    );
     console.log(res);
     return res.hasNft.tier1 || res.hasNft.tier2;
   },
