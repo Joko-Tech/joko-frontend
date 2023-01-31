@@ -47,6 +47,11 @@
 import LazyLoader from "~/js/components/ImageLazyLoader";
 export default {
   props: {
+    pageType: {
+      type: String,
+      required: true,
+      default: "userPage",
+    },
     token: {
       type: Object,
       required: true,
@@ -62,7 +67,7 @@ export default {
   },
   computed: {
     image() {
-      const displayImage = this.token.formats[1];
+      const displayImage = this.token?.formats[1];
       const aspectArray = displayImage.dimensions?.value.split("x");
 
       if (this.isVideo) {
@@ -114,7 +119,7 @@ export default {
         isVideo: this.isVideo,
         pixelArtist: this.pixelArtist,
         pixelArtistUrl: this.pixelArtistUrl,
-        type: "gallery",
+        type: this.pageType,
       };
       this.$store.commit("token/updateCurrentModalToken", token);
       this.$store.commit("token/updateIsTokenModalOpen", true);
