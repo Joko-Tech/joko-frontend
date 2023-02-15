@@ -260,7 +260,7 @@ export const actions = {
   async fetchUserTokens({ state, commit }) {
     try {
       const res = await this.$axios.$get(
-        `${base_tzkt_api_url}tokens/balances/?account=${state.wallet.address}&token.contract=${fa2ContractAddress}`
+        `${base_tzkt_api_url}tokens/balances/?account=${state.wallet.address}&token.contract=${fa2ContractAddress}&balance.ne=0`
       );
 
       const modifiedTokens = res.map((token) => {
