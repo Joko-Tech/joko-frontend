@@ -168,8 +168,91 @@ export const actions = {
       },
     } = await this.$axios.post("http://15.207.106.83/v1/graphql", {
       query,
-      variables: { tokenAddress: "KT1HVzCL4e4F4f4pRwxG9ye9oo85YB6t7cmd", tokenIds: tokenIds },
+      variables: { tokenAddress: "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW", 
+                  tokenIds: tokenIds },
     });
     return buy;
+  },
+  async fetchAskAuction({ commit }, {tokenIds}) {
+    const query = `
+    query MyQuery($tokenAddress: String, $tokenIds: [String!]) {
+      askAuction(limit: 1,
+          where: {tokenAddress: {_eq: $tokenAddress}, 
+          tokenId: {_in: $tokenIds}}, 
+          order_by: {timestamp: desc}) 
+      {
+        endTime
+        reserve
+        startTime
+        tokenAddress
+        tokenId
+      }
+    }         
+    `;
+    const {
+      data: {
+        data: { askAuction },
+      },
+    } = await this.$axios.post("http://15.207.106.83/v1/graphql", {
+      query,
+      variables: { tokenAddress: "KT1HVzCL4e4F4f4pRwxG9ye9oo85YB6t7cmd", tokenIds: tokenIds },
+    });
+    return askAuction;
+  },
+  async fetchBidAuction({ commit }, {tokenIds}) {
+    const query = `
+    query MyQuery($tokenAddress: String, $tokenIds: [String!]="") {
+      bid(limit: 1,
+            order_by: {timestamp: desc, price: desc}, 
+            where: {tokenAddress: {_eq: $tokenAddress}, tokenId: {_in: $tokenIds}}) {
+        price
+        timestamp
+        tokenAddress
+        tokenId
+      }
+    }           
+    `;
+    const {
+      data: {
+        data: { bid },
+      },
+    } = await this.$axios.post("http://15.207.106.83/v1/graphql", {
+      query,
+      variables: { tokenAddress: "KT18bPNxdKzk7XqYEfKp6mS4un7X64Ho6mkR", tokenIds: tokenIds },
+    });
+    return bid;
+  },
+  async fetchEnglishAuction({ commit }, {tokenId}) {
+    const query = `
+    query MyQuery($tokenAddress: String, $tokenId: String="") {
+      english_auction(
+        where: {token: {token_id: {_eq: $tokenId}}, fa_contract: {_eq: $tokenAddress}}
+        order_by: {timestamp: desc}
+        limit: 1
+      ) {
+        hash
+        end_time
+        start_time
+        price_increment_xtz
+        price_increment
+        highest_bidder_address
+        highest_bid_xtz
+        highest_bid
+        reserve_xtz
+        reserve
+        seller_address
+        extension_time
+      }
+    }           
+    `;
+    const {
+      data: {
+        data: { englishAuction },
+      },
+    } = await this.$axios.post("https://data.objkt.com/v3/graphql", {
+      query,
+      variables: { tokenAddress: "KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton", tokenId: tokenId },
+    });
+    return englishAuction;
   },
 };
