@@ -145,12 +145,17 @@ export default {
       "CloudFront-Policy": cookies["CloudFront-Policy"],
     };
 
+    const cookieHeader = `CloudFront-Key-Pair-Id=${cookies["CloudFront-Key-Pair-Id"]}; CloudFront-Signature=${cookies["CloudFront-Signature"]}; CloudFront-Policy=${cookies["CloudFront-Policy"]};`;
+
     try {
       const response = await this.$axios.$get(
         "https://d2o1rek401wuzo.cloudfront.net/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8",
         {
           method: "GET",
-          headers,
+          headers: {
+            Cookie: cookieHeader,
+            withCredentials: true,
+          },
           mode: "cors",
         }
       );
