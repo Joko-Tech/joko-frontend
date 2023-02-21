@@ -20,7 +20,7 @@ const networks = {
   },
   ghostnet: {
     networkname: "Ghostnet",
-    nodes: ["https://rpc.ghostnet.teztnets.xyz/"],
+    nodes: ["https://rpc.ghostnet.teztnets.xyz/", "https://ghostnet.ecadinfra.com", "https://ghostnet.tezos.marigold.dev/"],
   },
   ithacanet: {
     networkname: "Ithacanet",
@@ -35,21 +35,13 @@ const cnetwork = {
 
 const walletOptions = {
   name: "joko-wallet",
-  preferredNetwork: NetworkType.MAINNET,
-  disableDefaultEvents: true, // Disable all events / UI. This also disables the pairing alert.
-  eventHandlers: {
-    // To keep the pairing alert, we have to add the following default event handlers back
-    [BeaconEvent.PAIR_INIT]: {
-      handler: defaultEventCallbacks.PAIR_INIT,
-    },
-    [BeaconEvent.PAIR_SUCCESS]: {
-      handler: (data) => setPublicToken(data.publicKey),
-    },
-  },
+  preferredNetwork: NetworkType.GHOSTNET,
 };
 
-const jokoContractAddress = "KT1W3XVRdVnHuNNRYucXNXCijsxtxoAKCNyH";
-const fa2ContractAddress = "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW";
+const jokoContractAddress = "KT1N4NzVtwCWCdnNLSsSUG9a7zJt1NUP2rxw";
+const fa2ContractAddress = "KT1SoQSSHknvaUUvBRxRiT9ynBHME8sQ191P";
+
+const base_tzkt_api_url = "https://api.ghostnet.tzkt.io/v1/"
 
 export {
   networks,
@@ -57,4 +49,5 @@ export {
   walletOptions,
   jokoContractAddress,
   fa2ContractAddress,
+  base_tzkt_api_url
 };

@@ -11,10 +11,10 @@
   const key = Buffer.from(process.env.PRIVATE_KEY , 'base64').toString('ascii');
 
   const imageUrl = getSignedUrl({
-    url: "https://d2o1rek401wuzo.cloudfront.net/assets/VANLIFE/HLS/JOKO-IMRAN_360.m3u8",
-    dateLessThan: new Date(Date.now() + 1000 * 60 * 60 *24),
+    url: "https://d2o1rek401wuzo.cloudfront.net/assets/c6eee826-f3e3-4aaf-bcf2-8f04093a932a/HLS/test.m3u8",
+    dateLessThan: new Date(Date.now() + 1000 * 60),
     privateKey: key,
-    keyPaidId: process.env.CLOUDFRONT_KEYPAIR_ID,
+    keyPairId: process.env.CLOUDFRONT_KEYPAIR_ID,
   })
 
   console.log(imageUrl);

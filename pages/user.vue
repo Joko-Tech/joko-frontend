@@ -20,6 +20,7 @@
           <div class="c-masonry" data-masonry>
             <TokenGalleryCard
               v-for="(token, index) in walletTokens"
+              :pageType="pageType"
               :key="index"
               :token="token"
               data-masonry-item
@@ -41,11 +42,13 @@ export default {
   data() {
     return {
       isLoading: true,
+      pageType: "userPage",
     };
   },
   async mounted() {
     this.isLoading = true;
     this.setMasonry();
+    this.pageType = "userPage";
   },
   computed: {
     ...mapGetters({

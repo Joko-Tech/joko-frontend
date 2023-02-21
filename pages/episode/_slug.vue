@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { getSignedUrl } from "@aws-sdk/cloudfront-signer";
+import { getSignedCookies } from "@aws-sdk/cloudfront-signer";
 
 export default {
   data() {
@@ -91,31 +91,95 @@ export default {
       videoOptions: null,
     };
   },
-  mounted() {
+  async mounted() {
     const key = Buffer.from(process.env.PRIVATE_KEY, "base64").toString(
       "ascii"
     );
 
-    const imageUrl = getSignedUrl({
-      url: "https://d2o1rek401wuzo.cloudfront.net/assets/VANLIFE/HLS/JOKO-IMRAN_360.m3u8",
-      dateLessThan: new Date(Date.now() + 1000 * 60 * 60 * 24),
-      privateKey: key,
-      keyPaidId: process.env.CLOUDFRONT_KEYPAIR_ID,
-    });
+    const cloudfrontDistributionDomain =
+      "https://d2o1rek401wuzo.cloudfront.net";
+    const s3ObjectKey =
+      "assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8";
+    const url = `${cloudfrontDistributionDomain}/${s3ObjectKey}`;
+    const privateKey = key;
+    const keyPairId = process.env.CLOUDFRONT_KEYPAIR_ID;
+    const dateLessThan = "2023-01-24";
 
-    const videoOptions = {
-      controls: true,
-      preload: true,
-      fluid: true,
-      sources: [
+    const policy = JSON.stringify({
+      Statement: [
         {
-          src: imageUrl,
-          type: "application/x-mpegURL",
+          Resource: "https://d2o1rek401wuzo.cloudfront.net/*",
+          Condition: {
+            DateLessThan: {
+              "AWS:EpochTime": new Date(Date.now + 1000 * 60),
+            },
+          },
         },
       ],
+    });
+
+    const cookies = getSignedCookies({
+      url,
+      keyPairId,
+      dateLessThan,
+      privateKey,
+      policy,
+    });
+
+    $cookies.set(
+      "CloudFront-Key-Pair-Id",
+      cookies["CloudFront-Key-Pair-Id"],
+      "/",
+      { domain: process.env.COOKIE_BASE_URL }
+    );
+    $cookies.set("CloudFront-Signature", cookies["CloudFront-Signature"], "/", {
+      domain: process.env.COOKIE_BASE_URL,
+    });
+    $cookies.set("CloudFront-Policy", cookies["CloudFront-Policy"], "/", {
+      domain: process.env.COOKIE_BASE_URL,
+    });
+
+    const headers = {
+      "CloudFront-Key-Pair-Id": cookies["CloudFront-Key-Pair-Id"],
+      "CloudFront-Signature": cookies["CloudFront-Signature"],
+      "CloudFront-Policy": cookies["CloudFront-Policy"],
     };
 
-    this.videoOptions = videoOptions;
+    const cookieHeader = `CloudFront-Key-Pair-Id=${cookies["CloudFront-Key-Pair-Id"]}; CloudFront-Signature=${cookies["CloudFront-Signature"]}; CloudFront-Policy=${cookies["CloudFront-Policy"]};`;
+
+    try {
+      const response = await this.$axios.$get(
+        "https://d2o1rek401wuzo.cloudfront.net/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8",
+        {
+          method: "GET",
+          headers: {
+            Cookie: cookieHeader,
+            withCredentials: true,
+          },
+          mode: "cors",
+        }
+      );
+
+      console.log(response);
+
+      const videoOptions = {
+        controls: true,
+        preload: true,
+        fluid: true,
+        sources: [
+          {
+            src: response,
+            type: "application/x-mpegURL",
+            withCredentials: true,
+            overrideNative: true,
+          },
+        ],
+      };
+
+      this.videoOptions = videoOptions;
+    } catch (error) {
+      console.log(error);
+    }
   },
   computed: {
     slug() {

@@ -6,6 +6,7 @@ import {
   walletOptions,
   networks,
   fa2ContractAddress,
+  base_tzkt_api_url,
 } from "~/utils/network";
 import { NetworkType } from "@airgap/beacon-sdk";
 import { char2Bytes } from "@taquito/utils";
@@ -33,7 +34,8 @@ Amplify.configure({
 });
 
 let beaconWallet;
-let tezos = new TezosToolkit(networks.mainnet.nodes[0]);
+// let tezos = new TezosToolkit(networks.mainnet.nodes[0]);
+let tezos = new TezosToolkit(networks.ghostnet.nodes[1]);
 
 // check if window exists
 if (typeof window !== "undefined") {
@@ -91,8 +93,8 @@ export const actions = {
         console.log(process.env.NEXT_PUBLIC_REGION);
         const permissions = await beaconWallet.requestPermissions({
           network: {
-            type: NetworkType.MAINNET,
-            rpcUrl: networks.mainnet.nodes[0],
+            type: NetworkType.GHOSTNET,
+            rpcUrl: networks.ghostnet.nodes[1],
           },
         });
         const userAddress = await beaconWallet.getPKH();
@@ -197,11 +199,10 @@ export const actions = {
   },
 
   async mintTier1({ state, commit }, tokenPayload) {
-    const { artist, pixel_artist, price } = tokenPayload;
+    const { artist } = tokenPayload;
 
     const tokenObject = {
       artist,
-      pixel_artist,
       amount_tokens: 1,
     };
 
@@ -209,7 +210,7 @@ export const actions = {
 
     const res = await contract.methodsObject
       .mint_JOKO_tier1(tokenObject)
-      .send({ amount: price });
+      .send();
   },
 
   async mintTier2({ state, commit }, tokenPayload) {
@@ -244,22 +245,29 @@ export const actions = {
       .send({ amount: price });
   },
 
-  async isAuthenticated({ state, commit }, artistName) {
-    const res = await getHttp("getFromLambda", {}, artistName);
+  async isAuthenticatedVideo({ state, commit }, artistName) {
+    const res = await getHttp("getFromLambda", {}, artistName, jokoContractAddress, fa2ContractAddress, NetworkType.GHOSTNET);
     console.log(res);
-    return res.hasNft;
+    return res.hasNft.tier1 || res.hasNft.tier2 || res.hasNft.tier3;
+  },
+
+  async isAuthenticatedBTS({ state, commit }, artistName) {
+    const res = await getHttp("getFromLambda", {}, artistName, jokoContract, fa2ContractAddress, NetworkType.GHOSTNET);
+    console.log(res);
+    return res.hasNft.tier1 || res.hasNft.tier2;
   },
 
   async fetchUserTokens({ state, commit }) {
     try {
       const res = await this.$axios.$get(
-        `https://api.mainnet.tzkt.io/v1/tokens/balances/?account=${state.wallet.address}&token.contract=${fa2ContractAddress}`
+        `${base_tzkt_api_url}tokens/balances/?account=${state.wallet.address}&token.contract=${fa2ContractAddress}&balance.ne=0`
       );
 
       const modifiedTokens = res.map((token) => {
         return {
           ...token.token.metadata,
           tokenId: token.token.tokenId,
+          tokenAddress: token.token.contract.address,
         };
       });
 

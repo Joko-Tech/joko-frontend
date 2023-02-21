@@ -40,7 +40,7 @@
               <!-- <ButtonComponent
                 size="large"
                 icon="play"
-                v-if="isAuthenticated"
+                v-if="isAuthenticatedVideo"
                 filled
                 :href="`/episode/${slugify(episode.artistName)}`"
               >
@@ -89,7 +89,7 @@
           <ButtonComponent
             size="large"
             icon="play"
-            v-if="isAuthenticated"
+            v-if="isAuthenticatedVideo"
             filled
             :href="`/episode/${slugify(episode.artistName)}`"
           >
@@ -133,7 +133,7 @@ export default {
       type: Object,
       required: true,
     },
-    isAuthenticated: {
+    isAuthenticatedVideo: {
       type: Boolean,
       required: true,
       default: true,
@@ -154,11 +154,12 @@ export default {
       this.isTextShortened = false;
     },
     checkIfAuthenticated() {
-      const isAuthenticated = this.$store.dispatch(
-        "wallet/isAuthenticated",
+      console.log(this)
+      const isAuthenticatedVideo = this.$store.dispatch(
+        "wallet/isAuthenticatedVideo",
         this.episode.artistName
       );
-      isAuthenticated.then((value) => {
+      isAuthenticatedVideo.then((value) => {
         if (value) {
           this.$router.push(`/episode/${this.episode.artistName}`);
         } else {

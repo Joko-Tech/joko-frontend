@@ -8,6 +8,7 @@
       <div class="c-masonry" data-masonry>
         <TokenGalleryCard
           v-for="(token, index) in mintedTokenMetadata"
+          :pageType="pageType"
           :key="index"
           :token="token"
           data-masonry-item
@@ -23,6 +24,12 @@ import Masonry from "~/js/components/Masonry";
 // import tokens from "~/data/tokens.json";
 import { mapGetters } from "vuex";
 export default {
+  data() {
+    return {
+      isLoading: true,
+      pageType: "gallery",
+    };
+  },
   async mounted() {
     if (!this.allTokenMetadata) {
       await this.$store.dispatch("fetchGalleryMetadata");
@@ -34,6 +41,7 @@ export default {
         this.masonry = new Masonry({ element: this.$el });
       });
     }
+    this.pageType = "gallery";
   },
   computed: {
     ...mapGetters({
