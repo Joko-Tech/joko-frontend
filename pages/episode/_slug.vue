@@ -138,6 +138,9 @@ export default {
     $cookies.set("CloudFront-Policy", cookies["CloudFront-Policy"], "/", {
       domain: process.env.COOKIE_BASE_URL,
     });
+    $cookies.set("Test", "value", "/", {
+      domain: process.env.COOKIE_BASE_URL,
+    });
 
     const headers = {
       "CloudFront-Key-Pair-Id": cookies["CloudFront-Key-Pair-Id"],
