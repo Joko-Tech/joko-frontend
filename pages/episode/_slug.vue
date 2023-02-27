@@ -97,7 +97,7 @@ export default {
     );
 
     const cloudfrontDistributionDomain =
-      "https://cloudfront.playjoko.com";
+      "https://d2o1rek401wuzo.cloudfront.net";
     const s3ObjectKey =
       "assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8";
     const url = `${cloudfrontDistributionDomain}/${s3ObjectKey}`;
@@ -108,7 +108,7 @@ export default {
     const policy = JSON.stringify({
       Statement: [
         {
-          Resource: "https://cloudfront.playjoko.com/*",
+          Resource: "https://d2o1rek401wuzo.cloudfront.net/*",
           Condition: {
             DateLessThan: {
               "AWS:EpochTime": new Date(Date.now + 1000 * 60),
@@ -149,7 +149,7 @@ export default {
 
     try {
       const response = await this.$axios.$get(
-        "https://cloudfront.playjoko.com/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8",
+        "https://d2o1rek401wuzo.cloudfront.net/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8",
         {
           method: "GET",
           headers: {
