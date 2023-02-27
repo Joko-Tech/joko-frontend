@@ -139,7 +139,7 @@ export default {
       domain: process.env.COOKIE_BASE_URL,
     });
     $cookies.set("Test", "value", "/", {
-      domain: playjoko.com,
+      domain: "playjoko.com",
     });
 
     const headers = {
