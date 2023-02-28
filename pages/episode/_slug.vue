@@ -153,6 +153,7 @@ export default {
           headers: {
             Cookie: `CloudFront-Key-Pair-Id=${cookies["CloudFront-Key-Pair-Id"]}; CloudFront-Signature=${cookies["CloudFront-Signature"]}; CloudFront-Policy=${cookies["CloudFront-Policy"]};`,
             withCredentials: true,
+            "Access-Control-Allow-Origin": "*"
           },
           mode: "cors",
         }
