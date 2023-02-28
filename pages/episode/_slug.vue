@@ -155,7 +155,7 @@ export default {
           // headers: {
           //   withCredentials: true,
           // },
-          mode: "cors",
+          // mode: "cors",
         }
       );
 
