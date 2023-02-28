@@ -111,7 +111,7 @@ export default {
           Resource: "https://cloudfront.playjoko.com/*",
           Condition: {
             DateLessThan: {
-              "AWS:EpochTime": new Date(Date.now + 1000 * 60),
+              "AWS:EpochTime": 1678175990,
             },
           },
         },
@@ -152,7 +152,7 @@ export default {
         "https://cloudfront.playjoko.com/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8",
         {
           method: "GET",
-          withCredentials: true,
+          withCredentials: true
           // mode: "cors",
         }
       );
