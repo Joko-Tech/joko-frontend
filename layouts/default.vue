@@ -13,7 +13,7 @@
     <Modal
       title="video modal"
       description="a modal showing a video"
-      v-show="isVideoModalOpen"
+      v-if="isVideoModalOpen"
       @close="hideVideoModal"
       ref="videoModal"
       class="c-modal--video"
