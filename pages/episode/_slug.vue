@@ -131,13 +131,13 @@ export default {
       cookies["CloudFront-Key-Pair-Id"],
       null,
       "/",
-      "playjoko.com",
+      ".playjoko.com",
       true,
       "None"
     );
-    $cookies.set("CloudFront-Signature", cookies["CloudFront-Signature"], null, "/", "playjoko.com", true, "None");
-    $cookies.set("CloudFront-Policy", cookies["CloudFront-Policy"], null, "/", "playjoko.com", true, "None");
-    $cookies.set("Test", "value", null, "/", "playjoko.com", true, "None");
+    $cookies.set("CloudFront-Signature", cookies["CloudFront-Signature"], null, "/", ".playjoko.com", true, "None");
+    $cookies.set("CloudFront-Policy", cookies["CloudFront-Policy"], null, "/", ".playjoko.com", true, "None");
+    $cookies.set("Test", "value", null, "/", ".playjoko.com", true, "None");
 
     const headers = {
       "CloudFront-Key-Pair-Id": cookies["CloudFront-Key-Pair-Id"],
