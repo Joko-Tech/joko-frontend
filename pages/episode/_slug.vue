@@ -143,7 +143,7 @@ export default {
       "CloudFront-Policy": cookies["CloudFront-Policy"],
     };
 
-    const cookieHeader = `CloudFront-Key-Pair-Id=${cookies["CloudFront-Key-Pair-Id"]}; CloudFront-Signature=${cookies["CloudFront-Signature"]}; CloudFront-Policy=${cookies["CloudFront-Policy"]};`;
+    // const cookieHeader = `CloudFront-Key-Pair-Id=${cookies["CloudFront-Key-Pair-Id"]}; CloudFront-Signature=${cookies["CloudFront-Signature"]}; CloudFront-Policy=${cookies["CloudFront-Policy"]};`;
 
     try {
       const response = await this.$axios.$get(
@@ -151,7 +151,7 @@ export default {
         {
           method: "GET",
           headers: {
-            Cookie: cookieHeader,
+            Cookie: `CloudFront-Key-Pair-Id=${cookies["CloudFront-Key-Pair-Id"]}; CloudFront-Signature=${cookies["CloudFront-Signature"]}; CloudFront-Policy=${cookies["CloudFront-Policy"]};`,
             withCredentials: true,
           },
           mode: "cors",
