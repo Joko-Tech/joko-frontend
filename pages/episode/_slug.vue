@@ -99,7 +99,7 @@ export default {
     const cloudfrontDistributionDomain =
       "https://cloudfront.playjoko.com";
     const s3ObjectKey =
-      "assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8";
+      "assets/VANLIFE/HLS/JOKO-IMRAN.m3u8";
     const url = `${cloudfrontDistributionDomain}/${s3ObjectKey}`;
     const privateKey = key;
     const keyPairId = process.env.CLOUDFRONT_KEYPAIR_ID;
@@ -132,12 +132,11 @@ export default {
       null,
       "/",
       ".playjoko.com",
-      true,
-      "None"
+      true
     );
-    $cookies.set("CloudFront-Signature", cookies["CloudFront-Signature"], null, "/", ".playjoko.com", true, "None");
-    $cookies.set("CloudFront-Policy", cookies["CloudFront-Policy"], null, "/", ".playjoko.com", true, "None");
-    $cookies.set("Test", "value", null, "/", ".playjoko.com", true, "None");
+    $cookies.set("CloudFront-Signature", cookies["CloudFront-Signature"], null, "/", ".playjoko.com", true);
+    $cookies.set("CloudFront-Policy", cookies["CloudFront-Policy"], null, "/", ".playjoko.com", true);
+    $cookies.set("Test", "value", null, "/", ".playjoko.com", true);
 
     const headers = {
       "CloudFront-Key-Pair-Id": cookies["CloudFront-Key-Pair-Id"],
@@ -149,7 +148,7 @@ export default {
 
     try {
       const response = await this.$axios.$get(
-        "https://cloudfront.playjoko.com/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8",
+        "https://cloudfront.playjoko.com/assets/VANLIFE/HLS/JOKO-IMRAN.m3u8",
         {
           method: "GET",
           withCredentials: true
@@ -165,7 +164,7 @@ export default {
         fluid: true,
         sources: [
           {
-            src: "https://cloudfront.playjoko.com/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8",
+            src: "https://cloudfront.playjoko.com/assets/VANLIFE/HLS/JOKO-IMRAN.m3u8",
             type: "application/x-mpegURL",
             withCredentials: true,
             overrideNative: true,
