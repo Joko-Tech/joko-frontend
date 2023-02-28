@@ -152,9 +152,7 @@ export default {
         "https://cloudfront.playjoko.com/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8",
         {
           method: "GET",
-          // headers: {
-          //   withCredentials: true,
-          // },
+          withCredentials: true,
           // mode: "cors",
         }
       );
