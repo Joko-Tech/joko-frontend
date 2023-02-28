@@ -167,7 +167,7 @@ export default {
         fluid: true,
         sources: [
           {
-            src: response,
+            src: "https://cloudfront.playjoko.com/assets/059a4310-805d-494f-9284-9f5621bb770b/HLS/TRAILER.m3u8",
             type: "application/x-mpegURL",
             withCredentials: true,
             overrideNative: true,
