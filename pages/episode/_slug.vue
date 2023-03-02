@@ -103,7 +103,9 @@ export default {
     const url = `${cloudfrontDistributionDomain}/${s3ObjectKey}`;
     const privateKey = key;
     const keyPairId = process.env.CLOUDFRONT_KEYPAIR_ID;
-    const dateLessThan = "2023-01-24";
+    const dateLessThan = new Date(Date.now + 1000 * 60);
+
+    console.log(dateLessThan);
 
     const policy = JSON.stringify({
       Statement: [
@@ -111,7 +113,7 @@ export default {
           Resource: "https://cloudfront.playjoko.com/*",
           Condition: {
             DateLessThan: {
-              "AWS:EpochTime": 1678175990,
+              "AWS:EpochTime": dateLessThan,
             },
           },
         },
@@ -126,25 +128,10 @@ export default {
       policy,
     });
 
-    $cookies.set(
-      "CloudFront-Key-Pair-Id",
-      cookies["CloudFront-Key-Pair-Id"],
-      null,
-      "/",
-      ".playjoko.com",
-      true
-    );
+    $cookies.set("CloudFront-Key-Pair-Id", cookies["CloudFront-Key-Pair-Id"], null, "/", ".playjoko.com", true);
     $cookies.set("CloudFront-Signature", cookies["CloudFront-Signature"], null, "/", ".playjoko.com", true);
     $cookies.set("CloudFront-Policy", cookies["CloudFront-Policy"], null, "/", ".playjoko.com", true);
     $cookies.set("Test", "value", null, "/", ".playjoko.com", true);
-
-    const headers = {
-      "CloudFront-Key-Pair-Id": cookies["CloudFront-Key-Pair-Id"],
-      "CloudFront-Signature": cookies["CloudFront-Signature"],
-      "CloudFront-Policy": cookies["CloudFront-Policy"],
-    };
-
-    // const cookieHeader = `CloudFront-Key-Pair-Id=${cookies["CloudFront-Key-Pair-Id"]}; CloudFront-Signature=${cookies["CloudFront-Signature"]}; CloudFront-Policy=${cookies["CloudFront-Policy"]};`;
 
     try {
       const response = await this.$axios.$get(
@@ -152,7 +139,6 @@ export default {
         {
           method: "GET",
           withCredentials: true
-          // mode: "cors",
         }
       );
 
