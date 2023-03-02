@@ -103,7 +103,7 @@ export default {
     const url = `${cloudfrontDistributionDomain}/${s3ObjectKey}`;
     const privateKey = key;
     const keyPairId = process.env.CLOUDFRONT_KEYPAIR_ID;
-    const dateLessThan = new Date(Date.now + 1000 * 60);
+    const dateLessThan = (Date.now() + 1000 * 60);
 
     console.log(dateLessThan);
 
@@ -113,7 +113,7 @@ export default {
           Resource: "https://cloudfront.playjoko.com/*",
           Condition: {
             DateLessThan: {
-              "AWS:EpochTime": 1678175990,
+              "AWS:EpochTime": dateLessThan,
             },
           },
         },
