@@ -113,7 +113,7 @@ export default {
           Resource: "https://cloudfront.playjoko.com/*",
           Condition: {
             DateLessThan: {
-              "AWS:EpochTime": dateLessThan,
+              "AWS:EpochTime": 1678175990,
             },
           },
         },
