@@ -131,7 +131,6 @@ export default {
     $cookies.set("CloudFront-Key-Pair-Id", cookies["CloudFront-Key-Pair-Id"], null, "/", ".playjoko.com", true);
     $cookies.set("CloudFront-Signature", cookies["CloudFront-Signature"], null, "/", ".playjoko.com", true);
     $cookies.set("CloudFront-Policy", cookies["CloudFront-Policy"], null, "/", ".playjoko.com", true);
-    $cookies.set("Test", "value", null, "/", ".playjoko.com", true);
 
     try {
       const response = await this.$axios.$get(
@@ -141,8 +140,6 @@ export default {
           withCredentials: true
         }
       );
-
-      console.log(response);
 
       const videoOptions = {
         controls: true,
