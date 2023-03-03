@@ -158,6 +158,7 @@ export default {
   },
   mounted() {
     if (this.token.type === "gallery") {
+      // Redirect user to lowest ask place
       this.fetchAsk().then((result) => {
         this.fetchMint();
       });;
@@ -171,6 +172,7 @@ export default {
       }, 10000);
     };
     if (this.token.type === "userPage") {
+      // Redirect user to highest bid place
       this.fetchAskByTokenId().then((result) => {
         this.fetchMintByTokenId();
       });
@@ -209,10 +211,10 @@ export default {
     },
 
     async fetchBid() {
-      const res = await this.$store.dispatch("token/fetchBid", {tokenIds: this.token.tokenIds});
+      const res = await this.$store.dispatch("token/fetchOffer", {tokenIds: this.token.tokenIds});
 
       if (res.length) {
-        this.highestBid = res[0].price;
+        this.highestBid = res[0].amount;
         this.highestBidTokenId = res[0].tokenId;
         this.higestBidSite = "Objkts";
       } else {
@@ -239,8 +241,8 @@ export default {
     },
 
     async fetchMint() {
-      const lowestAsk = await this.$store.dispatch("token/fetchMint", {tokenIds: [this.lowestAskTokenId]});
-      const highestBid = await this.$store.dispatch("token/fetchMint", {tokenIds: [this.highestBidTokenId]});
+      const lowestAsk = this.lowestAskTokenId ? await this.$store.dispatch("token/fetchMint", {tokenIds: [this.lowestAskTokenId]}) : [];
+      const highestBid = this.highestBidTokenId ? await this.$store.dispatch("token/fetchMint", {tokenIds: [this.highestBidTokenId]}) : [];
 
       if (lowestAsk.length) {
         this.lowestAskUrl = this.lowestAskSite === "Objkts" ? lowestAsk[0].objktsUrl : lowestAsk[0].raribleUrl;
@@ -302,9 +304,9 @@ export default {
     },
 
     async fetchBidByTokenId() {
-      const res = await this.$store.dispatch("token/fetchBid", {tokenIds: [this.token.tokenId]});
+      const res = await this.$store.dispatch("token/fetchOffer", {tokenIds: [this.token.tokenId]});
       if (res.length) {
-        this.highestBid = res[0].price;
+        this.highestBid = res[0].amount;
       } else {
         this.highestBid = null;
       }

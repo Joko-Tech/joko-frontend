@@ -48,6 +48,9 @@ export const actions = {
     });
     return mint;
   },
+  /*
+    Fetch ask and offer from normal sale on Objkts
+  */
   async fetchAsk({ commit }, {tokenIds}) {
     const query = `
     query MyQuery($tokenAddress: String, $tokenIds: [String!]="") {
@@ -73,106 +76,34 @@ export const actions = {
     });
     return ask;
   },
-  async fetchBid({ commit }, {tokenIds}) {
+  async fetchOffer({ commit }, {tokenIds}) {
     const query = `
     query MyQuery($tokenAddress: String, $tokenIds: [String!]="") {
-      bid(limit: 1,
-            order_by: {timestamp: desc, price: desc}, 
-            where: {tokenAddress: {_eq: $tokenAddress}, tokenId: {_in: $tokenIds}}) {
-        price
-        timestamp
-        tokenAddress
-        tokenId
-      }
-    }           
-    `;
-    const {
-      data: {
-        data: { bid },
-      },
-    } = await this.$axios.post("http://15.207.106.83/v1/graphql", {
-      query,
-      variables: { tokenAddress: "KT18bPNxdKzk7XqYEfKp6mS4un7X64Ho6mkR", tokenIds: tokenIds },
-    });
-    return bid;
-  },
-  async fetchSale({ commit }, {tokenIds}) {
-    const query = `
-    query MyQuery($tokenIds: [String!]="") {
-      lastSale(limit: 1, 
-               order_by: {timestamp: desc}, 
-               where: {tokenId: {_in: $tokenIds}}) 
+      offer(where: {tokenAddress: {_eq: $tokenAddress}, tokenId: {_in: $tokenIds}}, 
+          limit: 1, 
+          order_by: {timestamp: desc, amount:desc}) 
       {
         amount
-        tokenId
-        timestamp
-      }
-    }               
-    `;
-    const {
-      data: {
-        data: { lastSale },
-      },
-    } = await this.$axios.post("http://15.207.106.83/v1/graphql", {
-      query,
-      variables: { tokenIds: tokenIds },
-    });
-    return lastSale;
-  },
-  async fetchSell({ commit }, {tokenIds}) {
-    const query = `
-    query MyQuery($tokenAddress: String, $tokenIds: [String!]="") {
-      sell(where: {tokenAddress: {_eq: $tokenAddress}, 
-                  tokenId: {_in: $tokenIds}}, 
-                  order_by: {timestamp: desc}, 
-                  limit: 1) 
-      {
-        saleAmount
-        sellerId
         timestamp
         tokenAddress
         tokenId
       }
-    }         
+    }       
     `;
     const {
       data: {
-        data: { sell },
+        data: { offer },
       },
     } = await this.$axios.post("http://15.207.106.83/v1/graphql", {
       query,
-      variables: { tokenAddress: "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW",
-                   tokenIds: tokenIds },
+      variables: { tokenAddress: "KT1RMb18HPPm1Dtcb74AfUQgdc4uHcxmEHU2", tokenIds: tokenIds },
     });
-    return sell;
+    return offer;
   },
-  async fetchBuy({ commit }, {tokenIds}) {
-    const query = `
-    query MyQuery($tokenAddress: String, $tokenIds: [name!]) {
-      buy(limit: 1,
-          where: {tokenAddress: {_eq: $tokenAddress}, 
-          tokenId: {_in: $tokenIds}}, 
-          order_by: {timestamp: desc}) 
-      {
-        buyAmount
-        buyFrom
-        timestamp
-        tokenAddress
-        tokenId
-      }
-    }         
-    `;
-    const {
-      data: {
-        data: { buy },
-      },
-    } = await this.$axios.post("http://15.207.106.83/v1/graphql", {
-      query,
-      variables: { tokenAddress: "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW", 
-                  tokenIds: tokenIds },
-    });
-    return buy;
-  },
+
+  /*
+    Fetch ask and bid from auction on Objkts
+  */
   async fetchAskAuction({ commit }, {tokenIds}) {
     const query = `
     query MyQuery($tokenAddress: String, $tokenIds: [String!]) {
@@ -255,4 +186,63 @@ export const actions = {
     });
     return englishAuction;
   },
+
+  /*
+    Fetch buy and sell from Rarible
+  */
+  async fetchSell({ commit }, {tokenIds}) {
+    const query = `
+    query MyQuery($tokenAddress: String, $tokenIds: [String!]="") {
+      sell(where: {tokenAddress: {_eq: $tokenAddress}, 
+                  tokenId: {_in: $tokenIds}}, 
+                  order_by: {timestamp: desc}, 
+                  limit: 1) 
+      {
+        saleAmount
+        sellerId
+        timestamp
+        tokenAddress
+        tokenId
+      }
+    }         
+    `;
+    const {
+      data: {
+        data: { sell },
+      },
+    } = await this.$axios.post("http://15.207.106.83/v1/graphql", {
+      query,
+      variables: { tokenAddress: "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW",
+                   tokenIds: tokenIds },
+    });
+    return sell;
+  },
+  async fetchBuy({ commit }, {tokenIds}) {
+    const query = `
+    query MyQuery($tokenAddress: String, $tokenIds: [name!]) {
+      buy(limit: 1,
+          where: {tokenAddress: {_eq: $tokenAddress}, 
+          tokenId: {_in: $tokenIds}}, 
+          order_by: {timestamp: desc}) 
+      {
+        buyAmount
+        buyFrom
+        timestamp
+        tokenAddress
+        tokenId
+      }
+    }         
+    `;
+    const {
+      data: {
+        data: { buy },
+      },
+    } = await this.$axios.post("http://15.207.106.83/v1/graphql", {
+      query,
+      variables: { tokenAddress: "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW", 
+                  tokenIds: tokenIds },
+    });
+    return buy;
+  },
+  
 };
