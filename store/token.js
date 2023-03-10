@@ -42,7 +42,7 @@ export const actions = {
         data: { mint },
       },
     } 
-    = await this.$axios.post("https://dipdup.playjoko.com/v1/graphqll", {
+    = await this.$axios.post("https://dipdup.playjoko.com/v1/graphql", {
       query,
       variables: { tokenIds: tokenIds },
     });
@@ -70,7 +70,7 @@ export const actions = {
       data: {
         data: { ask },
       },
-    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphqll", {
+    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphql", {
       query,
       variables: { tokenAddress: "KT1KjromN7E42JsC38iBkkkqKkteKJ8BHtRP", tokenIds: tokenIds },
     });
@@ -94,7 +94,7 @@ export const actions = {
       data: {
         data: { offer },
       },
-    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphqll", {
+    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphql", {
       query,
       variables: { tokenAddress: "KT1RMb18HPPm1Dtcb74AfUQgdc4uHcxmEHU2", tokenIds: tokenIds },
     });
@@ -124,7 +124,7 @@ export const actions = {
       data: {
         data: { askAuction },
       },
-    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphqll", {
+    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphql", {
       query,
       variables: { tokenAddress: "KT1HVzCL4e4F4f4pRwxG9ye9oo85YB6t7cmd", tokenIds: tokenIds },
     });
@@ -147,7 +147,7 @@ export const actions = {
       data: {
         data: { bid },
       },
-    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphqll", {
+    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphql", {
       query,
       variables: { tokenAddress: "KT18bPNxdKzk7XqYEfKp6mS4un7X64Ho6mkR", tokenIds: tokenIds },
     });
@@ -210,7 +210,7 @@ export const actions = {
       data: {
         data: { sell },
       },
-    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphqll", {
+    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphql", {
       query,
       variables: { tokenAddress: "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW",
                    tokenIds: tokenIds },
@@ -237,7 +237,7 @@ export const actions = {
       data: {
         data: { buy },
       },
-    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphqll", {
+    } = await this.$axios.post("https://dipdup.playjoko.com/v1/graphql", {
       query,
       variables: { tokenAddress: "KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW", 
                   tokenIds: tokenIds },
