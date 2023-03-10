@@ -142,7 +142,7 @@ export default {
       lastSale: null,
       raribleUrl: null,
       highestBidUrl: null,
-      baseURL: "http://dipdup.playjoko.com/api/rest/",
+      baseURL: "https://dipdup.playjoko.com/api/rest/",
     };
   },
   computed: {
@@ -169,7 +169,7 @@ export default {
         this.fetchAsk();
         this.fetchBid();
         this.fetchSale();
-      }, 10000);
+      }, 60000);
     };
     if (this.token.type === "userPage") {
       // Redirect user to highest bid place
@@ -183,7 +183,7 @@ export default {
         this.fetchAskByTokenId();
         this.fetchBidByTokenId();
         this.fetchSaleByTokenId();
-      }, 10000);
+      }, 60000);
     }
   },
   destroyed() {
