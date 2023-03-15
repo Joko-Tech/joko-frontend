@@ -34,19 +34,25 @@
       <div class="c-main"><Nuxt /></div>
     </div>
     <FooterComponent />
+    <Toast :show-toast="toastState.show" :toast-state="toastState.type">
+      {{ toastState.message }}
+    </Toast>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { toastMixin } from "~/mixins/toast";
 
 export default {
+  mixins: [toastMixin],
   computed: {
     ...mapGetters({
       isTokenModalOpen: "token/isTokenModalOpen",
       currentModalToken: "token/currentModalToken",
       isVideoModalOpen: "isVideoModalOpen",
       wallet: "wallet/wallet",
+      walletState: "wallet/walletState",
     }),
   },
   mounted() {
@@ -86,6 +92,25 @@ export default {
     wallet: {
       handler: function (val) {
         if (val.isConnected) {
+          this.showToast({
+            message: "Wallet connected",
+            autoHideDuration: 3000,
+            type: "success",
+          });
+
+          this.$store.dispatch("wallet/fetchUserTokens");
+        }
+      },
+      deep: true,
+    },
+    walletState: {
+      handler: function (val) {
+        if (val.loading) {
+          this.showToast({
+            message: "Wallet Connecting",
+            type: "info",
+          });
+
           this.$store.dispatch("wallet/fetchUserTokens");
         }
       },
