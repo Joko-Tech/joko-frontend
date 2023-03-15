@@ -120,6 +120,7 @@
 <script>
 import { truncateText } from "~/utils/formatters";
 import { toastMixin } from "~/mixins/toast";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -145,6 +146,9 @@ export default {
         ? truncateText(this.description, 139)
         : this.description;
     },
+    ...mapGetters({
+      wallet: "wallet/wallet",
+    }),
   },
   methods: {
     showVideoModal() {
@@ -154,22 +158,29 @@ export default {
       this.isTextShortened = false;
     },
     checkIfAuthenticated() {
-      console.log(this);
-      const isAuthenticatedVideo = this.$store.dispatch(
-        "wallet/isAuthenticatedVideo",
-        this.episode.artistName
-      );
-      isAuthenticatedVideo.then((value) => {
-        if (value) {
-          this.$router.push(`/episode/${this.episode.artistName}`);
-        } else {
-          this.showToast({
-            message: "You need a token to watch the full episode.",
-            autoHideDuration: 3000,
-            type: "error",
-          });
-        }
-      });
+      if (this.wallet.isConnected) {
+        const isAuthenticatedVideo = this.$store.dispatch(
+          "wallet/isAuthenticatedVideo",
+          this.episode.artistName
+        );
+        isAuthenticatedVideo.then((value) => {
+          if (value) {
+            this.$router.push(`/episode/${this.episode.artistName}`);
+          } else {
+            this.showToast({
+              message: "You need a token to watch the full episode.",
+              autoHideDuration: 3000,
+              type: "error",
+            });
+          }
+        });
+      } else {
+        this.showToast({
+          message: "You need to connect your wallet to watch the full episode.",
+          autoHideDuration: 3000,
+          type: "error",
+        });
+      }
     },
   },
 };
