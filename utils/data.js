@@ -19,7 +19,8 @@ export const ipfsFetcher = async (URI) => {
   return axios.get(url,
     {
       headers: {
-        'Accept': 'text/plain'
+        'Accept': 'text/plain',
+        'Access-Control-Allow-Origin': '*'
       }
     }
   );
@@ -33,7 +34,8 @@ export const ipfsIndexFetcher = async (URI, index) => {
   return axios.get(url,
     {
       headers: {
-        'Accept': 'text/plain'
+        'Accept': 'text/plain',
+        'Access-Control-Allow-Origin': '*'
       }
     }
   );
@@ -45,7 +47,8 @@ export const ipfsMetadataFetcher = async (URI) => {
   return axios.get(url,
     {
       headers: {
-        'Accept': 'text/plain'
+        'Accept': 'text/plain',
+        'Access-Control-Allow-Origin': '*'
       }
     }
   );
