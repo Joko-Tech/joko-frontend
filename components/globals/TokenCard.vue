@@ -44,7 +44,7 @@
         </a>
       </div>
 
-      <div class="c-tokencard__bottom">
+      <div v-if="this.token.tier !== 1" class="c-tokencard__bottom">
         <div class="c-tokencard__price">
           <div class="c-tokencard__price__label">Price</div>
           <div class="c-tokencard__price__amount">
@@ -52,6 +52,15 @@
           </div>
         </div>
         <ButtonComponent @click="mintToken">Mint</ButtonComponent>
+      </div>
+      <div v-if="this.token.tier === 1" class="c-tokencard__bottom">
+        <div class="c-tokencard__price">
+          <div class="c-tokencard__price__label">Highest bid</div>
+          <div class="c-tokencard__price__amount">
+            <span>{{ highestBidXtz }}</span> <span><TezosIcon /></span>
+          </div>
+        </div>
+        <ButtonComponent @click="bid">Bid</ButtonComponent>
       </div>
     </div>
   </div>
@@ -71,14 +80,27 @@ export default {
       validator: (s) => ["aspect", "auto"].includes(s),
     },
   },
+  data() {
+    return {
+      highestBidXtz: null,
+      auctionUrl: null,
+      auctionStatus: true,
+    };
+  },
   mounted() {
     new LazyLoader(this.$refs.tokenImage);
+    if (this.token.tier === 1) {
+      this.fetchAuction();
+      this.fetchInterval = setInterval(() => {
+        this.fetchAuction();
+      }, 60000);
+    };
   },
   computed: {
     image() {
       const displayImage = this.token.formats[1];
       const aspectArray = displayImage.dimensions?.value.split("x");
-
+      console.log(displayImage)
       if (this.isVideo) {
         return {
           uri: displayImage.uri,
@@ -167,6 +189,31 @@ export default {
         this.$store.dispatch("wallet/mintTier3", payload);
       }
     },
+    bid() {
+      window.open(this.auctionUrl, '_blank');
+    },
+    async fetchAuction() {
+      if (this.token.tier === 1) {
+        const payload = {
+          tier: this.token.tier,
+          artist: this.token.artist,
+        };
+        const tokenIds = await this.$store.dispatch("fetchTokenId", payload);
+        const auction = await this.$store.dispatch("token/fetchEnglishAuction", {tokenIds: tokenIds});
+
+        if(auction.length && new Date() - new Date(auction[0].end_time) <= 0) {
+          this.auctionOn = true;
+          this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
+          this.auctionUrl = "https://objkt.com/auction/e/" + auction[0].hash;
+        }
+        else {
+          this.auctionOn = false;
+          this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
+          this.auctionUrl = "https://objkt.com/auction/e/" + auction[0].hash;
+        }
+      }
+      
+    }
   },
 };
 </script>

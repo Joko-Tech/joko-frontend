@@ -290,5 +290,23 @@ export const actions = {
     });
     commit("updateMintedTokenMetadata", repTokens);
   },
+  async fetchTokenId({artist, tier}) {
+    // Fetch minted tokens
+    const fa2_big_maps = await this.$axios.$get(
+      `${base_tzkt_api_url}bigmaps?contract=${jokoContractAddress}`
+    );
+    const token_metadata = fa2_big_maps.find(element => element.path === "tier_map");
+    const token_metadata_ptr = token_metadata?.ptr
+    const res = await this.$axios.$get(
+      `${base_tzkt_api_url}bigmaps/${token_metadata_ptr}/keys`
+    );
+    
+    const tokenIds = res.filter(async(element) => {
+      const artistName = element.key.string_0;
+      const tierValue = element.key.string_1;
+      return artistName === artist && tierValue === tier
+    })
+    return tokenIds.value;
+  },
 };
 
