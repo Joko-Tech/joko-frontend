@@ -199,7 +199,6 @@ export const actions = {
     });
     commit("updateArtists", artists);
     commit("updateStorage", storage);
-    console.log(artists, storage);
   },
 
   async fetchGalleryMetadata({ state, commit }) {

@@ -56,7 +56,7 @@ export default {
     }),
   },
   mounted() {
-    // this.$store.dispatch("fetchAllMetadata");
+    this.$store.dispatch("fetchInitialStorage");
   },
   methods: {
     hideTokenModal() {
