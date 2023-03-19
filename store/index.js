@@ -168,6 +168,7 @@ export const actions = {
   },
   async fetchInitialStorage({ commit }) {
     // tezos = new TezosToolkit(networks.ghostnet.nodes[0]);
+    console.log("fetchInitialStorage");
     const contract = await tezos.contract.at(jokoContractAddress);
     const storage = await contract.storage();
     // const artistsMap = storage.artist_map.valueMap;
