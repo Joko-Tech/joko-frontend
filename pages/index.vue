@@ -50,7 +50,7 @@ export default {
     const artists = store.getters.artists;
 
     if (!artists) {
-      await store.dispatch("fetchInitialStorage");
+      // await store.dispatch("fetchInitialStorage");
     }
 
     return {};
