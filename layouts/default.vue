@@ -45,6 +45,10 @@ import { mapGetters } from "vuex";
 import { toastMixin } from "~/mixins/toast";
 
 export default {
+  // async asyncData({ $axios, store }) {
+  //   console.log(store);
+  //   store.dispatch("fetchInitialStorage");
+  // },
   mixins: [toastMixin],
   computed: {
     ...mapGetters({

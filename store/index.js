@@ -128,7 +128,6 @@ export const mutations = {
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req }) {
     // await dispatch("fetchAllMetadata");
-    await dispatch("fetchInitialStorage");
   },
 
   async fetchInitialData({ commit }) {
@@ -202,10 +201,14 @@ export const actions = {
     commit("updateStorage", storage);
   },
 
-  async fetchGalleryMetadata({ state, commit }) {
+  async fetchGalleryMetadata({ state, commit, dispatch }) {
     let repTokens = [];
     const repTokensPerArtist = {};
-    const artists = state.artists;
+    let artists = state.artists;
+    if (!artists) {
+      await dispatch("fetchInitialStorage");
+    }
+    artists = state.artists;
     const tokenMetadata = await Promise.all(
       artists.map(async (artist, index) => {
         const tier1_metadata = await ipfsMetadataFetcher(
