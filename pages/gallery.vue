@@ -35,6 +35,8 @@ export default {
       await this.$store.dispatch("fetchGalleryMetadata");
     }
 
+    console.log(this.$store.getters.artists);
+
     if (this.mintedTokenMetadata.length) {
       // next tick
       this.$nextTick(() => {
