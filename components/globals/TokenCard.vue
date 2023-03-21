@@ -63,12 +63,20 @@
         <ButtonComponent @click="bid">Bid</ButtonComponent>
       </div>
     </div>
+
+    <Toast :show-toast="toastState.show" :toast-state="toastState.type">
+      {{ toastState.message }}
+    </Toast>
   </div>
 </template>
 
 <script>
 import LazyLoader from "~/js/components/ImageLazyLoader";
+import { toastMixin } from "~/mixins/toast";
+import { mapGetters } from "vuex";
+
 export default {
+  mixins: [toastMixin],
   props: {
     token: {
       type: Object,
@@ -97,6 +105,10 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      wallet: "wallet/wallet",
+    }),
+
     image() {
       const displayImage = this.token.formats[1];
       const aspectArray = displayImage.dimensions?.value.split("x");
@@ -170,23 +182,63 @@ export default {
       this.$store.commit("token/updateCurrentModalToken", token);
       this.$store.commit("token/updateIsTokenModalOpen", true);
     },
-    mintToken() {
+    async mintToken() {
       const payload = {
         pixel_artist: this.pixelArtist,
         artist: this.token.artist,
         price: this.price,
       };
 
-      if (this.token.tier === 1) {
-        this.$store.dispatch("wallet/mintTier1", payload);
+      if (!this.wallet.isConnected) {
+        this.showToast({
+          message: "Please connect your wallet",
+          type: "error",
+          autoHideDuration: 3000,
+        });
+        return;
       }
 
-      if (this.token.tier === 2) {
-        this.$store.dispatch("wallet/mintTier2", payload);
-      }
+      this.showToast({
+        message: "Minting token...",
+        type: "info",
+      });
 
-      if (this.token.tier === 3) {
-        this.$store.dispatch("wallet/mintTier3", payload);
+      try {
+        if (this.token.tier === 1) {
+          await this.$store.dispatch("wallet/mintTier1", payload);
+
+          this.showToast({
+            message: "Token minted successfully",
+            type: "success",
+            autoHideDuration: 3000,
+          });
+        }
+
+        if (this.token.tier === 2) {
+          await this.$store.dispatch("wallet/mintTier2", payload);
+
+          this.showToast({
+            message: "Token minted successfully",
+            type: "success",
+            autoHideDuration: 3000,
+          });
+        }
+
+        if (this.token.tier === 3) {
+          await this.$store.dispatch("wallet/mintTier3", payload);
+
+          this.showToast({
+            message: "Token minted successfully",
+            type: "success",
+            autoHideDuration: 3000,
+          });
+        }
+      } catch (error) {
+        this.showToast({
+          message: "Error minting token",
+          type: "error",
+          autoHideDuration: 3000,
+        });
       }
     },
     bid() {
