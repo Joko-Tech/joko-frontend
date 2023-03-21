@@ -19,11 +19,19 @@ export const ipfsFetcher = async (URI) => {
   return axios.get(url,
     {
       headers: {
-        'Accept': 'text/plain',
-        'Access-Control-Allow-Origin': '*'
+        'Accept': 'text/plain'
       }
     }
-  );
+    ).then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return {
+          success: false,
+          message: error.message,
+      };
+    });;
 };
 
 export const ipfsIndexFetcher = async (URI, index) => {
@@ -34,11 +42,19 @@ export const ipfsIndexFetcher = async (URI, index) => {
   return axios.get(url,
     {
       headers: {
-        'Accept': 'text/plain',
-        'Access-Control-Allow-Origin': '*'
+        'Accept': 'text/plain'
       }
     }
-  );
+    ).then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return {
+          success: false,
+          message: error.message,
+      };
+    });;
 };
 
 export const ipfsMetadataFetcher = async (URI) => {
@@ -47,11 +63,19 @@ export const ipfsMetadataFetcher = async (URI) => {
   return axios.get(url,
     {
       headers: {
-        'Accept': 'text/plain',
-        'Access-Control-Allow-Origin': '*'
+        'Accept': 'text/plain'
       }
     }
-  );
+    ).then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return {
+          success: false,
+          message: error.message,
+      };
+    });;
 };
 
 export const getImageHash = (URI) => {
