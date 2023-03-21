@@ -55,6 +55,12 @@
       </div>
       <div v-if="this.token.tier === 1" class="c-tokencard__bottom">
         <div class="c-tokencard__price">
+          <div class="c-tokencard__price__label">Time Left</div>
+          <div class="c-tokencard__price__amount">
+            <p class="auction"></p>
+          </div>
+        </div>
+        <div class="c-tokencard__price">
           <div class="c-tokencard__price__label">Highest bid</div>
           <div class="c-tokencard__price__amount">
             <span>{{ highestBidXtz }}</span> <span><TezosIcon /></span>
@@ -92,7 +98,8 @@ export default {
     return {
       highestBidXtz: null,
       auctionUrl: null,
-      auctionStatus: true,
+      auctionStartTime: null,
+      auctionEndTime: null,
     };
   },
   mounted() {
@@ -100,7 +107,7 @@ export default {
     if (this.token.tier === 1) {
       this.fetchAuction();
       this.fetchInterval = setInterval(() => {
-        this.fetchAuction();
+        this.fetchAuctionBid();
       }, 60000);
     };
   },
@@ -112,7 +119,7 @@ export default {
     image() {
       const displayImage = this.token.formats[1];
       const aspectArray = displayImage.dimensions?.value.split("x");
-      console.log(displayImage)
+
       if (this.isVideo) {
         return {
           uri: displayImage.uri,
@@ -244,6 +251,36 @@ export default {
     bid() {
       window.open(this.auctionUrl, '_blank');
     },
+    updateTimer() {
+      // Set the date we're counting down to
+      var countDownDate = new Date(this.auctionEndTime).getTime();
+
+      // Update the count down every 1 second
+      var x = setInterval(function() {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display the result in the element with id="demo"
+        document.getElementById("auction").innerHTML = days + "d " + hours + "h "
+        + minutes + "m " + seconds + "s ";
+
+        // If the count down is finished, write some text
+        if (distance < 0) {
+          clearInterval(x);
+          document.getElementById("auction").innerHTML = "AUCTION ENDED";
+        }
+      }, 1000);
+    },
     async fetchAuction() {
       if (this.token.tier === 1) {
         const payload = {
@@ -253,19 +290,71 @@ export default {
         const tokenIds = await this.$store.dispatch("fetchTokenId", payload);
         const auction = await this.$store.dispatch("token/fetchEnglishAuction", {tokenIds: tokenIds});
 
-        if(auction.length && new Date() - new Date(auction[0].end_time) <= 0) {
-          this.auctionOn = true;
+        if(auction.length) {
+
+          this.auctionStartTime = auction[0].start_time;
+          this.auctionEndTime = auction[0].end_time;
           this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
           this.auctionUrl = "https://objkt.com/auction/e/" + auction[0].hash;
         }
         else {
-          this.auctionOn = false;
-          this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
-          this.auctionUrl = "https://objkt.com/auction/e/" + auction[0].hash;
+          this.highest_bid_xtz = auction[0]?.highest_bid_xtz / Math.pow(10, 6);
         }
+        // Set the date we're counting down to
+
+        var countDownDate = new Date(this.auctionEndTime).getTime();
+
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+
+          // Get today's date and time
+          var now = new Date().getTime();
+
+          // Find the distance between now and the count down date
+          var distance = countDownDate - now;
+
+          // Time calculations for days, hours, minutes and seconds
+          var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          // Display the result in the element with id="demo"
+          var timers = document.getElementsByClassName("auction");
+          Array.prototype.forEach.call(timers, function(timer) {
+              timer.innerHTML = days + "d " + hours + "h "
+                              + minutes + "m " + seconds + "s ";
+          });
+          
+
+          // If the count down is finished, write some text
+          if (distance < 0) {
+            clearInterval(x);
+            Array.prototype.forEach.call(timers, function(timer) {
+              timer.innerHTML = "Auction Ended"
+          });
+          }
+        }, 1000);
       }
-      
-    }
+    },
+    async fetchAuctionBid() {
+      if (this.token.tier === 1) {
+        const payload = {
+          tier: this.token.tier,
+          artist: this.token.artist,
+        };
+        const tokenIds = await this.$store.dispatch("fetchTokenId", payload);
+        const auction = await this.$store.dispatch("token/fetchEnglishAuction", {tokenIds: tokenIds});
+
+        if(auction.length && new Date() - new Date(auction[0].end_time) <= 0) {
+          this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
+        }
+        else {
+          this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
+        }
+      } 
+    },
+    
   },
 };
 </script>

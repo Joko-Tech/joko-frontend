@@ -182,7 +182,7 @@ export const actions = {
       },
     } = await this.$axios.post("https://data.objkt.com/v3/graphql", {
       query,
-      variables: { tokenAddress: "KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton", tokenId: "466859" },
+      variables: { tokenAddress: "KT1Mjhps6Cwmua19eMnHBwuBuESSyMsvRTig", tokenId: "1" },
     });
     return english_auction;
   },
