@@ -105,8 +105,6 @@ export default {
     const keyPairId = process.env.CLOUDFRONT_KEYPAIR_ID;
     const dateLessThan = (Date.now() + 1000 * 60);
 
-    console.log(dateLessThan);
-
     const policy = JSON.stringify({
       Statement: [
         {

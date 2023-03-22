@@ -20,7 +20,7 @@ const networks = {
   },
   ghostnet: {
     networkname: "Ghostnet",
-    nodes: ["https://rpc.ghostnet.teztnets.xyz/", "https://ghostnet.ecadinfra.com", "https://ghostnet.tezos.marigold.dev/"],
+    nodes: ["https://rpc.ghostnet.teztnets.xyz/", "https://ghostnet.smartpy.io/", "https://ghostnet.tezos.marigold.dev/"],
   },
   ithacanet: {
     networkname: "Ithacanet",
