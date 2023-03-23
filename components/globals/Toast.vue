@@ -1,6 +1,6 @@
 <template>
   <transition name="toast-fade">
-    <div class="c-toast">
+    <div class="c-toast" v-if="showToast">
       <div class="c-toast__inner">
         <div
           class="c-toast__label c-toast__label--success"
@@ -37,8 +37,8 @@ export default {
     toastState: {
       type: String,
       default: "success",
-      validator: (s) => ["success", "error", "info"].includes(s),
     },
+    showToast: Boolean,
   },
 };
 </script>

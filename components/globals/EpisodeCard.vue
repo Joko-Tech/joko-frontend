@@ -111,23 +111,24 @@
       </div>
     </div>
 
-    <Toast toastState="error" v-show="showToast">
-      You need a token to watch the full episode.
+    <Toast :show-toast="toastState.show" :toast-state="toastState.type">
+      {{ toastState.message }}
     </Toast>
   </div>
 </template>
 
 <script>
 import { truncateText } from "~/utils/formatters";
+import { toastMixin } from "~/mixins/toast";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
       isTextShortened: true,
       description: `Born in April, 1996, Kelvin Nnamdi Odenigbo better known as Lojay is a Nigerian singer and songwriter. He came into limelight after featuring Wizkid in his debut EP ‘LV N ATTN’. Having developed interests in music at a very young age, Lojay released Ariel in October 2019. He featured superstar singer, Sarz in his hit single Tonongo and Monalisa, as well as worked with other artists like Wizkid.`,
-      showToast: false,
     };
   },
-
+  mixins: [toastMixin],
   props: {
     episode: {
       type: Object,
@@ -145,6 +146,9 @@ export default {
         ? truncateText(this.description, 139)
         : this.description;
     },
+    ...mapGetters({
+      wallet: "wallet/wallet",
+    }),
   },
   methods: {
     showVideoModal() {
@@ -154,21 +158,29 @@ export default {
       this.isTextShortened = false;
     },
     checkIfAuthenticated() {
-      console.log(this)
-      const isAuthenticatedVideo = this.$store.dispatch(
-        "wallet/isAuthenticatedVideo",
-        this.episode.artistName
-      );
-      isAuthenticatedVideo.then((value) => {
-        if (value) {
-          this.$router.push(`/episode/${this.episode.artistName}`);
-        } else {
-          this.showToast = true;
-          setTimeout(() => {
-            this.showToast = false;
-          }, 3000);
-        }
-      });
+      if (this.wallet.isConnected) {
+        const isAuthenticatedVideo = this.$store.dispatch(
+          "wallet/isAuthenticatedVideo",
+          this.episode.artistName
+        );
+        isAuthenticatedVideo.then((value) => {
+          if (value) {
+            this.$router.push(`/episode/${this.episode.artistName}`);
+          } else {
+            this.showToast({
+              message: "You need a token to watch the full episode.",
+              autoHideDuration: 3000,
+              type: "error",
+            });
+          }
+        });
+      } else {
+        this.showToast({
+          message: "You need to connect your wallet to watch the full episode.",
+          autoHideDuration: 3000,
+          type: "error",
+        });
+      }
     },
   },
 };

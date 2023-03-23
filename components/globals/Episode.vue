@@ -50,15 +50,15 @@ export default {
       const metadatas = await Promise.all([
         await ipfsIndexFetcher(
           this.episode.tier1_metadata_path,
-          this.episode.tier1_total_supply
+          this.returnSupplyIndex(1)
         ),
         await ipfsIndexFetcher(
           this.episode.tier2_metadata_path,
-          this.episode.tier2_total_supply
+          this.returnSupplyIndex(2)
         ),
         await ipfsIndexFetcher(
           this.episode.tier3_metadata_path,
-          this.episode.tier3_total_supply
+          this.returnSupplyIndex(3)
         ),
       ]);
 
@@ -71,7 +71,7 @@ export default {
           tokenIndex: tokenIndex === tokenCount ? tokenIndex : tokenIndex + 1,
           tokenCount,
           tier,
-          isFullyMinted: tokenIndex === tokenCount,
+          isFullyMinted: tokenIndex == tokenCount,
           artist: this.episode.artistName,
           tier2_price: this.episode.tier2_price,
           tier3_price: this.episode.tier3_price,
@@ -86,6 +86,14 @@ export default {
     }
 
     // console.log(metadata);
+  },
+  methods: {
+    returnSupplyIndex(tier) {
+      return this.episode[`tier${tier}_total_supply`] ==
+        this.episode[`tier${tier}_max_supply`]
+        ? this.episode[`tier${tier}_total_supply`] - 1
+        : this.episode[`tier${tier}_total_supply`];
+    },
   },
 };
 </script>
