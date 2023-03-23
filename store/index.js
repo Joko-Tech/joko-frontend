@@ -290,7 +290,7 @@ export const actions = {
     });
     commit("updateMintedTokenMetadata", repTokens);
   },
-  async fetchTokenId({artist, tier}) {
+  async fetchTokenId({ commit }, {artist, tier}) {
     // Fetch minted tokens
     const fa2_big_maps = await this.$axios.$get(
       `${base_tzkt_api_url}bigmaps?contract=${jokoContractAddress}`
@@ -301,12 +301,12 @@ export const actions = {
       `${base_tzkt_api_url}bigmaps/${token_metadata_ptr}/keys`
     );
     
-    const tokenIds = res.filter(async(element) => {
+    const tokenIds = res.filter((element) => {
       const artistName = element.key.string_0;
       const tierValue = element.key.string_1;
       return artistName === artist && tierValue === tier
     })
-    return tokenIds.value;
+    return tokenIds.length ? tokenIds[0].value : [];
   },
 };
 

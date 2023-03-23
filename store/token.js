@@ -34,6 +34,8 @@ export const actions = {
       mint(where: {tokenId: {_in: $tokenIds}}) {
         tokenId
         raribleUrl
+        objktsUrl
+        owner
       }
     }     
     `;
@@ -182,7 +184,7 @@ export const actions = {
       },
     } = await this.$axios.post("https://data.objkt.com/v3/graphql", {
       query,
-      variables: { tokenAddress: "KT1Mjhps6Cwmua19eMnHBwuBuESSyMsvRTig", tokenId: "1" },
+      variables: { tokenAddress: "KT1Mjhps6Cwmua19eMnHBwuBuESSyMsvRTig", tokenId: "2" },
     });
     return english_auction;
   },

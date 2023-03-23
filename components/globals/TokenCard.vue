@@ -283,12 +283,15 @@ export default {
     },
     async fetchAuction() {
       if (this.token.tier === 1) {
+        const tier = "tier1"
         const payload = {
-          tier: this.token.tier,
+          tier: tier,
           artist: this.token.artist,
         };
+
         const tokenIds = await this.$store.dispatch("fetchTokenId", payload);
         const auction = await this.$store.dispatch("token/fetchEnglishAuction", {tokenIds: tokenIds});
+        const tokenInfor = await this.$store.dispatch("token/fetchMint", {tokenIds: tokenIds});
 
         if(auction.length) {
 
@@ -298,7 +301,8 @@ export default {
           this.auctionUrl = "https://objkt.com/auction/e/" + auction[0].hash;
         }
         else {
-          this.highest_bid_xtz = auction[0]?.highest_bid_xtz / Math.pow(10, 6);
+          this.highest_bid_xtz = 0;
+          this.auctionUrl = tokenInfor.lengh ? tokenInfor[0].objktsUrl : "";
         }
         // Set the date we're counting down to
 
@@ -339,8 +343,9 @@ export default {
     },
     async fetchAuctionBid() {
       if (this.token.tier === 1) {
+        const tier = "tier1";
         const payload = {
-          tier: this.token.tier,
+          tier: tier,
           artist: this.token.artist,
         };
         const tokenIds = await this.$store.dispatch("fetchTokenId", payload);
@@ -350,7 +355,7 @@ export default {
           this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
         }
         else {
-          this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
+          this.highestBidXtz = auction[0] ? auction[0].highest_bid_xtz / Math.pow(10, 6) : "N/A";
         }
       } 
     },
