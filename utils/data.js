@@ -22,7 +22,16 @@ export const ipfsFetcher = async (URI) => {
         'Accept': 'text/plain'
       }
     }
-  );
+    ).then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return {
+          success: false,
+          message: error.message,
+      };
+    });;
 };
 
 export const ipfsIndexFetcher = async (URI, index) => {
@@ -36,7 +45,16 @@ export const ipfsIndexFetcher = async (URI, index) => {
         'Accept': 'text/plain'
       }
     }
-  );
+    ).then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return {
+          success: false,
+          message: error.message,
+      };
+    });;
 };
 
 export const ipfsMetadataFetcher = async (URI) => {
@@ -48,7 +66,16 @@ export const ipfsMetadataFetcher = async (URI) => {
         'Accept': 'text/plain'
       }
     }
-  );
+    ).then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return {
+          success: false,
+          message: error.message,
+      };
+    });;
 };
 
 export const getImageHash = (URI) => {
