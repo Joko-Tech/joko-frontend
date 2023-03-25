@@ -44,7 +44,7 @@
               <div class="c-content__market__label">Editions</div>
               <div class="c-content__market__edition">
                 <!-- <span>{{ token.tokenIndex }}/{{ token.tokenCount }}</span> -->
-                <span>1/1</span>
+                <span>{{ token.tokenIndex }}/{{ token.tokenCount }}</span>
                 <span>
                   <ToolTip>Number of tokens in this edition</ToolTip>
                 </span>
