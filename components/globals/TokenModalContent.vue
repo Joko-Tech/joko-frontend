@@ -243,17 +243,19 @@ export default {
     async fetchMint() {
       const lowestAsk = this.lowestAskTokenId ? await this.$store.dispatch("token/fetchMint", {tokenIds: [this.lowestAskTokenId]}) : [];
       const highestBid = this.highestBidTokenId ? await this.$store.dispatch("token/fetchMint", {tokenIds: [this.highestBidTokenId]}) : [];
+      const res = await this.$store.dispatch("token/fetchMint", {tokenIds: [this.token.tokenIds[1]]})
 
       if (lowestAsk.length) {
         this.lowestAskUrl = this.lowestAskSite === "Objkts" ? lowestAsk[0].objktsUrl : lowestAsk[0].raribleUrl;
       } else {
-        this.lowestAskUrl = null;
+        this.lowestAskUrl = res.length ? res[0].objktsUrl : null;
       }
       if (highestBid.length) {
         this.highestBidUrl = highestBid[0].objktsUrl;
       } else {
-        this.highestBidUrl = null;
+        this.highestBidUrl = res.length ? res[0].objktsUrl : null;
       }
+      console.log(this.lowestAskUrl)
     },
 
     mintToken() {
