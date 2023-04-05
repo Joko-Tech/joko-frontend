@@ -52,7 +52,7 @@
           </div>
         </div>
         <ButtonComponent v-if="!this.token.isFullyMinted" @click="mintToken">Mint</ButtonComponent>
-        <ButtonComponent v-if="this.token.isFullyMinted" @click="mintToken">
+        <ButtonComponent v-if="this.token.isFullyMinted">
           <a :href="marketplaceUrl" target="_blank" rel="noopener noreferrer">
             Buy
           </a>
@@ -72,7 +72,7 @@
           </div>
         </div>
         <ButtonComponent v-if="!this.auctionOver" @click="bid">Bid</ButtonComponent>
-        <ButtonComponent v-if="this.auctionOver" @click="bid">
+        <ButtonComponent v-if="this.auctionOver">
           <a :href="marketplaceUrl" target="_blank" rel="noopener noreferrer">
           Buy
           </a>
