@@ -51,7 +51,12 @@
             <span>{{ price }}</span> <span><TezosIcon /></span>
           </div>
         </div>
-        <ButtonComponent @click="mintToken">Mint</ButtonComponent>
+        <ButtonComponent v-if="!this.token.isFullyMinted" @click="mintToken">Mint</ButtonComponent>
+        <ButtonComponent v-if="this.token.isFullyMinted" @click="mintToken">
+          <a :href="marketplaceUrl" target="_blank" rel="noopener noreferrer">
+            Buy
+          </a>
+        </ButtonComponent>
       </div>
       <div v-if="this.token.tier === 1" class="c-tokencard__bottom">
         <div class="c-tokencard__price">
@@ -66,7 +71,12 @@
             <span>{{ highestBidXtz }}</span> <span><TezosIcon /></span>
           </div>
         </div>
-        <ButtonComponent @click="bid">Bid</ButtonComponent>
+        <ButtonComponent v-if="!this.auctionOver" @click="bid">Bid</ButtonComponent>
+        <ButtonComponent v-if="this.auctionOver" @click="bid">
+          <a :href="marketplaceUrl" target="_blank" rel="noopener noreferrer">
+          Buy
+          </a>
+        </ButtonComponent>
       </div>
     </div>
 
@@ -100,6 +110,8 @@ export default {
       auctionUrl: null,
       auctionStartTime: null,
       auctionEndTime: null,
+      auctionOver: false,
+      fa2Contract: "KT1SoQSSHknvaUUvBRxRiT9ynBHME8sQ191P",
     };
   },
   mounted() {
@@ -108,7 +120,7 @@ export default {
       this.fetchAuction();
       this.fetchInterval = setInterval(() => {
         this.fetchAuctionBid();
-      }, 60000);
+      }, 10000);
     };
   },
   computed: {
@@ -159,6 +171,9 @@ export default {
     },
     pixelArtistUrl() {
       return this.token.creators[1].split(" ")[1];
+    },
+    marketplaceUrl() {
+      return `https://objkt.com/explore/tokens/1?faContracts=${this.fa2Contract}&attr=Musician:%20${this.token.artist}&attr=Tier:%20${this.token.tier}`;
     },
     price() {
       if (this.token.tier === 1) {
@@ -251,36 +266,6 @@ export default {
     bid() {
       window.open(this.auctionUrl, '_blank');
     },
-    updateTimer() {
-      // Set the date we're counting down to
-      var countDownDate = new Date(this.auctionEndTime).getTime();
-
-      // Update the count down every 1 second
-      var x = setInterval(function() {
-
-        // Get today's date and time
-        var now = new Date().getTime();
-
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
-
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        // Display the result in the element with id="demo"
-        document.getElementById("auction").innerHTML = days + "d " + hours + "h "
-        + minutes + "m " + seconds + "s ";
-
-        // If the count down is finished, write some text
-        if (distance < 0) {
-          clearInterval(x);
-          document.getElementById("auction").innerHTML = "AUCTION ENDED";
-        }
-      }, 1000);
-    },
     async fetchAuction() {
       if (this.token.tier === 1) {
         const tier = "tier1"
@@ -307,7 +292,14 @@ export default {
         // Set the date we're counting down to
 
         var countDownDate = new Date(this.auctionEndTime).getTime();
+        // Get today's date and time
+        var now = new Date().getTime();
 
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+        if (distance < 0) {
+          this.auctionOver = true;
+        }
         // Update the count down every 1 second
         var x = setInterval(function() {
 
@@ -316,7 +308,6 @@ export default {
 
           // Find the distance between now and the count down date
           var distance = countDownDate - now;
-
           // Time calculations for days, hours, minutes and seconds
           var days = Math.floor(distance / (1000 * 60 * 60 * 24));
           var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -336,7 +327,8 @@ export default {
             clearInterval(x);
             Array.prototype.forEach.call(timers, function(timer) {
               timer.innerHTML = "Auction Ended"
-          });
+            });
+            this.auctionOver = true;
           }
         }, 1000);
       }
