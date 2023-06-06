@@ -12,8 +12,8 @@ import axios from "axios";
 // let tezos = new TezosToolkit(networks.mainnet.nodes[0]);
 let tezos = new TezosToolkit(networks.ghostnet.nodes[1]);
 let getRepTokensPerTier = (artistName, tokenList) => {
-  let pixelArtistList = []
-  let repTokensPerTier = []
+  let pixelArtistList = [];
+  let repTokensPerTier = [];
   tokenList.map((token, index) => {
     let artist = "";
     let tier = "";
@@ -24,29 +24,33 @@ let getRepTokensPerTier = (artistName, tokenList) => {
           tier = token.attributes[i].value ? token.attributes[i].value : null;
           break;
         case "Artist":
-          artist = token.attributes[i].value ? token.attributes[i].value : token.creators[0].split(" ")[0];
+          artist = token.attributes[i].value
+            ? token.attributes[i].value
+            : token.creators[0].split(" ")[0];
           break;
         case "Pixel artist":
-          pixel_artist = token.attributes[i].value ? token.attributes[i].value : token.creators[1].split(" ")[0];
+          pixel_artist = token.attributes[i].value
+            ? token.attributes[i].value
+            : token.creators[1].split(" ")[0];
           break;
         default:
           break;
       }
-    } 
+    }
     // Check if already have the reprentative token of this artist
-    if(pixelArtistList.indexOf(pixel_artist) == -1) { 
-      pixelArtistList.push(pixel_artist)
+    if (pixelArtistList.indexOf(pixel_artist) == -1) {
+      pixelArtistList.push(pixel_artist);
       repTokensPerTier.push({
         tokenIds: [],
         artistName: artist,
         pixel_artist: pixel_artist,
         tier: tier,
-        ...token
-      })
+        ...token,
+      });
     }
-  })
+  });
   return repTokensPerTier;
-}
+};
 let getArtistMapId = async () => {
   const contractBigMaps = (
     await axios.get(
@@ -54,11 +58,10 @@ let getArtistMapId = async () => {
     )
   ).data;
   for (const bigMap of contractBigMaps) {
-    if (bigMap.path == "artist_map")
-      return bigMap.ptr;
+    if (bigMap.path == "artist_map") return bigMap.ptr;
   }
   return null;
-}
+};
 let getBigMapValue = async (artistsMapId) => {
   let value = [];
   const bigMaps = (
@@ -67,10 +70,10 @@ let getBigMapValue = async (artistsMapId) => {
     )
   ).data;
   for (const bigMap of bigMaps) {
-    value.push(bigMap)
+    value.push(bigMap);
   }
   return value;
-}
+};
 export const state = () => ({
   initialData: "",
   artists: null,
@@ -125,7 +128,7 @@ export const mutations = {
 export const actions = {
   async nuxtServerInit({ commit, dispatch }, { req }) {
     // await dispatch("fetchAllMetadata");
-    await dispatch("fetchInitialStorage");
+    // await dispatch("fetchInitialStorage");
   },
 
   async fetchInitialData({ commit }) {
@@ -169,7 +172,7 @@ export const actions = {
     const storage = await contract.storage();
     // const artistsMap = storage.artist_map.valueMap;
     const artistsMapId = await getArtistMapId();
-    const artistsValues = Array.from(await getBigMapValue(artistsMapId))
+    const artistsValues = Array.from(await getBigMapValue(artistsMapId));
 
     const artists = artistsValues.map((value, index) => {
       return {
@@ -199,7 +202,7 @@ export const actions = {
   },
 
   async fetchGalleryMetadata({ state, commit }) {
-    let repTokens = []
+    let repTokens = [];
     const repTokensPerArtist = {};
     const artists = state.artists;
     const tokenMetadata = await Promise.all(
@@ -222,26 +225,36 @@ export const actions = {
         };
       })
     );
-    tokenMetadata.map((artist,index) => {
-      const artist_name = artist.artistName
-      if(!repTokensPerArtist[artist_name]) {
-        repTokensPerArtist[artist_name] = {}
+    tokenMetadata.map((artist, index) => {
+      const artist_name = artist.artistName;
+      if (!repTokensPerArtist[artist_name]) {
+        repTokensPerArtist[artist_name] = {};
       }
-      repTokensPerArtist[artist_name]["tier1"] = getRepTokensPerTier(artist_name, artist.tier1_metadata)
-      repTokensPerArtist[artist_name]["tier2"] = getRepTokensPerTier(artist_name, artist.tier2_metadata)
-      repTokensPerArtist[artist_name]["tier3"] = getRepTokensPerTier(artist_name, artist.tier3_metadata)    
-      repTokensPerArtist[artist_name] = Array.prototype.concat(repTokensPerArtist[artist_name]["tier1"], repTokensPerArtist[artist_name]["tier2"], repTokensPerArtist[artist_name]["tier3"])
-    })
+      repTokensPerArtist[artist_name]["tier1"] = getRepTokensPerTier(
+        artist_name,
+        artist.tier1_metadata
+      );
+      repTokensPerArtist[artist_name]["tier2"] = getRepTokensPerTier(
+        artist_name,
+        artist.tier2_metadata
+      );
+      repTokensPerArtist[artist_name]["tier3"] = getRepTokensPerTier(
+        artist_name,
+        artist.tier3_metadata
+      );
+      repTokensPerArtist[artist_name] = Array.prototype.concat(
+        repTokensPerArtist[artist_name]["tier1"],
+        repTokensPerArtist[artist_name]["tier2"],
+        repTokensPerArtist[artist_name]["tier3"]
+      );
+    });
     // convert object to key's array
     const keys = Object.keys(repTokensPerArtist);
     // iterate over object
     keys.forEach((key, index) => {
-      if(repTokens.length == 0)
-        repTokens = repTokensPerArtist[key]
-      else
-        repTokens = repTokens.concat(repTokensPerArtist[key])
+      if (repTokens.length == 0) repTokens = repTokensPerArtist[key];
+      else repTokens = repTokens.concat(repTokensPerArtist[key]);
     });
     commit("updateMintedTokenMetadata", repTokens);
   },
 };
-
