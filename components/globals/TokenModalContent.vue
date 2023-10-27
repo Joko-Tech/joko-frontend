@@ -87,23 +87,31 @@
               </div>
             </div>
           </div>
-
-          <ButtonComponent
-            size="large"
-            filled
-            v-if="token.type === 'gallery'"
-            :href="raribleUrl"
-          >
-            <span v-if="highestBid && !isUserToken">Bid</span>
-            <span
+          <div v-if="token.type === 'gallery' || token.type === 'userPage'">
+            <ButtonComponent
+              size="large"
+              filled
+              :href="lowestAskUrl"
+              v-if="highestBid && !isUserToken">
+              <span>Bid</span>
+            </ButtonComponent>
+            <ButtonComponent
+              size="large"
+              filled
               v-if="
                 (!highestBid && lowestAsk && !isUserToken) ||
                 (!highestBid && !lowestAsk && !isUserToken)
               "
-              >Buy</span
-            >
-            <span v-if="isUserToken">Sell</span>
-          </ButtonComponent>
+              :href="lowestAskUrl">
+              <span>Buy</span>
+            </ButtonComponent>
+            <ButtonComponent
+              size="large"
+              filled
+              v-if="isUserToken" :href="highestBidUrl">
+              <span>Sell</span>
+            </ButtonComponent>
+          </div>
           <ButtonComponent
             size="large"
             filled
@@ -120,15 +128,21 @@
 
 <script>
 import { mapGetters } from "vuex";
-
+const ternaryOperation = (condition, value1, value2) => {
+  return condition ? value1 : value2;
+}
 export default {
   data() {
     return {
+      lowestAskTokenId: null,
+      lowestAskSite: null,
       lowestAsk: null,
+      lowestAskUrl: null,
       highestBid: null,
       lastSale: null,
       raribleUrl: null,
-      baseURL: "http://15.207.106.83/api/rest/",
+      highestBidUrl: null,
+      baseURL: "https://dipdup.playjoko.com/api/rest/",
     };
   },
   computed: {
@@ -144,28 +158,32 @@ export default {
   },
   mounted() {
     if (this.token.type === "gallery") {
-      this.fetchAsk();
+      // Redirect user to lowest ask place
+      this.fetchAsk().then((result) => {
+        this.fetchMint();
+      });;
       this.fetchBid();
       this.fetchSale();
-      this.fetchMint();
 
       this.fetchInterval = setInterval(() => {
         this.fetchAsk();
         this.fetchBid();
         this.fetchSale();
-      }, 5000);
+      }, 60000);
     };
     if (this.token.type === "userPage") {
-      this.fetchAskByTokenId();
-      this.fetchBid();
-      this.fetchSale();
-      this.fetchMint();
+      // Redirect user to highest bid place
+      this.fetchAskByTokenId().then((result) => {
+        this.fetchMintByTokenId();
+      });
+      this.fetchBidByTokenId();
+      this.fetchSaleByTokenId();
 
       this.fetchInterval = setInterval(() => {
         this.fetchAskByTokenId();
-        this.fetchBid();
-        this.fetchSale();
-      }, 5000);
+        this.fetchBidByTokenId();
+        this.fetchSaleByTokenId();
+      }, 60000);
     }
   },
   destroyed() {
@@ -173,51 +191,71 @@ export default {
   },
   methods: {
     async fetchAsk() {
-      const res = await this.$axios.$get(
-        `${this.baseURL}sellv2?_tokenId=${this.token.tokenId}`
-      );
+      const askObjkts = await this.$store.dispatch("token/fetchAsk", { tokenIds: this.token.tokenIds });
 
-      if (res.sell.length) {
-        this.lowestAsk = res.sell[0].saleAmount;
+      const askRarible = await this.$store.dispatch("token/fetchSell", { tokenIds: this.token.tokenIds });
+
+      if (askObjkts.length && askRarible.length) {
+        this.lowestAsk = ternaryOperation(askObjkts[0].amount < askRarible[0].saleAmount, askObjkts[0].amount, askRarible[0].saleAmount);
+        this.lowestAskTokenId = ternaryOperation(askObjkts[0].amount < askRarible[0].saleAmount, askObjkts[0].tokenId, askRarible[0].tokenId);
+        this.lowestAskSite = ternaryOperation(askObjkts[0].amount < askRarible[0].saleAmount, "Objkts", "Rarible");
+      } else if (askObjkts.length || askRarible.length) {
+        this.lowestAsk = ternaryOperation(askObjkts.length, askObjkts[0]?.amount, askRarible[0]?.saleAmount);
+        this.lowestAskTokenId = ternaryOperation(askObjkts.length, askObjkts[0]?.tokenId, askRarible[0]?.tokenId);
+        this.lowestAskSite = ternaryOperation(askObjkts.length, "Objkts", "Rarible");
       } else {
         this.lowestAsk = null;
+        this.lowestAskTokenId = null;
+        this.lowestAskSite = null;
       }
     },
 
     async fetchBid() {
-      const res = await this.$axios.$get(
-        `${this.baseURL}bid?id=${this.token.tokenId}`
-      );
+      const res = await this.$store.dispatch("token/fetchOffer", {tokenIds: this.token.tokenIds});
 
-      if (res.bidByPk) {
-        this.highestBid = Number(res.bidByPk.price).toFixed(2);
+      if (res.length) {
+        this.highestBid = res[0].amount;
+        this.highestBidTokenId = res[0].tokenId;
+        this.higestBidSite = "Objkts";
       } else {
         this.highestBid = null;
+        this.highestBidTokenId = null;
+        this.higestBidSite = null;
       }
     },
 
     async fetchSale() {
-      const res = await this.$axios.$get(
-        `${this.baseURL}lastSale?id=${this.token.tokenId}`
-      );
+      const saleObjkts = await this.$store.dispatch("token/fetchSale", { tokenIds: this.token.tokenIds }); 
 
-      if (res.lastSaleByPk) {
-        this.lastSale = Number(res.lastSaleByPk.amount).toFixed(2);
+      const saleRarible = await this.$store.dispatch("token/fetchBuy", { tokenIds: this.token.tokenIds });
+
+      if (saleRarible.length && saleObjkts.length) {
+        this.lastSale = saleObjkts[0].amount < saleRarible[0].buyAmount ? 
+                          saleObjkts[0].amount :
+                          saleRarible[0].buyAmount;
+      } else if (saleObjkts.length || saleRarible.length) {
+        this.lastSale = saleObjkts.length ? saleObjkts[0].amount : saleRarible[0].buyAmount;
       } else {
         this.lastSale = null;
       }
     },
 
     async fetchMint() {
-      const res = await this.$axios.$get(
-        `${this.baseURL}mint?id=${this.token.tokenId}`
-      );
+      const lowestAsk = this.lowestAskTokenId ? await this.$store.dispatch("token/fetchMint", {tokenIds: [this.lowestAskTokenId]}) : [];
+      const highestBid = this.highestBidTokenId ? await this.$store.dispatch("token/fetchMint", {tokenIds: [this.highestBidTokenId]}) : [];
+      const res = await this.$store.dispatch("token/fetchMint", {tokenIds: [this.token.tokenIds[1]]})
 
-      if (res.mintByPk) {
-        this.raribleUrl = res.mintByPk.raribleUrl;
+      if (lowestAsk.length) {
+        this.lowestAskUrl = this.lowestAskSite === "Objkts" ? lowestAsk[0].objktsUrl : lowestAsk[0].raribleUrl;
       } else {
-        this.raribleUrl = null;
+        this.lowestAskUrl = res.length ? res[0].objktsUrl : null;
       }
+      if (highestBid.length) {
+        this.highestBidUrl = highestBid[0].objktsUrl;
+      } else {
+        this.highestBidUrl = res.length ? res[0].objktsUrl : null;
+      }
+      console.log(this.lowestAskUrl)
     },
 
     mintToken() {
@@ -235,18 +273,62 @@ export default {
       }
     },
 
-    async fetchAskByTokenId() {
-      const res = await this.$axios.$get(
-        `${this.baseURL}sellv1?tokenAddress=KT1JkaXjdxrWSrVjXzufTgdJTJC9UoQjkveW&tokenId=${this.token.tokenId}`
-      );
-      console.log(res);
-      if (res.sell.length) {
-        this.lowestAsk = res.sell[0].saleAmount;
+    async fetchMintByTokenId() {
+      const res = await this.$store.dispatch("token/fetchMint", {tokenIds: [this.lowestAskTokenId]});
+
+      if (res.length) {
+        this.lowestAskUrl = this.lowestAskSite === "Objkts" ? res[0].objktsUrl : res[0].raribleUrl;
+        this.highestBidUrl = res[0].objktsUrl;
       } else {
-        this.lowestAsk = null;
+        this.lowestAskUrl = null;
+        this.highestBidUrl = res[0].objktsUrl;
       }
     },
-    
+
+    async fetchAskByTokenId() {
+      const askObjkts = await this.$store.dispatch("token/fetchAsk", { tokenIds: [this.token.tokenId] });
+
+      const askRarible = await this.$store.dispatch("token/fetchSell", { tokenIds: [this.token.tokenId] });
+
+      if (askObjkts.length && askRarible.length) {
+        this.lowestAsk = ternaryOperation(askObjkts[0].amount < askRarible[0].saleAmount, askObjkts[0].amount, askRarible[0].saleAmount);
+        this.lowestAskTokenId = ternaryOperation(askObjkts[0].amount < askRarible[0].saleAmount, askObjkts[0].tokenId, askRarible[0].tokenId);
+        this.lowestAskSite = ternaryOperation(askObjkts[0].amount < askRarible[0].saleAmount, "Objkts", "Rarible");
+      } else if (askObjkts.length || askRarible.length) {
+        this.lowestAsk = ternaryOperation(askObjkts.length, askObjkts[0]?.amount, askRarible[0]?.saleAmount);
+        this.lowestAskTokenId = ternaryOperation(askObjkts.length, askObjkts[0]?.tokenId, askRarible[0]?.tokenId);
+        this.lowestAskSite = ternaryOperation(askObjkts.length, "Objkts", "Rarible");
+      } else {
+        this.lowestAsk = null;
+        this.lowestAskTokenId = null;
+        this.lowestAskSite = null;
+      }
+    },
+
+    async fetchBidByTokenId() {
+      const res = await this.$store.dispatch("token/fetchOffer", {tokenIds: [this.token.tokenId]});
+      if (res.length) {
+        this.highestBid = res[0].amount;
+      } else {
+        this.highestBid = null;
+      }
+    },
+
+    async fetchSaleByTokenId() {
+      const saleObjkts = await this.$store.dispatch("token/fetchSale", { tokenIds: [this.token.tokenId] }); 
+
+      const saleRarible = await this.$store.dispatch("token/fetchBuy", { tokenIds: [this.token.tokenId] });
+
+      if (saleRarible.length && saleObjkts.length) {
+        this.lastSale = saleObjkts[0].amount < saleRarible[0].buyAmount ? 
+                          saleObjkts[0].amount :
+                          saleRarible[0].buyAmount;
+      } else if (saleObjkts.length || saleRarible.length) {
+        this.lastSale = saleObjkts.length ? saleObjkts[0].amount : saleRarible[0].buyAmount;
+      } else {
+        this.lastSale = null;
+      }
+    },
   },
 };
 </script>

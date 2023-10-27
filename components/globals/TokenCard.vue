@@ -44,14 +44,39 @@
         </a>
       </div>
 
-      <div class="c-tokencard__bottom">
+      <div v-if="this.token.tier !== 1" class="c-tokencard__bottom">
         <div class="c-tokencard__price">
           <div class="c-tokencard__price__label">Price</div>
           <div class="c-tokencard__price__amount">
             <span>{{ price }}</span> <span><TezosIcon /></span>
           </div>
         </div>
-        <ButtonComponent @click="mintToken">Mint</ButtonComponent>
+        <ButtonComponent v-if="!this.token.isFullyMinted" @click="mintToken">Mint</ButtonComponent>
+        <ButtonComponent v-if="this.token.isFullyMinted">
+          <a :href="marketplaceUrl" target="_blank" rel="noopener noreferrer">
+            Buy
+          </a>
+        </ButtonComponent>
+      </div>
+      <div v-if="this.token.tier === 1" class="c-tokencard__bottom">
+        <div class="c-tokencard__price">
+          <div class="c-tokencard__price__label">Time Left</div>
+          <div class="c-tokencard__price__amount">
+            <p class="auction"></p>
+          </div>
+        </div>
+        <div class="c-tokencard__price">
+          <div class="c-tokencard__price__label">Highest bid</div>
+          <div class="c-tokencard__price__amount">
+            <span>{{ highestBidXtz }}</span> <span><TezosIcon /></span>
+          </div>
+        </div>
+        <ButtonComponent v-if="!this.auctionOver" @click="bid">Bid</ButtonComponent>
+        <ButtonComponent v-if="this.auctionOver">
+          <a :href="marketplaceUrl" target="_blank" rel="noopener noreferrer">
+          Buy
+          </a>
+        </ButtonComponent>
       </div>
     </div>
 
@@ -79,8 +104,24 @@ export default {
       validator: (s) => ["aspect", "auto"].includes(s),
     },
   },
+  data() {
+    return {
+      highestBidXtz: null,
+      auctionUrl: null,
+      auctionStartTime: null,
+      auctionEndTime: null,
+      auctionOver: false,
+      fa2Contract: "KT1SoQSSHknvaUUvBRxRiT9ynBHME8sQ191P",
+    };
+  },
   mounted() {
     new LazyLoader(this.$refs.tokenImage);
+    if (this.token.tier === 1) {
+      this.fetchAuction();
+      this.fetchInterval = setInterval(() => {
+        this.fetchAuctionBid();
+      }, 10000);
+    };
   },
   computed: {
     ...mapGetters({
@@ -130,6 +171,9 @@ export default {
     },
     pixelArtistUrl() {
       return this.token.creators[1].split(" ")[1];
+    },
+    marketplaceUrl() {
+      return `https://objkt.com/explore/tokens/1?faContracts=${this.fa2Contract}&attr=Musician:%20${this.token.artist}&attr=Tier:%20${this.token.tier}`;
     },
     price() {
       if (this.token.tier === 1) {
@@ -219,6 +263,95 @@ export default {
         });
       }
     },
+    bid() {
+      window.open(this.auctionUrl, '_blank');
+    },
+    async fetchAuction() {
+      if (this.token.tier === 1) {
+        const tier = "tier1"
+        const payload = {
+          tier: tier,
+          artist: this.token.artist,
+        };
+
+        const tokenIds = await this.$store.dispatch("fetchTokenId", payload);
+        const auction = await this.$store.dispatch("token/fetchEnglishAuction", {tokenIds: tokenIds});
+        const tokenInfor = await this.$store.dispatch("token/fetchMint", {tokenIds: tokenIds});
+
+        if(auction.length) {
+
+          this.auctionStartTime = auction[0].start_time;
+          this.auctionEndTime = auction[0].end_time;
+          this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
+          this.auctionUrl = "https://objkt.com/auction/e/" + auction[0].hash;
+        }
+        else {
+          this.highest_bid_xtz = 0;
+          this.auctionUrl = tokenInfor.lengh ? tokenInfor[0].objktsUrl : "";
+        }
+        // Set the date we're counting down to
+
+        var countDownDate = new Date(this.auctionEndTime).getTime();
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+        if (distance < 0) {
+          this.auctionOver = true;
+        }
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+
+          // Get today's date and time
+          var now = new Date().getTime();
+
+          // Find the distance between now and the count down date
+          var distance = countDownDate - now;
+          // Time calculations for days, hours, minutes and seconds
+          var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          // Display the result in the element with id="demo"
+          var timers = document.getElementsByClassName("auction");
+          Array.prototype.forEach.call(timers, function(timer) {
+              timer.innerHTML = days + "d " + hours + "h "
+                              + minutes + "m " + seconds + "s ";
+          });
+          
+
+          // If the count down is finished, write some text
+          if (distance < 0) {
+            clearInterval(x);
+            Array.prototype.forEach.call(timers, function(timer) {
+              timer.innerHTML = "Auction Ended"
+            });
+            this.auctionOver = true;
+          }
+        }, 1000);
+      }
+    },
+    async fetchAuctionBid() {
+      if (this.token.tier === 1) {
+        const tier = "tier1";
+        const payload = {
+          tier: tier,
+          artist: this.token.artist,
+        };
+        const tokenIds = await this.$store.dispatch("fetchTokenId", payload);
+        const auction = await this.$store.dispatch("token/fetchEnglishAuction", {tokenIds: tokenIds});
+
+        if(auction.length && new Date() - new Date(auction[0].end_time) <= 0) {
+          this.highestBidXtz = auction[0].highest_bid_xtz / Math.pow(10, 6);
+        }
+        else {
+          this.highestBidXtz = auction[0] ? auction[0].highest_bid_xtz / Math.pow(10, 6) : "N/A";
+        }
+      } 
+    },
+    
   },
 };
 </script>

@@ -11,7 +11,20 @@ import axios from "axios";
 
 // let tezos = new TezosToolkit(networks.mainnet.nodes[0]);
 let tezos = new TezosToolkit(networks.ghostnet.nodes[1]);
-let getRepTokensPerTier = (artistName, tokenList) => {
+const objectsEqual = (o1, o2) => 
+    typeof o1 === 'object' && Object.keys(o1).length > 0 
+        ? Object.keys(o1).length === Object.keys(o2).length 
+            && Object.keys(o1).every(p => objectsEqual(o1[p], o2[p]))
+        : o1 === o2;
+        
+const arraysEqual = (a1, a2) => {
+  if (typeof a1 !== 'undefined' && a1.length > 0 && typeof a2 !== 'undefined' && a2.length) {
+    return a1.length === a2.length && a1.every((o, idx) => objectsEqual(o, a2[idx]));
+  }
+  return false;
+}
+      
+let getRepTokensPerTier = (tokenList, mintedTokens) => {
   let pixelArtistList = []
   let repTokensPerTier = []
   tokenList.map((token, index) => {
@@ -36,8 +49,15 @@ let getRepTokensPerTier = (artistName, tokenList) => {
     // Check if already have the reprentative token of this artist
     if(pixelArtistList.indexOf(pixel_artist) == -1) { 
       pixelArtistList.push(pixel_artist)
+      // Get all minted tokens belong to this representative tokens
+      const repTokenGroup = mintedTokens.filter(mintedToken => {
+        return arraysEqual(mintedToken.attributes, token.attributes);
+      })
+      const tokenIds = repTokenGroup.map(token => {
+        return token.tokenId
+      })
       repTokensPerTier.push({
-        tokenIds: [],
+        tokenIds: tokenIds,
         artistName: artist,
         pixel_artist: pixel_artist,
         tier: tier,
@@ -45,6 +65,7 @@ let getRepTokensPerTier = (artistName, tokenList) => {
       })
     }
   })
+  console.log(repTokensPerTier);
   return repTokensPerTier;
 }
 let getArtistMapId = async () => {
@@ -198,8 +219,34 @@ export const actions = {
     commit("updateStorage", storage);
   },
 
+  /*
+  Fetch reprensentative tokens for each artists and
+  get all minted tokens belong to each reprensentative group.
+  */
   async fetchGalleryMetadata({ state, commit }) {
-    let repTokens = []
+    // Fetch minted tokens
+    const fa2_big_maps = await this.$axios.$get(
+      `${base_tzkt_api_url}bigmaps?contract=${fa2ContractAddress}`
+    );
+    const token_metadata = fa2_big_maps.find(element => element.path === "token_metadata");
+    const token_metadata_ptr = token_metadata?.ptr
+    const res = await this.$axios.$get(
+      `${base_tzkt_api_url}bigmaps/${token_metadata_ptr}/keys`
+    );
+    const mintedTokens = await Promise.all(
+      res.map(async(token) => {
+        const tokenId = token.value.token_id;
+        const metadataPath = bytes2Char(token.value.token_info[""]);
+        const tokenMetadata = await ipfsFetcher(metadataPath);
+        return {
+          tokenId: tokenId,
+          ...tokenMetadata.data,
+        };
+      })
+    );
+
+    // Fetch representative tokens
+    let repTokens = [];
     const repTokensPerArtist = {};
     const artists = state.artists;
     const tokenMetadata = await Promise.all(
@@ -227,9 +274,9 @@ export const actions = {
       if(!repTokensPerArtist[artist_name]) {
         repTokensPerArtist[artist_name] = {}
       }
-      repTokensPerArtist[artist_name]["tier1"] = getRepTokensPerTier(artist_name, artist.tier1_metadata)
-      repTokensPerArtist[artist_name]["tier2"] = getRepTokensPerTier(artist_name, artist.tier2_metadata)
-      repTokensPerArtist[artist_name]["tier3"] = getRepTokensPerTier(artist_name, artist.tier3_metadata)    
+      repTokensPerArtist[artist_name]["tier1"] = getRepTokensPerTier(artist.tier1_metadata, mintedTokens)
+      repTokensPerArtist[artist_name]["tier2"] = getRepTokensPerTier(artist.tier2_metadata, mintedTokens)
+      repTokensPerArtist[artist_name]["tier3"] = getRepTokensPerTier(artist.tier3_metadata, mintedTokens)    
       repTokensPerArtist[artist_name] = Array.prototype.concat(repTokensPerArtist[artist_name]["tier1"], repTokensPerArtist[artist_name]["tier2"], repTokensPerArtist[artist_name]["tier3"])
     })
     // convert object to key's array
@@ -242,6 +289,24 @@ export const actions = {
         repTokens = repTokens.concat(repTokensPerArtist[key])
     });
     commit("updateMintedTokenMetadata", repTokens);
+  },
+  async fetchTokenId({ commit }, {artist, tier}) {
+    // Fetch minted tokens
+    const fa2_big_maps = await this.$axios.$get(
+      `${base_tzkt_api_url}bigmaps?contract=${jokoContractAddress}`
+    );
+    const token_metadata = fa2_big_maps.find(element => element.path === "tier_map");
+    const token_metadata_ptr = token_metadata?.ptr
+    const res = await this.$axios.$get(
+      `${base_tzkt_api_url}bigmaps/${token_metadata_ptr}/keys`
+    );
+    
+    const tokenIds = res.filter((element) => {
+      const artistName = element.key.string_0;
+      const tierValue = element.key.string_1;
+      return artistName === artist && tierValue === tier
+    })
+    return tokenIds.length ? tokenIds[0].value : [];
   },
 };
 
